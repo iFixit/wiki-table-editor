@@ -1,12 +1,40 @@
 # wiki-table-editor
 
-Demo:
+## Usage
 
-https://ifixit.github.io/wiki-table-editor/table-test.html
-
-Filesize of this and all dependencies (minus react and react-dom)
+### Build
 
 ```
-Original Size:	78.11KB gzipped (417.01KB uncompressed)
-Compiled Size:	31.35KB gzipped (131.37KB uncompressed)
+npm run build
 ```
+
+#### my-app.html
+
+```html
+<script src="/js/react.js"></script>
+<script src="/js/react-dom.js"></script>
+<script src="/js/wiki-table-editor/dist/wiki-table-editor.js"></script>
+<script src="/js/my-app.js"></script>
+
+...
+
+<div id="root"></div>
+```
+
+#### my-app.jsx
+
+```jsx
+ReactDOM.render((<WikiTableEditor />), document.querySelector('#root'));
+```
+
+## Development
+
+### Build
+
+Run
+
+```
+npm run build-dev
+```
+
+and open `demo.html` in a web browser.
