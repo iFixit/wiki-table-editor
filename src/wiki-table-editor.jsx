@@ -308,6 +308,6 @@ class DragAndDropTable extends React.Component {
 }
 
 // Set up drag and drop context
-const DragAndDrop = DragDropContext(HTML5Backend)(DragAndDropTable);
+const WikiTableEditor = DragDropContext(HTML5Backend)(DragAndDropTable);
 
-ReactDOM.render((<DragAndDrop />), document.querySelector('#root'));
+export default WikiTableEditor;
