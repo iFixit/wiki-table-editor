@@ -21,6 +21,7 @@
     "webpack": "^1.14.0"
   },
   "scripts": {
-    "build": "webpack"
+    "build": "webpack",
+    "build-dev": "webpack --env.dev"
   }
 }
