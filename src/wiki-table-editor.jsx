@@ -1,177 +1,67 @@
-// Created from example code https://reactabular.js.org/
-
 import React from 'react';
 import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
-import cloneDeep from 'lodash/cloneDeep';
-import findIndex from 'lodash/findIndex';
+import * as edit from 'react-edit';
 import * as Table from 'reactabular-table';
 import * as dnd from 'reactabular-dnd';
 import * as resolve from 'table-resolver';
-import ReactDOM from 'react-dom';
-import * as edit from 'react-edit';
+import cloneDeep from 'lodash/cloneDeep';
+import findIndex from 'lodash/findIndex';
 
-const rows = [{
-  id: 1,
-  first: 'John',
-  last: 'Johnson',
-  company: 'John Inc.',
-  sentence: 'consequatur nihil minima corporis omnis nihil rem'
-}, {
-  id: 2,
-  first: 'Mike',
-  last: 'Mikeson',
-  company: 'Mike Inc.',
-  sentence: 'a sequi doloremque sed id quo voluptatem voluptatem ut voluptatibus'
-}, {
-  id: 3,
-  first: 'Jake',
-  last: 'Jackson',
-  company: 'Jake Inc.',
-  sentence: 'sed id quo voluptatem voluptatem ut voluptatibus'
-}, {
-  id: 4,
-  first: 'Don',
-  last: 'Donson',
-  company: 'Don Inc.',
-  sentence: 'voluptatem voluptatem ut voluptatibus'
-}];
-
-class DragAndDropTable extends React.Component {
+class TableEditor extends React.Component {
   constructor(props) {
     super(props);
 
-    this.editable = edit.edit({
-      // Determine whether the current cell is being edited or not.
-      isEditing: ({ columnIndex, rowData }) => columnIndex === rowData.editing,
+    this.onRow = this.onRow.bind(this);
+    this.onMoveRow = this.onMoveRow.bind(this);
+    this.onMoveColumn = this.onMoveColumn.bind(this);
+    this.onMoveChildColumn = this.onMoveChildColumn.bind(this);
 
-      // The user requested activation, mark the current cell as edited.
-      // IMPORTANT! If you stash the rows at this.state.rows, DON'T
-      // mutate it as that will break Table.Body optimization check.
+    this.editable = edit.edit({
+      isEditing: ({ columnIndex, rowData }) => {
+        return columnIndex === rowData.columnIndexEditing;
+      },
+
       onActivate: ({ columnIndex, rowData }) => {
         const index = findIndex(this.state.rows, { id: rowData.id });
         const rows = cloneDeep(this.state.rows);
 
-        rows[index].editing = columnIndex;
+        rows[index].columnIndexEditing = columnIndex;
 
         this.setState({ rows });
       },
 
-      // Capture the value when the user has finished and update
-      // application state.
       onValue: ({ value, rowData, property }) => {
         const index = findIndex(this.state.rows, { id: rowData.id });
         const rows = cloneDeep(this.state.rows);
 
         rows[index][property] = value;
-        rows[index].editing = false;
-
-        // Optional: capture the fact that a field was edited for visualization
-        rows[index].edited = true;
+        rows[index].columnIndexEditing = null;
 
         this.setState({ rows });
       }
     });
 
     this.state = {
-      columns: [
-      {
-        property: 'first',
-        props: {
-          style: {
-            width: 50
+      columns: props.initialCols.map(({ property, label }) => {
+        return {
+          property: property,
+          header: {
+            label: label,
+            props: {
+              label: label,
+              onMove: o => this.onMoveColumn(o)
+            }
+          },
+          cell: {
+            transforms: [this.editable(edit.input())]
           }
-        },
-        header: {
-          label: 'First Name',
-          props: {
-            label: 'First Name',
-            onMove: o => this.onMoveColumn(o)
-          }
-        },
-        cell: {
-          transforms: [
-          (value, extra) => this.editable(edit.input())(value, extra, {
-            className: extra.rowData.edited && 'edited'
-          })
-          ]
         }
-      },
-      {
-        property: 'last',
-        props: {
-          style: {
-            width: 50
-          }
-        },
-        header: {
-          label: 'Last Name',
-          props: {
-            label: 'Last Name',
-            onMove: o => this.onMoveColumn(o)
-          }
-        },
-        cell: {
-          transforms: [
-          (value, extra) => this.editable(edit.input())(value, extra, {
-            className: extra.rowData.edited && 'edited'
-          })
-          ]
-        }
-      },
-      {
-        property: 'company',
-        props: {
-          label: 'Company',
-          style: {
-            width: 100
-          }
-        },
-        header: {
-          label: 'Company',
-          props: {
-            onMove: o => this.onMoveColumn(o)
-          }
-        },
-        cell: {
-          transforms: [
-          (value, extra) => this.editable(edit.input())(value, extra, {
-            className: extra.rowData.edited && 'edited'
-          })
-          ]
-        }
-      },
-      {
-        property: 'sentence',
-        props: {
-          style: {
-            width: 300
-          }
-        },
-        header: {
-          label: 'Sentence',
-          props: {
-            label: 'Sentence',
-            onMove: o => this.onMoveColumn(o)
-          }
-        },
-        cell: {
-          transforms: [
-          (value, extra) => this.editable(edit.input())(value, extra, {
-            className: extra.rowData.edited && 'edited'
-          })
-          ]
-        }
-      }
-      ],
-      rows
+      }),
+      rows: props.initialRows
     };
+  }
 
-    this.onRow = this.onRow.bind(this);
-    this.onMoveRow = this.onMoveRow.bind(this);
-    this.onMoveColumn = this.onMoveColumn.bind(this);
-    this.onMoveChildColumn = this.onMoveChildColumn.bind(this);
-    }
   render() {
     const components = {
       header: {
@@ -230,7 +120,7 @@ class DragAndDropTable extends React.Component {
     const movedColumns = dnd.moveLabels(this.state.columns, labels);
 
     if (movedColumns) {
-      // Retain widths to avoid flashing while drag and dropping.
+      /*// Retain widths to avoid flashing while drag and dropping.
       const source = movedColumns.source;
       const target = movedColumns.target;
       const sourceWidth = source.props.style && source.props.style.width;
@@ -243,7 +133,7 @@ class DragAndDropTable extends React.Component {
       target.props.style = {
         ...target.props.style,
         width: sourceWidth
-      };
+      };*/
 
       this.setState({
         columns: movedColumns.columns
@@ -308,6 +198,6 @@ class DragAndDropTable extends React.Component {
 }
 
 // Set up drag and drop context
-const WikiTableEditor = DragDropContext(HTML5Backend)(DragAndDropTable);
+const WikiTableEditor = DragDropContext(HTML5Backend)(TableEditor);
 
 export default WikiTableEditor;
