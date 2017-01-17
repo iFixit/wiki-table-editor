@@ -13,8 +13,6 @@ class TableEditor extends React.Component {
 
     this.onRow = this.onRow.bind(this);
     this.onMoveRow = this.onMoveRow.bind(this);
-    this.onMoveColumn = this.onMoveColumn.bind(this);
-    this.onMoveChildColumn = this.onMoveChildColumn.bind(this);
 
     this.editable = edit.edit({
       isEditing: ({ columnIndex, rowData }) => {
@@ -46,11 +44,7 @@ class TableEditor extends React.Component {
         return {
           property: property,
           header: {
-            label: label,
-            props: {
-              label: label,
-              onMove: o => this.onMoveColumn(o)
-            }
+            label: label
           },
           cell: {
             transforms: [this.editable(edit.input())]
@@ -63,9 +57,6 @@ class TableEditor extends React.Component {
 
   render() {
     const components = {
-      header: {
-        cell: dnd.Header
-      },
       body: {
         row: dnd.Row
       }
@@ -89,7 +80,6 @@ class TableEditor extends React.Component {
       />
       </Table.Provider>
       <button onClick={this.newRow.bind(this)}>New Row</button>
-      <button onClick={this.newCol.bind(this)}>New Col</button>
       <button onClick={this.printJSON.bind(this)}>Print JSON</button>
       </div>
       );
@@ -109,73 +99,6 @@ class TableEditor extends React.Component {
     if (rows) {
       this.setState({ rows });
     }
-  }
-  onMoveColumn(labels) {
-    const movedColumns = dnd.moveLabels(this.state.columns, labels);
-
-    if (movedColumns) {
-      /*// Retain widths to avoid flashing while drag and dropping.
-      const source = movedColumns.source;
-      const target = movedColumns.target;
-      const sourceWidth = source.props.style && source.props.style.width;
-      const targetWidth = target.props.style && target.props.style.width;
-
-      source.props.style = {
-        ...source.props.style,
-        width: targetWidth
-      };
-      target.props.style = {
-        ...target.props.style,
-        width: sourceWidth
-      };*/
-
-      this.setState({
-        columns: movedColumns.columns
-      });
-    }
-  }
-  onMoveChildColumn(labels) {
-    const movedChildren = dnd.moveChildrenLabels(this.state.columns, labels);
-
-    if (movedChildren) {
-      const columns = cloneDeep(this.state.columns);
-
-      columns[movedChildren.target].children = movedChildren.columns;
-
-      // Here we assume children have the same width.
-      this.setState({ columns });
-    }
-  }
-  newCol() {
-    const prop = Math.random() + '-col';
-    const columns = cloneDeep(this.state.columns);
-    columns.push({
-      property: prop,
-      props: {
-        style: {
-          width: 300
-        }
-      },
-      header: {
-        label: prop,
-        props: {
-          label: prop,
-          onMove: o => this.onMoveColumn(o)
-        }
-      },
-      cell: {
-        transforms: [
-        (value, extra) => this.editable(edit.input())(value, extra, {
-          className: extra.rowData.edited && 'edited'
-        })
-        ]
-      }
-    });
-    const rows = cloneDeep(this.state.rows);
-    for (let i in rows) {
-      rows[i][prop] = 'cell-' + Math.random();
-    }
-    this.setState({columns, rows});
   }
   newRow() {
     const rows = cloneDeep(this.state.rows);
