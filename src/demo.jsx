@@ -2,6 +2,10 @@ import WikiTableEditor from './wiki-table-editor.jsx'
 import ReactDOM from 'react-dom'
 import React from 'react'
 
+/**
+ * Demo file for testing the WikiTableEditor component.
+ */
+
 const rows = [{
   id: 1,
   first: 'John',
@@ -52,18 +56,26 @@ class SpecificWikiTableEditor extends React.Component {
     };
 
     this.setRows = this.setRows.bind(this);
+    this.printJSON = this.printJSON.bind(this);
   }
 
   setRows(rows) {
     this.setState({ rows });
   }
 
+  printJSON() {
+    console.log(this.state.rows);
+  }
+
   render() {
     return (
-      <WikiTableEditor
-       rows={this.state.rows}
-       columns={this.state.columns}
-       setRows={this.setRows} />
+      <div>
+        <WikiTableEditor
+         rows={this.state.rows}
+         columns={this.state.columns}
+         setRows={this.setRows} />
+        <button onClick={this.printJSON}>Print JSON</button>
+      </div>
     );
   }
 }
