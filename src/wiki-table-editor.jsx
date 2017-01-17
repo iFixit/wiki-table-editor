@@ -4,7 +4,6 @@ import HTML5Backend from 'react-dnd-html5-backend';
 import * as edit from 'react-edit';
 import * as Table from 'reactabular-table';
 import * as dnd from 'reactabular-dnd';
-import * as resolve from 'table-resolver';
 import cloneDeep from 'lodash/cloneDeep';
 import findIndex from 'lodash/findIndex';
 
@@ -72,24 +71,19 @@ class TableEditor extends React.Component {
       }
     };
     const { columns, rows } = this.state;
-    const resolvedColumns = resolve.columnChildren({ columns });
-    const resolvedRows = resolve.resolve({
-      columns: resolvedColumns,
-      method: resolve.nested
-    })(rows);
 
     return (
       <div>
       <Table.Provider
       components={components}
-      columns={resolvedColumns}
+      columns={columns}
       >
       <Table.Header
-      headerRows={resolve.headerRows({ columns })}
+      headerRows={[columns]}
       />
 
       <Table.Body
-      rows={resolvedRows}
+      rows={rows}
       rowKey="id"
       onRow={this.onRow}
       />
