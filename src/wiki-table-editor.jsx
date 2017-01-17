@@ -61,35 +61,28 @@ class TableEditor extends React.Component {
         row: dnd.Row
       }
     };
+
     const { columns, rows } = this.state;
 
     return (
       <div>
-      <Table.Provider
-      components={components}
-      columns={columns}
-      >
-      <Table.Header
-      headerRows={[columns]}
-      />
-
-      <Table.Body
-      rows={rows}
-      rowKey="id"
-      onRow={this.onRow}
-      />
-      </Table.Provider>
-      <button onClick={this.newRow.bind(this)}>New Row</button>
-      <button onClick={this.printJSON.bind(this)}>Print JSON</button>
+        <Table.Provider components={components} columns={columns}>
+          <Table.Header headerRows={[columns]} />
+          <Table.Body rows={rows} rowKey="id" onRow={this.onRow} />
+        </Table.Provider>
+        <button onClick={this.newRow.bind(this)}>New Row</button>
+        <button onClick={this.printJSON.bind(this)}>Print JSON</button>
       </div>
-      );
+    );
   }
+
   onRow(row) {
     return {
       rowId: row.id,
       onMove: this.onMoveRow
     };
   }
+
   onMoveRow({ sourceRowId, targetRowId }) {
     const rows = dnd.moveRows({
       sourceRowId,
@@ -100,6 +93,7 @@ class TableEditor extends React.Component {
       this.setState({ rows });
     }
   }
+
   newRow() {
     const rows = cloneDeep(this.state.rows);
     let newRow = {};
@@ -109,6 +103,7 @@ class TableEditor extends React.Component {
     }
     this.setState({rows});
   }
+
   printJSON() {
     console.log(JSON.stringify(this.state));
   }
