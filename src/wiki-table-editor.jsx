@@ -7,6 +7,11 @@ import * as dnd from 'reactabular-dnd';
 import cloneDeep from 'lodash/cloneDeep';
 import findIndex from 'lodash/findIndex';
 
+/**
+ * A table editor that allows the user to edit cells and reorder rows.
+ * This is a simple wrapper around Reactabular with its 'dnd' and 'edit'
+ * modules.
+ */
 class TableEditor extends React.Component {
   constructor(props) {
     super(props);
@@ -73,7 +78,6 @@ class TableEditor extends React.Component {
           <Table.Body rows={rows} rowKey="id" onRow={this.onRow} />
         </Table.Provider>
         <button onClick={this.newRow.bind(this)}>New Row</button>
-        <button onClick={this.printJSON.bind(this)}>Print JSON</button>
       </div>
     );
   }
@@ -104,15 +108,11 @@ class TableEditor extends React.Component {
     };
 
     for (let index in this.props.columns) {
-      newRow[this.props.columns[index].property] = 'Abc ' + Math.random();
+      newRow[this.props.columns[index].property] = ' - ';
     }
 
     rows.push(newRow);
     this.props.setRows(rows);
-  }
-
-  printJSON() {
-    console.log(JSON.stringify(this.props.rows));
   }
 }
 
