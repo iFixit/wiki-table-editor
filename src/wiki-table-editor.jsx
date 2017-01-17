@@ -14,45 +14,46 @@ class TableEditor extends React.Component {
     this.onRow = this.onRow.bind(this);
     this.onMoveRow = this.onMoveRow.bind(this);
 
-    this.editable = edit.edit({
+    const editable = edit.edit({
       isEditing: ({ columnIndex, rowData }) => {
         return columnIndex === rowData.columnIndexEditing;
       },
 
       onActivate: ({ columnIndex, rowData }) => {
-        const index = findIndex(this.state.rows, { id: rowData.id });
-        const rows = cloneDeep(this.state.rows);
+        const index = findIndex(this.props.rows, { id: rowData.id });
+        const rows = cloneDeep(this.props.rows);
 
         rows[index].columnIndexEditing = columnIndex;
 
-        this.setState({ rows });
+        this.props.setRows(rows);
       },
 
       onValue: ({ value, rowData, property }) => {
-        const index = findIndex(this.state.rows, { id: rowData.id });
-        const rows = cloneDeep(this.state.rows);
+        const index = findIndex(this.props.rows, { id: rowData.id });
+        const rows = cloneDeep(this.props.rows);
 
         rows[index][property] = value;
         rows[index].columnIndexEditing = null;
 
-        this.setState({ rows });
+        this.props.setRows(rows);
       }
     });
 
-    this.state = {
-      columns: props.initialCols.map(({ property, label }) => {
-        return {
-          property: property,
-          header: {
-            label: label
-          },
-          cell: {
-            transforms: [this.editable(edit.input())]
-          }
+    this.editableTransform = editable(edit.input());
+  }
+
+  getColumns() {
+    return this.props.columns.map(({ property, label }) => {
+      return {
+        property: property,
+        header: {
+          label: label
+        },
+        cell: {
+          transforms: [this.editableTransform]
         }
-      }),
-      rows: props.initialRows
-    };
+      };
+    });
   }
 
   render() {
@@ -62,7 +63,8 @@ class TableEditor extends React.Component {
       }
     };
 
-    const { columns, rows } = this.state;
+    const rows = this.props.rows;
+    const columns = this.getColumns();
 
     return (
       <div>
@@ -87,29 +89,33 @@ class TableEditor extends React.Component {
     const rows = dnd.moveRows({
       sourceRowId,
       targetRowId
-    })(this.state.rows);
+    })(this.props.rows);
 
     if (rows) {
-      this.setState({ rows });
+      this.props.setRows(rows);
     }
   }
 
   newRow() {
-    const rows = cloneDeep(this.state.rows);
-    let newRow = {};
-    rows.push(newRow);
-    for (let i in this.state.rows[0]) {
-      newRow[i] = Math.random();
+    const rows = cloneDeep(this.props.rows);
+
+    let newRow = {
+      id: 1 + Math.max.apply(Math, this.props.rows.map((row) => row.id))
+    };
+
+    for (let index in this.props.columns) {
+      newRow[this.props.columns[index].property] = 'Abc ' + Math.random();
     }
-    this.setState({rows});
+
+    rows.push(newRow);
+    this.props.setRows(rows);
   }
 
   printJSON() {
-    console.log(JSON.stringify(this.state));
+    console.log(JSON.stringify(this.props.rows));
   }
 }
 
-// Set up drag and drop context
 const WikiTableEditor = DragDropContext(HTML5Backend)(TableEditor);
 
 export default WikiTableEditor;
