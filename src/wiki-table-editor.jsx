@@ -38,7 +38,7 @@ class TableEditor extends React.Component {
         const rows = cloneDeep(this.props.rows);
 
         rows[index][property] = value;
-        rows[index].columnIndexEditing = null;
+        delete rows[index].columnIndexEditing;
 
         this.props.setRows(rows);
       }
@@ -111,7 +111,9 @@ class TableEditor extends React.Component {
   onRow(row) {
     return {
       rowId: row.id,
-      onMove: this.onMoveRow
+      onMove: this.onMoveRow,
+      onCanMove: () => !this.props.rows.some(
+       (rowData) => rowData.columnIndexEditing !== undefined)
     };
   }
 
