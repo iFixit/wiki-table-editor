@@ -118,11 +118,16 @@ class TableEditor extends React.Component {
     this.props.setRows(rows);
   }
 
+  getNextId() {
+    return 1 +
+     Math.max.apply(Math, [1, ...this.props.rows.map((row) => row.id)]);
+  }
+
   newRow() {
     const rows = cloneDeep(this.props.rows);
 
     let newRow = {
-      id: 1 + Math.max.apply(Math, this.props.rows.map((row) => row.id))
+      id: this.getNextId()
     };
 
     this.props.columns.forEach((column) => {
