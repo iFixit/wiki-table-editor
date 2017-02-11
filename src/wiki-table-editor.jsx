@@ -55,15 +55,28 @@ class TableEditor extends React.Component {
           label: label
         },
         cell: {
-          transforms: [this.editableTransform]
+          transforms: [this.editableTransform],
+          formatters: [
+            (value, { rowData }) => (
+              <div className="cell-content">{ rowData[property] }</div>
+            )
+          ]
         }
       };
     }), {
+      header: {
+        props: {
+          style: {
+            width: 60
+          }
+        }
+      },
       cell: {
         formatters: [
           (value, { rowData }) => (
-            <button onClick={this.deleteRow.bind(this, rowData.id)}>
-              Delete
+            <button onClick={this.deleteRow.bind(this, rowData.id)}
+             className="delete-button">
+              &times;
             </button>
           )
         ]
@@ -82,12 +95,15 @@ class TableEditor extends React.Component {
     const columns = this.getColumns();
 
     return (
-      <div>
+      <div className="wiki-table-editor">
         <Table.Provider components={components} columns={columns}>
           <Table.Header headerRows={[columns]} />
           <Table.Body rows={rows} rowKey="id" onRow={this.onRow} />
         </Table.Provider>
-        <button onClick={this.newRow.bind(this)}>New Row</button>
+        <button onClick={this.newRow.bind(this)}
+         className="new-button">
+          +
+        </button>
       </div>
     );
   }
