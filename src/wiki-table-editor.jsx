@@ -48,7 +48,7 @@ class TableEditor extends React.Component {
   }
 
   getColumns() {
-    return this.props.columns.map(({ property, label }) => {
+    return [...this.props.columns.map(({ property, label }) => {
       return {
         property: property,
         header: {
@@ -58,7 +58,17 @@ class TableEditor extends React.Component {
           transforms: [this.editableTransform]
         }
       };
-    });
+    }), {
+      cell: {
+        formatters: [
+          (value, { rowData }) => (
+            <button onClick={this.deleteRow.bind(this, rowData.id)}>
+              Delete
+            </button>
+          )
+        ]
+      }
+    }];
   }
 
   render() {
@@ -100,6 +110,14 @@ class TableEditor extends React.Component {
     }
   }
 
+  deleteRow(rowId) {
+    const rows = this.props.rows.filter((rowData) => {
+      return rowData.id !== rowId;
+    });
+
+    this.props.setRows(rows);
+  }
+
   newRow() {
     const rows = cloneDeep(this.props.rows);
 
@@ -107,9 +125,13 @@ class TableEditor extends React.Component {
       id: 1 + Math.max.apply(Math, this.props.rows.map((row) => row.id))
     };
 
-    for (let index in this.props.columns) {
-      newRow[this.props.columns[index].property] = ' - ';
-    }
+    this.props.columns.forEach((column) => {
+      if (!column.property) {
+        return;
+      };
+
+      newRow[column.property] = '';
+    });
 
     rows.push(newRow);
     this.props.setRows(rows);
