@@ -18,6 +18,7 @@ class TableEditor extends React.Component {
 
     this.onRow = this.onRow.bind(this);
     this.onMoveRow = this.onMoveRow.bind(this);
+    this.addRow = this.addRow.bind(this);
 
     const editable = edit.edit({
       isEditing: ({ columnIndex, rowData }) => {
@@ -100,10 +101,7 @@ class TableEditor extends React.Component {
           <Table.Header headerRows={[columns]} />
           <Table.Body rows={rows} rowKey="id" onRow={this.onRow} />
         </Table.Provider>
-        <button onClick={this.newRow.bind(this)}
-         className="new-button">
-          +
-        </button>
+        <button onClick={this.addRow} className="add-row-button">+</button>
       </div>
     );
   }
@@ -141,7 +139,7 @@ class TableEditor extends React.Component {
      Math.max.apply(Math, [1, ...this.props.rows.map((row) => row.id)]);
   }
 
-  newRow() {
+  addRow() {
     const rows = cloneDeep(this.props.rows);
 
     let newRow = {
