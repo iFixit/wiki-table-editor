@@ -191,7 +191,8 @@ var WikiTableEditor =
 	        ),
 	        _react2.default.createElement(
 	          'button',
-	          { onClick: this.addRow, className: 'add-row-button' },
+	          { type: 'button',
+	            onClick: this.addRow, className: 'add-row-button' },
 	          '+'
 	        )
 	      );
@@ -245,7 +246,8 @@ var WikiTableEditor =
 	            var rowData = _ref6.rowData;
 	            return _react2.default.createElement(
 	              'button',
-	              { onClick: _this2.deleteRow.bind(_this2, rowData.id),
+	              { type: 'button',
+	                onClick: _this2.deleteRow.bind(_this2, rowData.id),
 	                className: 'delete-button' },
 	              '\xD7'
 	            );

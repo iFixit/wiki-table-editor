@@ -85,7 +85,8 @@ class TableEditor extends React.Component {
           <Table.Header headerRows={[columns]} />
           <Table.Body rows={rows} rowKey="id" onRow={this.onRow} />
         </Table.Provider>
-        <button onClick={this.addRow} className="add-row-button">+</button>
+        <button type="button"
+         onClick={this.addRow} className="add-row-button">+</button>
       </div>
     );
   }
@@ -124,7 +125,8 @@ class TableEditor extends React.Component {
       cell: {
         formatters: [
           (value, { rowData }) => (
-            <button onClick={this.deleteRow.bind(this, rowData.id)}
+            <button type="button"
+             onClick={this.deleteRow.bind(this, rowData.id)}
              className="delete-button">
               &times;
             </button>
