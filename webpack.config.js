@@ -23,7 +23,8 @@ function getConfig(env) {
     entry: entry,
     output: {
       path: __dirname + '/dist',
-      filename: outFile
+      filename: outFile,
+      library: 'WikiTableEditor'
     },
     externals: externals,
     module: {

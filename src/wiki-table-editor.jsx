@@ -212,4 +212,4 @@ class TableEditor extends React.Component {
 
 const WikiTableEditor = DragDropContext(HTML5Backend)(TableEditor);
 
-export default WikiTableEditor;
+module.exports = WikiTableEditor;
