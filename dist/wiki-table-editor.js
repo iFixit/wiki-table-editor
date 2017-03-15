@@ -47,6 +47,8 @@ var WikiTableEditor =
 
 	'use strict';
 
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 	var _react = __webpack_require__(1);
@@ -82,6 +84,8 @@ var WikiTableEditor =
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
@@ -126,44 +130,25 @@ var WikiTableEditor =
 	    _this.onRow = _this.onRow.bind(_this);
 	    _this.onMoveRow = _this.onMoveRow.bind(_this);
 	    _this.addRow = _this.addRow.bind(_this);
+	    _this.setRow = _this.setRow.bind(_this);
+	    _this.deleteButtonFormatter = _this.deleteButtonFormatter.bind(_this);
+	    _this.addNewButtonFormatter = _this.addNewButtonFormatter.bind(_this);
 
 	    // Specify our custom editing behavior.
-	    var editable = edit.edit({
-	      isEditing: function isEditing(_ref) {
-	        var columnIndex = _ref.columnIndex,
-	            rowData = _ref.rowData;
+	    _this.editableTransform = _this.getEditableTransform(_this.setRow);
 
-	        return columnIndex === rowData.columnIndexEditing;
-	      },
+	    // The "newRow" is the row at the bottom of the table. It gets added to the
+	    // table when the user clicks "Add Row."
+	    _this.state = {
+	      newRow: { id: 1 }
+	    };
 
-	      onActivate: function onActivate(_ref2) {
-	        var columnIndex = _ref2.columnIndex,
-	            rowData = _ref2.rowData;
-
-	        var index = (0, _findIndex2.default)(_this.props.rows, { id: rowData.id });
-	        var rows = (0, _cloneDeep2.default)(_this.props.rows);
-
-	        rows[index].columnIndexEditing = columnIndex;
-
-	        _this.props.setRows(rows);
-	      },
-
-	      onValue: function onValue(_ref3) {
-	        var value = _ref3.value,
-	            rowData = _ref3.rowData,
-	            property = _ref3.property;
-
-	        var index = (0, _findIndex2.default)(_this.props.rows, { id: rowData.id });
-	        var rows = (0, _cloneDeep2.default)(_this.props.rows);
-
-	        rows[index][property] = value;
-	        delete rows[index].columnIndexEditing;
-
-	        _this.props.setRows(rows);
-	      }
+	    // Specify editing behavior for the "newRow."
+	    _this.newRowEditableTransform = _this.getEditableTransform(function (rowId, properties) {
+	      _this.setState({
+	        newRow: _extends({}, _this.state.newRow, properties)
+	      });
 	    });
-
-	    _this.editableTransform = editable(edit.input());
 	    return _this;
 	  }
 
@@ -178,7 +163,10 @@ var WikiTableEditor =
 	      };
 
 	      var rows = this.props.rows;
-	      var columns = this.getColumns();
+	      var columns = this.getColumns(this.editableTransform, this.deleteButtonFormatter);
+
+	      var newRows = [this.state.newRow];
+	      var newColumns = this.getColumns(this.newRowEditableTransform, this.addNewButtonFormatter);
 
 	      return _react2.default.createElement(
 	        'div',
@@ -190,10 +178,9 @@ var WikiTableEditor =
 	          _react2.default.createElement(Table.Body, { rows: rows, rowKey: 'id', onRow: this.onRow })
 	        ),
 	        _react2.default.createElement(
-	          'button',
-	          { type: 'button',
-	            onClick: this.addRow, className: 'add-row-button' },
-	          '+'
+	          Table.Provider,
+	          { columns: newColumns },
+	          _react2.default.createElement(Table.Body, { rows: newRows, rowKey: 'id' })
 	        )
 	      );
 	    }
@@ -204,12 +191,10 @@ var WikiTableEditor =
 
 	  }, {
 	    key: 'getColumns',
-	    value: function getColumns() {
-	      var _this2 = this;
-
-	      return [].concat(_toConsumableArray(this.props.columns.map(function (_ref4) {
-	        var property = _ref4.property,
-	            label = _ref4.label;
+	    value: function getColumns(editTransform, actionButtonFormatter) {
+	      return [].concat(_toConsumableArray(this.props.columns.map(function (_ref) {
+	        var property = _ref.property,
+	            label = _ref.label;
 
 	        return {
 	          property: property,
@@ -217,12 +202,12 @@ var WikiTableEditor =
 	            label: label
 	          },
 	          cell: {
-	            transforms: [_this2.editableTransform],
+	            transforms: [editTransform],
 	            formatters: [
 	            // Wrap <td> contents in a <div>. This makes it easier to style
 	            // the table cells.
-	            function (value, _ref5) {
-	              var rowData = _ref5.rowData;
+	            function (value, _ref2) {
+	              var rowData = _ref2.rowData;
 	              return _react2.default.createElement(
 	                'div',
 	                { className: 'cell-content' },
@@ -232,7 +217,8 @@ var WikiTableEditor =
 	          }
 	        };
 	      })), [
-	      // Include one more column for the delete button.
+	      // Include one more column for a button. This can be a delete button or
+	      // anything that the caller wants.
 	      {
 	        header: {
 	          props: {
@@ -242,18 +228,95 @@ var WikiTableEditor =
 	          }
 	        },
 	        cell: {
-	          formatters: [function (value, _ref6) {
-	            var rowData = _ref6.rowData;
-	            return _react2.default.createElement(
-	              'button',
-	              { type: 'button',
-	                onClick: _this2.deleteRow.bind(_this2, rowData.id),
-	                className: 'delete-button' },
-	              '\xD7'
-	            );
-	          }]
+	          formatters: [actionButtonFormatter],
+	          props: {
+	            style: {
+	              width: 60
+	            }
+	          }
 	        }
 	      }]);
+	    }
+
+	    /**
+	     * Returns a transform that can be used in a column's cell's 'transforms'
+	     * property. This transform allows editing the contents of the cell.
+	     *
+	     * `setRow(rowId, {property: value})` is a function that will change
+	     * properties of one row.
+	     */
+
+	  }, {
+	    key: 'getEditableTransform',
+	    value: function getEditableTransform(setRow) {
+	      var editable = edit.edit({
+	        isEditing: function isEditing(_ref3) {
+	          var columnIndex = _ref3.columnIndex,
+	              rowData = _ref3.rowData;
+
+	          return columnIndex === rowData.columnIndexEditing;
+	        },
+
+	        onActivate: function onActivate(_ref4) {
+	          var columnIndex = _ref4.columnIndex,
+	              rowData = _ref4.rowData;
+
+	          setRow(rowData.id, { columnIndexEditing: columnIndex });
+	        },
+
+	        onValue: function onValue(_ref5) {
+	          var _setRow;
+
+	          var value = _ref5.value,
+	              rowData = _ref5.rowData,
+	              property = _ref5.property;
+
+	          setRow(rowData.id, (_setRow = {}, _defineProperty(_setRow, property, value), _defineProperty(_setRow, 'columnIndexEditing', undefined), _setRow));
+	        }
+	      });
+
+	      return editable(edit.input());
+	    }
+
+	    /**
+	     * Given a row, returns a delete button for that row.
+	     */
+
+	  }, {
+	    key: 'deleteButtonFormatter',
+	    value: function deleteButtonFormatter(value, _ref6) {
+	      var rowData = _ref6.rowData;
+
+	      return _react2.default.createElement(
+	        'button',
+	        { type: 'button',
+	          onClick: this.deleteRow.bind(this, rowData.id),
+	          className: 'delete-button' },
+	        '\xD7'
+	      );
+	    }
+
+	    /**
+	     * Returns an "Add new row" button.
+	     */
+
+	  }, {
+	    key: 'addNewButtonFormatter',
+	    value: function addNewButtonFormatter(value, _ref7) {
+	      var rowData = _ref7.rowData;
+
+	      var newRowEmpty = !this.props.columns.some(function (column) {
+	        return rowData[column.property];
+	      });
+
+	      return _react2.default.createElement(
+	        'button',
+	        { type: 'button',
+	          onClick: this.addRow.bind(this, rowData),
+	          className: 'add-row-button',
+	          disabled: newRowEmpty },
+	        '+'
+	      );
 	    }
 
 	    /**
@@ -263,14 +326,14 @@ var WikiTableEditor =
 	  }, {
 	    key: 'onRow',
 	    value: function onRow(row) {
-	      var _this3 = this;
+	      var _this2 = this;
 
 	      return {
 	        rowId: row.id,
 	        onMove: this.onMoveRow,
 	        // Don't allow drag-and-drop if a cell is being edited.
 	        onCanMove: function onCanMove() {
-	          return !_this3.props.rows.some(function (rowData) {
+	          return !_this2.props.rows.some(function (rowData) {
 	            return rowData.columnIndexEditing !== undefined;
 	          });
 	        }
@@ -283,9 +346,9 @@ var WikiTableEditor =
 
 	  }, {
 	    key: 'onMoveRow',
-	    value: function onMoveRow(_ref7) {
-	      var sourceRowId = _ref7.sourceRowId,
-	          targetRowId = _ref7.targetRowId;
+	    value: function onMoveRow(_ref8) {
+	      var sourceRowId = _ref8.sourceRowId,
+	          targetRowId = _ref8.targetRowId;
 
 	      var rows = dnd.moveRows({
 	        sourceRowId: sourceRowId,
@@ -330,25 +393,35 @@ var WikiTableEditor =
 
 	  }, {
 	    key: 'addRow',
-	    value: function addRow() {
+	    value: function addRow(rowData) {
 	      var rows = (0, _cloneDeep2.default)(this.props.rows);
 
-	      var newRow = {
+	      rows.push(_extends({}, rowData, {
 	        id: this.getNextId()
-	      };
+	      }));
 
-	      // Fill in each required property with an empty string.
-	      this.props.columns.forEach(function (column) {
-	        if (!column.property) {
-	          // Not all columns represent a per-row property. For example, the
-	          // "delete button" column.
-	          return;
-	        };
+	      this.props.setRows(rows);
 
-	        newRow[column.property] = '';
+	      // Clear the "add new row" row.
+	      this.setState({
+	        newRow: { id: 1 }
 	      });
+	    }
 
-	      rows.push(newRow);
+	    /**
+	     * Change the value of properties on one row.
+	     */
+
+	  }, {
+	    key: 'setRow',
+	    value: function setRow(rowId, properties) {
+	      var index = (0, _findIndex2.default)(this.props.rows, { id: rowId });
+	      var rows = (0, _cloneDeep2.default)(this.props.rows);
+
+	      for (var property in properties) {
+	        rows[index][property] = properties[property];
+	      }
+
 	      this.props.setRows(rows);
 	    }
 	  }]);
