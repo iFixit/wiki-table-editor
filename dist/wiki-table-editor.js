@@ -341,7 +341,7 @@ var WikiTableEditor =
 	        // Don't allow drag-and-drop if a cell is being edited.
 	        onCanMove: function onCanMove() {
 	          return !_this2.props.rows.some(function (rowData) {
-	            return rowData.columnIndexEditing !== undefined;
+	            return rowData.columnIndexEditing !== undefined && rowData.columnIndexEditing !== null;
 	          });
 	        }
 	      };

@@ -208,7 +208,8 @@ class TableEditor extends React.Component {
       onMove: this.onMoveRow,
       // Don't allow drag-and-drop if a cell is being edited.
       onCanMove: () => !this.props.rows.some(
-       (rowData) => rowData.columnIndexEditing !== undefined)
+       (rowData) => rowData.columnIndexEditing !== undefined &&
+                    rowData.columnIndexEditing !== null)
     };
   }
 
