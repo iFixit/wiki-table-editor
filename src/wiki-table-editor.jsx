@@ -164,13 +164,7 @@ class TableEditor extends React.Component {
    * Given a row, returns a delete button for that row.
    */
   deleteButtonFormatter(value, { rowData }) {
-    return (
-      <button type="button"
-       onClick={this.deleteRow.bind(this, rowData.id)}
-       className="delete-button">
-        &times;
-      </button>
-    );
+    return this.props.getDeleteButton(this.deleteRow.bind(this, rowData.id));
   }
 
   /**
@@ -181,14 +175,8 @@ class TableEditor extends React.Component {
       return rowData[column.property];
     })
 
-    return (
-      <button type="button"
-       onClick={this.addRow.bind(this, rowData)}
-       className="add-row-button"
-       disabled={newRowEmpty}>
-        +
-      </button>
-    );
+    return this.props.getAddButton(this.addRow.bind(this, rowData),
+     newRowEmpty);
   }
 
   /**
