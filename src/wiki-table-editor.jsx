@@ -69,12 +69,12 @@ class TableEditor extends React.Component {
     };
 
     const rows = this.props.rows;
-    const columns =
-     this.getColumns(this.editableTransform, this.deleteButtonFormatter);
+    const columns = this.getColumns(this.editableTransform,
+     this.deleteButtonFormatter, this.props.getDragHandle);
 
     const newRows = [this.state.newRow];
-    const newColumns =
-     this.getColumns(this.newRowEditableTransform, this.addNewButtonFormatter);
+    const newColumns = this.getColumns(this.newRowEditableTransform,
+     this.addNewButtonFormatter, () => null);
 
     return (
       <div className="wiki-table-editor">
@@ -92,15 +92,22 @@ class TableEditor extends React.Component {
   /**
    * Transform our `columns` prop into column definitions for reactabular.
    */
-  getColumns(editTransform, actionButtonFormatter) {
+  getColumns(editTransform, actionButtonFormatter, dragHandleFormatter) {
     return [
     // The "drag this row" handle.
     {
-      cell: {
-        formatters: [this.props.getDragHandle],
+      header: {
         props: {
           style: {
-            width: 60
+            width: 20
+          }
+        }
+      },
+      cell: {
+        formatters: [dragHandleFormatter],
+        props: {
+          style: {
+            width: 20
           }
         }
       }

@@ -163,10 +163,12 @@ var WikiTableEditor =
 	      };
 
 	      var rows = this.props.rows;
-	      var columns = this.getColumns(this.editableTransform, this.deleteButtonFormatter);
+	      var columns = this.getColumns(this.editableTransform, this.deleteButtonFormatter, this.props.getDragHandle);
 
 	      var newRows = [this.state.newRow];
-	      var newColumns = this.getColumns(this.newRowEditableTransform, this.addNewButtonFormatter);
+	      var newColumns = this.getColumns(this.newRowEditableTransform, this.addNewButtonFormatter, function () {
+	        return null;
+	      });
 
 	      return _react2.default.createElement(
 	        'div',
@@ -191,15 +193,22 @@ var WikiTableEditor =
 
 	  }, {
 	    key: 'getColumns',
-	    value: function getColumns(editTransform, actionButtonFormatter) {
+	    value: function getColumns(editTransform, actionButtonFormatter, dragHandleFormatter) {
 	      return [
 	      // The "drag this row" handle.
 	      {
-	        cell: {
-	          formatters: [this.props.getDragHandle],
+	        header: {
 	          props: {
 	            style: {
-	              width: 60
+	              width: 20
+	            }
+	          }
+	        },
+	        cell: {
+	          formatters: [dragHandleFormatter],
+	          props: {
+	            style: {
+	              width: 20
 	            }
 	          }
 	        }
