@@ -282,7 +282,7 @@ var WikiTableEditor =
 	              rowData = _ref5.rowData,
 	              property = _ref5.property;
 
-	          setRow(rowData.id, (_setRow = {}, _defineProperty(_setRow, property, value), _defineProperty(_setRow, 'columnIndexEditing', undefined), _setRow));
+	          setRow(rowData.id, (_setRow = {}, _defineProperty(_setRow, property, value), _defineProperty(_setRow, 'columnIndexEditing', null), _setRow));
 	        }
 	      });
 

@@ -165,7 +165,7 @@ class TableEditor extends React.Component {
       onValue: ({ value, rowData, property }) => {
         setRow(rowData.id, {
           [property]: value,
-          columnIndexEditing: undefined
+          columnIndexEditing: null
         });
       }
     });
