@@ -40,9 +40,24 @@ class TableEditor extends React.Component {
     this.addRow = this.addRow.bind(this);
     this.setRow = this.setRow.bind(this);
     this.deleteButtonFormatter = this.deleteButtonFormatter.bind(this);
+    this.addNewButtonFormatter = this.addNewButtonFormatter.bind(this);
 
     // Specify our custom editing behavior.
     this.editableTransform = this.getEditableTransform(this.setRow);
+
+    // The "newRow" is the row at the bottom of the table. It gets added to the
+    // table when the user clicks "Add Row."
+    this.state = {
+       newRow: {id: 1}
+    };
+
+    // Specify editing behavior for the "newRow."
+    this.newRowEditableTransform =
+     this.getEditableTransform((rowId, properties) => {
+      this.setState({
+        newRow: {...this.state.newRow, ...properties}
+      });
+    });
   }
 
   render() {
@@ -57,14 +72,19 @@ class TableEditor extends React.Component {
     const columns =
      this.getColumns(this.editableTransform, this.deleteButtonFormatter);
 
+    const newRows = [this.state.newRow];
+    const newColumns =
+     this.getColumns(this.newRowEditableTransform, this.addNewButtonFormatter);
+
     return (
       <div className="wiki-table-editor">
         <Table.Provider components={components} columns={columns}>
           <Table.Header headerRows={[columns]} />
           <Table.Body rows={rows} rowKey="id" onRow={this.onRow} />
         </Table.Provider>
-        <button type="button"
-         onClick={this.addRow} className="add-row-button">+</button>
+        <Table.Provider columns={newColumns}>
+          <Table.Body rows={newRows} rowKey="id" />
+        </Table.Provider>
       </div>
     );
   }
@@ -102,7 +122,12 @@ class TableEditor extends React.Component {
         }
       },
       cell: {
-        formatters: [actionButtonFormatter]
+        formatters: [actionButtonFormatter],
+        props: {
+          style: {
+            width: 60
+          }
+        }
       }
     }];
   }
@@ -144,6 +169,24 @@ class TableEditor extends React.Component {
        onClick={this.deleteRow.bind(this, rowData.id)}
        className="delete-button">
         &times;
+      </button>
+    );
+  }
+
+  /**
+   * Returns an "Add new row" button.
+   */
+  addNewButtonFormatter(value, { rowData }) {
+    let newRowEmpty = !this.props.columns.some((column) => {
+      return rowData[column.property];
+    })
+
+    return (
+      <button type="button"
+       onClick={this.addRow.bind(this, rowData)}
+       className="add-row-button"
+       disabled={newRowEmpty}>
+        +
       </button>
     );
   }
@@ -201,26 +244,20 @@ class TableEditor extends React.Component {
   /**
    * Creates a new row at the bottom of the table.
    */
-  addRow() {
+  addRow(rowData) {
     const rows = cloneDeep(this.props.rows);
 
-    let newRow = {
+    rows.push({
+      ...rowData,
       id: this.getNextId()
-    };
-
-    // Fill in each required property with an empty string.
-    this.props.columns.forEach((column) => {
-      if (!column.property) {
-        // Not all columns represent a per-row property. For example, the
-        // "delete button" column.
-        return;
-      };
-
-      newRow[column.property] = '';
     });
 
-    rows.push(newRow);
     this.props.setRows(rows);
+
+    // Clear the "add new row" row.
+    this.setState({
+       newRow: {id: 1}
+    });
   }
 
   /**
