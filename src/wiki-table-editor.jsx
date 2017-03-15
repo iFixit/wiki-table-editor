@@ -93,7 +93,20 @@ class TableEditor extends React.Component {
    * Transform our `columns` prop into column definitions for reactabular.
    */
   getColumns(editTransform, actionButtonFormatter) {
-    return [...this.props.columns.map(({ property, label }) => {
+    return [
+    // The "drag this row" handle.
+    {
+      cell: {
+        formatters: [this.props.getDragHandle],
+        props: {
+          style: {
+            width: 60
+          }
+        }
+      }
+    },
+    // props-specified columns
+    ...this.props.columns.map(({ property, label }) => {
       return {
         property: property,
         header: {
@@ -180,7 +193,7 @@ class TableEditor extends React.Component {
   }
 
   /**
-   * Called to get info and callbacks for each row.
+   * Called to set the props when rendering each row.
    */
   onRow(row) {
     return {

@@ -192,7 +192,18 @@ var WikiTableEditor =
 	  }, {
 	    key: 'getColumns',
 	    value: function getColumns(editTransform, actionButtonFormatter) {
-	      return [].concat(_toConsumableArray(this.props.columns.map(function (_ref) {
+	      return [
+	      // The "drag this row" handle.
+	      {
+	        cell: {
+	          formatters: [this.props.getDragHandle],
+	          props: {
+	            style: {
+	              width: 60
+	            }
+	          }
+	        }
+	      }].concat(_toConsumableArray(this.props.columns.map(function (_ref) {
 	        var property = _ref.property,
 	            label = _ref.label;
 
@@ -287,13 +298,7 @@ var WikiTableEditor =
 	    value: function deleteButtonFormatter(value, _ref6) {
 	      var rowData = _ref6.rowData;
 
-	      return _react2.default.createElement(
-	        'button',
-	        { type: 'button',
-	          onClick: this.deleteRow.bind(this, rowData.id),
-	          className: 'delete-button' },
-	        '\xD7'
-	      );
+	      return this.props.getDeleteButton(this.deleteRow.bind(this, rowData.id));
 	    }
 
 	    /**
@@ -309,18 +314,11 @@ var WikiTableEditor =
 	        return rowData[column.property];
 	      });
 
-	      return _react2.default.createElement(
-	        'button',
-	        { type: 'button',
-	          onClick: this.addRow.bind(this, rowData),
-	          className: 'add-row-button',
-	          disabled: newRowEmpty },
-	        '+'
-	      );
+	      return this.props.getAddButton(this.addRow.bind(this, rowData), newRowEmpty);
 	    }
 
 	    /**
-	     * Called to get info and callbacks for each row.
+	     * Called to set the props when rendering each row.
 	     */
 
 	  }, {
