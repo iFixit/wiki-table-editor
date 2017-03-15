@@ -137,7 +137,7 @@ class TableEditor extends React.Component {
       header: {
         props: {
           style: {
-            width: 60
+            width: 50
           }
         }
       },
@@ -145,7 +145,7 @@ class TableEditor extends React.Component {
         formatters: [actionButtonFormatter],
         props: {
           style: {
-            width: 60
+            width: 50
           }
         }
       }

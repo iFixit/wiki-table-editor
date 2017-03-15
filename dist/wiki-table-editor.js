@@ -243,7 +243,7 @@ var WikiTableEditor =
 	        header: {
 	          props: {
 	            style: {
-	              width: 60
+	              width: 50
 	            }
 	          }
 	        },
@@ -251,7 +251,7 @@ var WikiTableEditor =
 	          formatters: [actionButtonFormatter],
 	          props: {
 	            style: {
-	              width: 60
+	              width: 50
 	            }
 	          }
 	        }
