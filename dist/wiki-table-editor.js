@@ -61,23 +61,19 @@ var WikiTableEditor =
 
 	var _reactDndHtml5Backend2 = _interopRequireDefault(_reactDndHtml5Backend);
 
-	var _reactEdit = __webpack_require__(171);
-
-	var edit = _interopRequireWildcard(_reactEdit);
-
-	var _reactabularTable = __webpack_require__(176);
+	var _reactabularTable = __webpack_require__(171);
 
 	var Table = _interopRequireWildcard(_reactabularTable);
 
-	var _reactabularDnd = __webpack_require__(229);
+	var _reactabularDnd = __webpack_require__(224);
 
 	var dnd = _interopRequireWildcard(_reactabularDnd);
 
-	var _cloneDeep = __webpack_require__(262);
+	var _cloneDeep = __webpack_require__(257);
 
 	var _cloneDeep2 = _interopRequireDefault(_cloneDeep);
 
-	var _findIndex = __webpack_require__(235);
+	var _findIndex = __webpack_require__(230);
 
 	var _findIndex2 = _interopRequireDefault(_findIndex);
 
@@ -130,24 +126,18 @@ var WikiTableEditor =
 	    _this.onRow = _this.onRow.bind(_this);
 	    _this.onMoveRow = _this.onMoveRow.bind(_this);
 	    _this.addRow = _this.addRow.bind(_this);
-	    _this.setRow = _this.setRow.bind(_this);
+	    _this.onCellChange = _this.onCellChange.bind(_this);
+	    _this.onNewCellChange = _this.onNewCellChange.bind(_this);
 	    _this.deleteButtonFormatter = _this.deleteButtonFormatter.bind(_this);
 	    _this.addNewButtonFormatter = _this.addNewButtonFormatter.bind(_this);
-
-	    // Specify our custom editing behavior.
-	    _this.editableTransform = _this.getEditableTransform(_this.setRow);
 
 	    // The "newRow" is the row at the bottom of the table. It gets added to the
 	    // table when the user clicks "Add Row."
 	    _this.state = {
 	      newRow: { id: 1 }
 	    };
-
-	    // Specify editing behavior for the "newRow."
-	    _this.newRowEditableTransform = _this.getEditableTransform(function (rowId, properties) {
-	      _this.setState({
-	        newRow: _extends({}, _this.state.newRow, properties)
-	      });
+	    _this.props.columns.forEach(function (column) {
+	      _this.state.newRow[column.property] = '';
 	    });
 	    return _this;
 	  }
@@ -163,10 +153,10 @@ var WikiTableEditor =
 	      };
 
 	      var rows = this.props.rows;
-	      var columns = this.getColumns(this.editableTransform, this.deleteButtonFormatter, this.props.getDragHandle);
+	      var columns = this.getColumns(this.onCellChange, this.deleteButtonFormatter, this.props.getDragHandle);
 
 	      var newRows = [this.state.newRow];
-	      var newColumns = this.getColumns(this.newRowEditableTransform, this.addNewButtonFormatter, function () {
+	      var newColumns = this.getColumns(this.onNewCellChange, this.addNewButtonFormatter, function () {
 	        return null;
 	      });
 
@@ -193,7 +183,9 @@ var WikiTableEditor =
 
 	  }, {
 	    key: 'getColumns',
-	    value: function getColumns(editTransform, actionButtonFormatter, dragHandleFormatter) {
+	    value: function getColumns(onCellChange, actionButtonFormatter, dragHandleFormatter) {
+	      var _this2 = this;
+
 	      return [
 	      // The "drag this row" handle.
 	      {
@@ -221,7 +213,6 @@ var WikiTableEditor =
 	            }
 	          },
 	          cell: {
-	            transforms: [editTransform],
 	            formatters: [
 	            // Wrap <td> contents in a <div>. This makes it easier to style
 	            // the table cells.
@@ -229,8 +220,11 @@ var WikiTableEditor =
 	              var rowData = _ref2.rowData;
 	              return _react2.default.createElement(
 	                'div',
-	                { className: 'cell-content' + (rowData[property] ? '' : ' placeholder') },
-	                rowData[property] || label
+	                { className: 'cell-content' },
+	                _react2.default.createElement('input', { type: 'text',
+	                  value: rowData[property],
+	                  placeholder: label,
+	                  onChange: onCellChange.bind(_this2, rowData.id, property) })
 	              );
 	            }],
 	            props: {
@@ -257,53 +251,13 @@ var WikiTableEditor =
 	    }
 
 	    /**
-	     * Returns a transform that can be used in a column's cell's 'transforms'
-	     * property. This transform allows editing the contents of the cell.
-	     *
-	     * `setRow(rowId, {property: value})` is a function that will change
-	     * properties of one row.
-	     */
-
-	  }, {
-	    key: 'getEditableTransform',
-	    value: function getEditableTransform(setRow) {
-	      var editable = edit.edit({
-	        isEditing: function isEditing(_ref3) {
-	          var columnIndex = _ref3.columnIndex,
-	              rowData = _ref3.rowData;
-
-	          return columnIndex === rowData.columnIndexEditing;
-	        },
-
-	        onActivate: function onActivate(_ref4) {
-	          var columnIndex = _ref4.columnIndex,
-	              rowData = _ref4.rowData;
-
-	          setRow(rowData.id, { columnIndexEditing: columnIndex });
-	        },
-
-	        onValue: function onValue(_ref5) {
-	          var _setRow;
-
-	          var value = _ref5.value,
-	              rowData = _ref5.rowData,
-	              property = _ref5.property;
-
-	          setRow(rowData.id, (_setRow = {}, _defineProperty(_setRow, property, value), _defineProperty(_setRow, 'columnIndexEditing', null), _setRow));
-	        }
-	      });
-
-	      return editable(edit.input());
-	    }
-
-	    /**
 	     * Given a row, returns a delete button for that row.
 	     */
 
 	  }, {
 	    key: 'deleteButtonFormatter',
-	    value: function deleteButtonFormatter(value, _ref6) {
-	      var rowData = _ref6.rowData;
+	    value: function deleteButtonFormatter(value, _ref3) {
+	      var rowData = _ref3.rowData;
 
 	      return this.props.getDeleteButton(this.deleteRow.bind(this, rowData.id));
 	    }
@@ -314,8 +268,8 @@ var WikiTableEditor =
 
 	  }, {
 	    key: 'addNewButtonFormatter',
-	    value: function addNewButtonFormatter(value, _ref7) {
-	      var rowData = _ref7.rowData;
+	    value: function addNewButtonFormatter(value, _ref4) {
+	      var rowData = _ref4.rowData;
 
 	      var newRowEmpty = !this.props.columns.some(function (column) {
 	        return rowData[column.property];
@@ -331,17 +285,9 @@ var WikiTableEditor =
 	  }, {
 	    key: 'onRow',
 	    value: function onRow(row) {
-	      var _this2 = this;
-
 	      return {
 	        rowId: row.id,
-	        onMove: this.onMoveRow,
-	        // Don't allow drag-and-drop if a cell is being edited.
-	        onCanMove: function onCanMove() {
-	          return !_this2.props.rows.some(function (rowData) {
-	            return rowData.columnIndexEditing !== undefined && rowData.columnIndexEditing !== null;
-	          });
-	        }
+	        onMove: this.onMoveRow
 	      };
 	    }
 
@@ -351,9 +297,9 @@ var WikiTableEditor =
 
 	  }, {
 	    key: 'onMoveRow',
-	    value: function onMoveRow(_ref8) {
-	      var sourceRowId = _ref8.sourceRowId,
-	          targetRowId = _ref8.targetRowId;
+	    value: function onMoveRow(_ref5) {
+	      var sourceRowId = _ref5.sourceRowId,
+	          targetRowId = _ref5.targetRowId;
 
 	      var rows = dnd.moveRows({
 	        sourceRowId: sourceRowId,
@@ -408,26 +354,38 @@ var WikiTableEditor =
 	      this.props.setRows(rows);
 
 	      // Clear the "add new row" row.
-	      this.setState({
-	        newRow: { id: 1 }
+	      var newRow = { id: 1 };
+	      this.props.columns.forEach(function (column) {
+	        newRow[column.property] = '';
 	      });
+	      this.setState({ newRow: newRow });
 	    }
 
 	    /**
-	     * Change the value of properties on one row.
+	     * Change the value of one property on one row.
 	     */
 
 	  }, {
-	    key: 'setRow',
-	    value: function setRow(rowId, properties) {
+	    key: 'onCellChange',
+	    value: function onCellChange(rowId, property, event) {
 	      var index = (0, _findIndex2.default)(this.props.rows, { id: rowId });
 	      var rows = (0, _cloneDeep2.default)(this.props.rows);
 
-	      for (var property in properties) {
-	        rows[index][property] = properties[property];
-	      }
+	      rows[index][property] = event.target.value;
 
 	      this.props.setRows(rows);
+	    }
+
+	    /**
+	     * Change the value of a cell in the "add new row" bar.
+	     */
+
+	  }, {
+	    key: 'onNewCellChange',
+	    value: function onNewCellChange(rowId, property, event) {
+	      this.setState({
+	        newRow: _extends({}, this.state.newRow, _defineProperty({}, property, event.target.value))
+	      });
 	    }
 	  }]);
 
@@ -9083,306 +9041,7 @@ var WikiTableEditor =
 	  value: true
 	});
 
-	var _boolean = __webpack_require__(172);
-
-	Object.defineProperty(exports, 'boolean', {
-	  enumerable: true,
-	  get: function get() {
-	    return _interopRequireDefault(_boolean).default;
-	  }
-	});
-
-	var _dropdown = __webpack_require__(173);
-
-	Object.defineProperty(exports, 'dropdown', {
-	  enumerable: true,
-	  get: function get() {
-	    return _interopRequireDefault(_dropdown).default;
-	  }
-	});
-
-	var _input = __webpack_require__(174);
-
-	Object.defineProperty(exports, 'input', {
-	  enumerable: true,
-	  get: function get() {
-	    return _interopRequireDefault(_input).default;
-	  }
-	});
-
-	var _edit = __webpack_require__(175);
-
-	Object.defineProperty(exports, 'edit', {
-	  enumerable: true,
-	  get: function get() {
-	    return _interopRequireDefault(_edit).default;
-	  }
-	});
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-/***/ },
-/* 172 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _react = __webpack_require__(1);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	var boolean = function boolean() {
-	  var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
-	      props = _ref.props;
-
-	  var Boolean = function Boolean(_ref2) {
-	    var value = _ref2.value,
-	        onValue = _ref2.onValue;
-	    return _react2.default.createElement(
-	      'div',
-	      props,
-	      _react2.default.createElement(
-	        'button',
-	        {
-	          disabled: value,
-	          onClick: function onClick() {
-	            return onValue(true);
-	          }
-	        },
-	        '\u2713'
-	      ),
-	      _react2.default.createElement(
-	        'button',
-	        {
-	          disabled: !value,
-	          onClick: function onClick() {
-	            return onValue(false);
-	          }
-	        },
-	        '\u2717'
-	      )
-	    );
-	  };
-	  Boolean.propTypes = {
-	    value: _react2.default.PropTypes.any,
-	    onValue: _react2.default.PropTypes.func
-	  };
-
-	  return Boolean;
-	};
-
-	exports.default = boolean;
-
-/***/ },
-/* 173 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-	var _react = __webpack_require__(1);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	var dropdown = function dropdown(_ref) {
-	  var options = _ref.options,
-	      _ref$fields = _ref.fields,
-	      fields = _ref$fields === undefined ? {
-	    name: 'name',
-	    value: 'value'
-	  } : _ref$fields,
-	      props = _ref.props;
-
-	  var Dropdown = function Dropdown(_ref2) {
-	    var value = _ref2.value,
-	        onValue = _ref2.onValue;
-
-	    var edit = function edit(_ref3) {
-	      var value = _ref3.target.value;
-	      return onValue(value);
-	    }; // eslint-disable-line max-len, no-shadow, react/prop-types
-
-	    return _react2.default.createElement(
-	      'select',
-	      _extends({ onBlur: edit, onChange: edit, value: value }, props),
-	      options.map(function (option, i) {
-	        return _react2.default.createElement(
-	          'option',
-	          { key: i, value: option[fields.value] },
-	          option[fields.name]
-	        );
-	      })
-	    );
-	  };
-	  Dropdown.propTypes = {
-	    value: _react2.default.PropTypes.string.isRequired,
-	    onValue: _react2.default.PropTypes.func.isRequired
-	  };
-
-	  return Dropdown;
-	};
-
-	exports.default = dropdown;
-
-/***/ },
-/* 174 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; /* eslint-disable no-shadow */
-
-
-	var _react = __webpack_require__(1);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	var input = function input() {
-	  var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
-	      props = _ref.props;
-
-	  var Input = function Input(_ref2) {
-	    var value = _ref2.value,
-	        onValue = _ref2.onValue;
-
-	    var onKeyUp = function onKeyUp(_ref3) {
-	      var key = _ref3.key,
-	          value = _ref3.target.value;
-
-	      if (key === 'Enter') {
-	        onValue(parseValue(value));
-	      }
-	    };
-	    var onBlur = function onBlur(_ref4) {
-	      var value = _ref4.target.value;
-	      // eslint-disable-line react/prop-types
-	      onValue(parseValue(value));
-	    };
-	    var parseValue = function parseValue(v) {
-	      return value === parseFloat(value) ? parseFloat(v) : v;
-	    };
-
-	    return _react2.default.createElement('input', _extends({
-	      defaultValue: value,
-	      onKeyUp: onKeyUp,
-	      onBlur: onBlur,
-	      autoFocus: true
-	    }, props));
-	  };
-	  Input.propTypes = {
-	    value: _react2.default.PropTypes.any,
-	    onValue: _react2.default.PropTypes.func
-	  };
-
-	  return Input;
-	};
-
-	exports.default = input;
-
-/***/ },
-/* 175 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-	var _react = __webpack_require__(1);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
-	var edit = function edit() {
-	  var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
-	      isEditing = _ref.isEditing,
-	      onActivate = _ref.onActivate,
-	      onValue = _ref.onValue,
-	      _ref$getEditedValue = _ref.getEditedValue,
-	      getEditedValue = _ref$getEditedValue === undefined ? function (v) {
-	    return v;
-	  } : _ref$getEditedValue,
-	      _ref$editingProps = _ref.editingProps,
-	      editingProps = _ref$editingProps === undefined ? {} : _ref$editingProps,
-	      _ref$activateEvent = _ref.activateEvent,
-	      activateEvent = _ref$activateEvent === undefined ? 'onClick' : _ref$activateEvent;
-
-	  if (!isEditing) {
-	    throw new Error('edit - Missing isEditing!');
-	  }
-	  if (!onActivate) {
-	    throw new Error('edit - Missing onActivate!');
-	  }
-	  if (!onValue) {
-	    throw new Error('edit - Missing onValue!');
-	  }
-
-	  var defaultValueComponent = function defaultValueComponent(value, extraParameters, props) {
-	    return props;
-	  };
-
-	  return function (editorComponent) {
-	    var valueComponent = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : defaultValueComponent;
-
-	    if (!editorComponent) {
-	      throw new Error('edit - Missing editor!');
-	    }
-
-	    return function (value, extraParameters) {
-	      var _extends2;
-
-	      var props = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
-	      return isEditing(extraParameters) ? {
-	        children: _react2.default.createElement(editorComponent, _extends({}, props, (_extends2 = {
-	          extraParameters: extraParameters
-	        }, _defineProperty(_extends2, editingProps.value || 'value', getEditedValue(value)), _defineProperty(_extends2, editingProps.onValue || 'onValue', function (v) {
-	          return onValue(_extends({ value: v }, extraParameters));
-	        }), _extends2)))
-	      } : _extends({}, valueComponent(value, extraParameters, props), _defineProperty({}, activateEvent, function (event) {
-	        return onActivate(_extends({ event: event }, extraParameters));
-	      }));
-	    };
-	  };
-	};
-
-	exports.default = edit;
-
-/***/ },
-/* 176 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _provider = __webpack_require__(177);
+	var _provider = __webpack_require__(172);
 
 	Object.defineProperty(exports, 'Provider', {
 	  enumerable: true,
@@ -9391,7 +9050,7 @@ var WikiTableEditor =
 	  }
 	});
 
-	var _header = __webpack_require__(179);
+	var _header = __webpack_require__(174);
 
 	Object.defineProperty(exports, 'Header', {
 	  enumerable: true,
@@ -9400,7 +9059,7 @@ var WikiTableEditor =
 	  }
 	});
 
-	var _body = __webpack_require__(205);
+	var _body = __webpack_require__(200);
 
 	Object.defineProperty(exports, 'Body', {
 	  enumerable: true,
@@ -9409,7 +9068,7 @@ var WikiTableEditor =
 	  }
 	});
 
-	var _bodyRow = __webpack_require__(225);
+	var _bodyRow = __webpack_require__(220);
 
 	Object.defineProperty(exports, 'BodyRow', {
 	  enumerable: true,
@@ -9418,7 +9077,7 @@ var WikiTableEditor =
 	  }
 	});
 
-	var _evaluateFormatters = __webpack_require__(181);
+	var _evaluateFormatters = __webpack_require__(176);
 
 	Object.defineProperty(exports, 'evaluateFormatters', {
 	  enumerable: true,
@@ -9427,7 +9086,7 @@ var WikiTableEditor =
 	  }
 	});
 
-	var _evaluateTransforms = __webpack_require__(182);
+	var _evaluateTransforms = __webpack_require__(177);
 
 	Object.defineProperty(exports, 'evaluateTransforms', {
 	  enumerable: true,
@@ -9436,7 +9095,7 @@ var WikiTableEditor =
 	  }
 	});
 
-	var _mergeProps = __webpack_require__(183);
+	var _mergeProps = __webpack_require__(178);
 
 	Object.defineProperty(exports, 'mergeProps', {
 	  enumerable: true,
@@ -9445,7 +9104,7 @@ var WikiTableEditor =
 	  }
 	});
 
-	var _columnsAreEqual = __webpack_require__(226);
+	var _columnsAreEqual = __webpack_require__(221);
 
 	Object.defineProperty(exports, 'columnsAreEqual', {
 	  enumerable: true,
@@ -9454,7 +9113,7 @@ var WikiTableEditor =
 	  }
 	});
 
-	var _resolveRowKey = __webpack_require__(228);
+	var _resolveRowKey = __webpack_require__(223);
 
 	Object.defineProperty(exports, 'resolveRowKey', {
 	  enumerable: true,
@@ -9466,7 +9125,7 @@ var WikiTableEditor =
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ },
-/* 177 */
+/* 172 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
@@ -9483,7 +9142,7 @@ var WikiTableEditor =
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _types = __webpack_require__(178);
+	var _types = __webpack_require__(173);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -9551,7 +9210,7 @@ var WikiTableEditor =
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(25)))
 
 /***/ },
-/* 178 */
+/* 173 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -9667,7 +9326,7 @@ var WikiTableEditor =
 	exports.tableDefaults = tableDefaults;
 
 /***/ },
-/* 179 */
+/* 174 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
@@ -9682,9 +9341,9 @@ var WikiTableEditor =
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _types = __webpack_require__(178);
+	var _types = __webpack_require__(173);
 
-	var _headerRow = __webpack_require__(180);
+	var _headerRow = __webpack_require__(175);
 
 	var _headerRow2 = _interopRequireDefault(_headerRow);
 
@@ -9759,7 +9418,7 @@ var WikiTableEditor =
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(25)))
 
 /***/ },
-/* 180 */
+/* 175 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
@@ -9774,19 +9433,19 @@ var WikiTableEditor =
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _evaluateFormatters = __webpack_require__(181);
+	var _evaluateFormatters = __webpack_require__(176);
 
 	var _evaluateFormatters2 = _interopRequireDefault(_evaluateFormatters);
 
-	var _evaluateTransforms = __webpack_require__(182);
+	var _evaluateTransforms = __webpack_require__(177);
 
 	var _evaluateTransforms2 = _interopRequireDefault(_evaluateTransforms);
 
-	var _mergeProps = __webpack_require__(183);
+	var _mergeProps = __webpack_require__(178);
 
 	var _mergeProps2 = _interopRequireDefault(_mergeProps);
 
-	var _types = __webpack_require__(178);
+	var _types = __webpack_require__(173);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -9832,7 +9491,7 @@ var WikiTableEditor =
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(25)))
 
 /***/ },
-/* 181 */
+/* 176 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -9854,7 +9513,7 @@ var WikiTableEditor =
 	exports.default = evaluateFormatters;
 
 /***/ },
-/* 182 */
+/* 177 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
@@ -9867,7 +9526,7 @@ var WikiTableEditor =
 
 	var _isFunction3 = _interopRequireDefault(_isFunction2);
 
-	var _mergeProps = __webpack_require__(183);
+	var _mergeProps = __webpack_require__(178);
 
 	var _mergeProps2 = _interopRequireDefault(_mergeProps);
 
@@ -9895,7 +9554,7 @@ var WikiTableEditor =
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(25)))
 
 /***/ },
-/* 183 */
+/* 178 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -9904,13 +9563,13 @@ var WikiTableEditor =
 	  value: true
 	});
 
-	var _mergeWith2 = __webpack_require__(184);
+	var _mergeWith2 = __webpack_require__(179);
 
 	var _mergeWith3 = _interopRequireDefault(_mergeWith2);
 
 	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-	var _classnames = __webpack_require__(204);
+	var _classnames = __webpack_require__(199);
 
 	var _classnames2 = _interopRequireDefault(_classnames);
 
@@ -9942,10 +9601,10 @@ var WikiTableEditor =
 	exports.default = mergePropPair;
 
 /***/ },
-/* 184 */
+/* 179 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseMerge = __webpack_require__(185),
+	var baseMerge = __webpack_require__(180),
 	    createAssigner = __webpack_require__(146);
 
 	/**
@@ -9987,13 +9646,13 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 185 */
+/* 180 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Stack = __webpack_require__(186),
-	    assignMergeValue = __webpack_require__(192),
-	    baseFor = __webpack_require__(193),
-	    baseMergeDeep = __webpack_require__(195),
+	var Stack = __webpack_require__(181),
+	    assignMergeValue = __webpack_require__(187),
+	    baseFor = __webpack_require__(188),
+	    baseMergeDeep = __webpack_require__(190),
 	    isObject = __webpack_require__(27),
 	    keysIn = __webpack_require__(149);
 
@@ -10034,15 +9693,15 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 186 */
+/* 181 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var ListCache = __webpack_require__(49),
-	    stackClear = __webpack_require__(187),
-	    stackDelete = __webpack_require__(188),
-	    stackGet = __webpack_require__(189),
-	    stackHas = __webpack_require__(190),
-	    stackSet = __webpack_require__(191);
+	    stackClear = __webpack_require__(182),
+	    stackDelete = __webpack_require__(183),
+	    stackGet = __webpack_require__(184),
+	    stackHas = __webpack_require__(185),
+	    stackSet = __webpack_require__(186);
 
 	/**
 	 * Creates a stack cache object to store key-value pairs.
@@ -10067,7 +9726,7 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 187 */
+/* 182 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var ListCache = __webpack_require__(49);
@@ -10088,7 +9747,7 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 188 */
+/* 183 */
 /***/ function(module, exports) {
 
 	/**
@@ -10112,7 +9771,7 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 189 */
+/* 184 */
 /***/ function(module, exports) {
 
 	/**
@@ -10132,7 +9791,7 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 190 */
+/* 185 */
 /***/ function(module, exports) {
 
 	/**
@@ -10152,7 +9811,7 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 191 */
+/* 186 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var ListCache = __webpack_require__(49),
@@ -10192,7 +9851,7 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 192 */
+/* 187 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var baseAssignValue = __webpack_require__(145),
@@ -10218,10 +9877,10 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 193 */
+/* 188 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var createBaseFor = __webpack_require__(194);
+	var createBaseFor = __webpack_require__(189);
 
 	/**
 	 * The base implementation of `baseForOwn` which iterates over `object`
@@ -10240,7 +9899,7 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 194 */
+/* 189 */
 /***/ function(module, exports) {
 
 	/**
@@ -10271,14 +9930,14 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 195 */
+/* 190 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var assignMergeValue = __webpack_require__(192),
-	    cloneBuffer = __webpack_require__(196),
-	    cloneTypedArray = __webpack_require__(197),
-	    copyArray = __webpack_require__(200),
-	    initCloneObject = __webpack_require__(201),
+	var assignMergeValue = __webpack_require__(187),
+	    cloneBuffer = __webpack_require__(191),
+	    cloneTypedArray = __webpack_require__(192),
+	    copyArray = __webpack_require__(195),
+	    initCloneObject = __webpack_require__(196),
 	    isArguments = __webpack_require__(96),
 	    isArray = __webpack_require__(26),
 	    isArrayLikeObject = __webpack_require__(84),
@@ -10287,7 +9946,7 @@ var WikiTableEditor =
 	    isObject = __webpack_require__(27),
 	    isPlainObject = __webpack_require__(7),
 	    isTypedArray = __webpack_require__(154),
-	    toPlainObject = __webpack_require__(203);
+	    toPlainObject = __webpack_require__(198);
 
 	/**
 	 * A specialized version of `baseMerge` for arrays and objects which performs
@@ -10370,7 +10029,7 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 196 */
+/* 191 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {var root = __webpack_require__(10);
@@ -10412,10 +10071,10 @@ var WikiTableEditor =
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(19)(module)))
 
 /***/ },
-/* 197 */
+/* 192 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var cloneArrayBuffer = __webpack_require__(198);
+	var cloneArrayBuffer = __webpack_require__(193);
 
 	/**
 	 * Creates a clone of `typedArray`.
@@ -10434,10 +10093,10 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 198 */
+/* 193 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Uint8Array = __webpack_require__(199);
+	var Uint8Array = __webpack_require__(194);
 
 	/**
 	 * Creates a clone of `arrayBuffer`.
@@ -10456,7 +10115,7 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 199 */
+/* 194 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var root = __webpack_require__(10);
@@ -10468,7 +10127,7 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 200 */
+/* 195 */
 /***/ function(module, exports) {
 
 	/**
@@ -10494,10 +10153,10 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 201 */
+/* 196 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseCreate = __webpack_require__(202),
+	var baseCreate = __webpack_require__(197),
 	    getPrototype = __webpack_require__(14),
 	    isPrototype = __webpack_require__(158);
 
@@ -10518,7 +10177,7 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 202 */
+/* 197 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var isObject = __webpack_require__(27);
@@ -10554,7 +10213,7 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 203 */
+/* 198 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var copyObject = __webpack_require__(143),
@@ -10592,7 +10251,7 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 204 */
+/* 199 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -10646,7 +10305,7 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 205 */
+/* 200 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
@@ -10659,7 +10318,7 @@ var WikiTableEditor =
 
 	var _isFunction3 = _interopRequireDefault(_isFunction2);
 
-	var _isEqual2 = __webpack_require__(206);
+	var _isEqual2 = __webpack_require__(201);
 
 	var _isEqual3 = _interopRequireDefault(_isEqual2);
 
@@ -10669,13 +10328,13 @@ var WikiTableEditor =
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _types = __webpack_require__(178);
+	var _types = __webpack_require__(173);
 
-	var _bodyRow = __webpack_require__(225);
+	var _bodyRow = __webpack_require__(220);
 
 	var _bodyRow2 = _interopRequireDefault(_bodyRow);
 
-	var _resolveRowKey = __webpack_require__(228);
+	var _resolveRowKey = __webpack_require__(223);
 
 	var _resolveRowKey2 = _interopRequireDefault(_resolveRowKey);
 
@@ -10783,10 +10442,10 @@ var WikiTableEditor =
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(25)))
 
 /***/ },
-/* 206 */
+/* 201 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseIsEqual = __webpack_require__(207);
+	var baseIsEqual = __webpack_require__(202);
 
 	/**
 	 * Performs a deep comparison between two values to determine if they are
@@ -10824,10 +10483,10 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 207 */
+/* 202 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseIsEqualDeep = __webpack_require__(208),
+	var baseIsEqualDeep = __webpack_require__(203),
 	    isObjectLike = __webpack_require__(16);
 
 	/**
@@ -10858,14 +10517,14 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 208 */
+/* 203 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Stack = __webpack_require__(186),
-	    equalArrays = __webpack_require__(209),
-	    equalByTag = __webpack_require__(211),
-	    equalObjects = __webpack_require__(213),
-	    getTag = __webpack_require__(221),
+	var Stack = __webpack_require__(181),
+	    equalArrays = __webpack_require__(204),
+	    equalByTag = __webpack_require__(206),
+	    equalObjects = __webpack_require__(208),
+	    getTag = __webpack_require__(216),
 	    isArray = __webpack_require__(26),
 	    isBuffer = __webpack_require__(152),
 	    isTypedArray = __webpack_require__(154);
@@ -10947,11 +10606,11 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 209 */
+/* 204 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var SetCache = __webpack_require__(32),
-	    arraySome = __webpack_require__(210),
+	    arraySome = __webpack_require__(205),
 	    cacheHas = __webpack_require__(74);
 
 	/** Used to compose bitmasks for value comparisons. */
@@ -11036,7 +10695,7 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 210 */
+/* 205 */
 /***/ function(module, exports) {
 
 	/**
@@ -11065,14 +10724,14 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 211 */
+/* 206 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Symbol = __webpack_require__(9),
-	    Uint8Array = __webpack_require__(199),
+	    Uint8Array = __webpack_require__(194),
 	    eq = __webpack_require__(53),
-	    equalArrays = __webpack_require__(209),
-	    mapToArray = __webpack_require__(212),
+	    equalArrays = __webpack_require__(204),
+	    mapToArray = __webpack_require__(207),
 	    setToArray = __webpack_require__(102);
 
 	/** Used to compose bitmasks for value comparisons. */
@@ -11183,7 +10842,7 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 212 */
+/* 207 */
 /***/ function(module, exports) {
 
 	/**
@@ -11207,10 +10866,10 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 213 */
+/* 208 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var getAllKeys = __webpack_require__(214);
+	var getAllKeys = __webpack_require__(209);
 
 	/** Used to compose bitmasks for value comparisons. */
 	var COMPARE_PARTIAL_FLAG = 1;
@@ -11302,12 +10961,12 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 214 */
+/* 209 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseGetAllKeys = __webpack_require__(215),
-	    getSymbols = __webpack_require__(216),
-	    keys = __webpack_require__(218);
+	var baseGetAllKeys = __webpack_require__(210),
+	    getSymbols = __webpack_require__(211),
+	    keys = __webpack_require__(213);
 
 	/**
 	 * Creates an array of own enumerable property names and symbols of `object`.
@@ -11324,7 +10983,7 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 215 */
+/* 210 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var arrayPush = __webpack_require__(94),
@@ -11350,11 +11009,11 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 216 */
+/* 211 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var arrayFilter = __webpack_require__(91),
-	    stubArray = __webpack_require__(217);
+	    stubArray = __webpack_require__(212);
 
 	/** Used for built-in method references. */
 	var objectProto = Object.prototype;
@@ -11386,7 +11045,7 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 217 */
+/* 212 */
 /***/ function(module, exports) {
 
 	/**
@@ -11415,11 +11074,11 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 218 */
+/* 213 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var arrayLikeKeys = __webpack_require__(150),
-	    baseKeys = __webpack_require__(219),
+	    baseKeys = __webpack_require__(214),
 	    isArrayLike = __webpack_require__(85);
 
 	/**
@@ -11458,11 +11117,11 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 219 */
+/* 214 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var isPrototype = __webpack_require__(158),
-	    nativeKeys = __webpack_require__(220);
+	    nativeKeys = __webpack_require__(215);
 
 	/** Used for built-in method references. */
 	var objectProto = Object.prototype;
@@ -11494,7 +11153,7 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 220 */
+/* 215 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var overArg = __webpack_require__(15);
@@ -11506,14 +11165,14 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 221 */
+/* 216 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var DataView = __webpack_require__(222),
+	var DataView = __webpack_require__(217),
 	    Map = __webpack_require__(57),
-	    Promise = __webpack_require__(223),
+	    Promise = __webpack_require__(218),
 	    Set = __webpack_require__(100),
-	    WeakMap = __webpack_require__(224),
+	    WeakMap = __webpack_require__(219),
 	    baseGetTag = __webpack_require__(8),
 	    toSource = __webpack_require__(43);
 
@@ -11570,7 +11229,7 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 222 */
+/* 217 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var getNative = __webpack_require__(38),
@@ -11583,7 +11242,7 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 223 */
+/* 218 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var getNative = __webpack_require__(38),
@@ -11596,7 +11255,7 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 224 */
+/* 219 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var getNative = __webpack_require__(38),
@@ -11609,7 +11268,7 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 225 */
+/* 220 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
@@ -11622,7 +11281,7 @@ var WikiTableEditor =
 
 	var _isFunction3 = _interopRequireDefault(_isFunction2);
 
-	var _isEqual2 = __webpack_require__(206);
+	var _isEqual2 = __webpack_require__(201);
 
 	var _isEqual3 = _interopRequireDefault(_isEqual2);
 
@@ -11634,23 +11293,23 @@ var WikiTableEditor =
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _columnsAreEqual = __webpack_require__(226);
+	var _columnsAreEqual = __webpack_require__(221);
 
 	var _columnsAreEqual2 = _interopRequireDefault(_columnsAreEqual);
 
-	var _evaluateFormatters = __webpack_require__(181);
+	var _evaluateFormatters = __webpack_require__(176);
 
 	var _evaluateFormatters2 = _interopRequireDefault(_evaluateFormatters);
 
-	var _evaluateTransforms = __webpack_require__(182);
+	var _evaluateTransforms = __webpack_require__(177);
 
 	var _evaluateTransforms2 = _interopRequireDefault(_evaluateTransforms);
 
-	var _mergeProps = __webpack_require__(183);
+	var _mergeProps = __webpack_require__(178);
 
 	var _mergeProps2 = _interopRequireDefault(_mergeProps);
 
-	var _types = __webpack_require__(178);
+	var _types = __webpack_require__(173);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -11746,7 +11405,7 @@ var WikiTableEditor =
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(25)))
 
 /***/ },
-/* 226 */
+/* 221 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -11755,7 +11414,7 @@ var WikiTableEditor =
 	  value: true
 	});
 
-	var _isEqualWith2 = __webpack_require__(227);
+	var _isEqualWith2 = __webpack_require__(222);
 
 	var _isEqualWith3 = _interopRequireDefault(_isEqualWith2);
 
@@ -11778,10 +11437,10 @@ var WikiTableEditor =
 	exports.default = columnsAreEqual;
 
 /***/ },
-/* 227 */
+/* 222 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseIsEqual = __webpack_require__(207);
+	var baseIsEqual = __webpack_require__(202);
 
 	/**
 	 * This method is like `_.isEqual` except that it accepts `customizer` which
@@ -11825,7 +11484,7 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 228 */
+/* 223 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
@@ -11866,7 +11525,7 @@ var WikiTableEditor =
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(25)))
 
 /***/ },
-/* 229 */
+/* 224 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -11876,19 +11535,19 @@ var WikiTableEditor =
 	});
 	exports.Row = exports.Header = exports.move = exports.moveRows = exports.moveLabels = exports.moveChildrenLabels = exports.draggableRow = undefined;
 
-	var _draggableRow = __webpack_require__(230);
+	var _draggableRow = __webpack_require__(225);
 
 	var _draggableRow2 = _interopRequireDefault(_draggableRow);
 
-	var _header = __webpack_require__(232);
+	var _header = __webpack_require__(227);
 
 	var _header2 = _interopRequireDefault(_header);
 
-	var _row = __webpack_require__(233);
+	var _row = __webpack_require__(228);
 
 	var _row2 = _interopRequireDefault(_row);
 
-	var _move = __webpack_require__(234);
+	var _move = __webpack_require__(229);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -11901,7 +11560,7 @@ var WikiTableEditor =
 	exports.Row = _row2.default;
 
 /***/ },
-/* 230 */
+/* 225 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
@@ -11918,7 +11577,7 @@ var WikiTableEditor =
 
 	var _reactDnd = __webpack_require__(2);
 
-	var _reactDom = __webpack_require__(231);
+	var _reactDom = __webpack_require__(226);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -12037,13 +11696,13 @@ var WikiTableEditor =
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(25)))
 
 /***/ },
-/* 231 */
+/* 226 */
 /***/ function(module, exports) {
 
 	module.exports = ReactDOM;
 
 /***/ },
-/* 232 */
+/* 227 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -12120,7 +11779,7 @@ var WikiTableEditor =
 	exports.default = dragSource(dropTarget(header));
 
 /***/ },
-/* 233 */
+/* 228 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -12129,7 +11788,7 @@ var WikiTableEditor =
 	  value: true
 	});
 
-	var _draggableRow = __webpack_require__(230);
+	var _draggableRow = __webpack_require__(225);
 
 	var _draggableRow2 = _interopRequireDefault(_draggableRow);
 
@@ -12138,7 +11797,7 @@ var WikiTableEditor =
 	exports.default = (0, _draggableRow2.default)('tr');
 
 /***/ },
-/* 234 */
+/* 229 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -12148,7 +11807,7 @@ var WikiTableEditor =
 	});
 	exports.move = exports.moveRows = exports.moveLabels = exports.moveChildrenLabels = undefined;
 
-	var _findIndex4 = __webpack_require__(235);
+	var _findIndex4 = __webpack_require__(230);
 
 	var _findIndex5 = _interopRequireDefault(_findIndex4);
 
@@ -12268,12 +11927,12 @@ var WikiTableEditor =
 	exports.move = move;
 
 /***/ },
-/* 235 */
+/* 230 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var baseFindIndex = __webpack_require__(68),
-	    baseIteratee = __webpack_require__(236),
-	    toInteger = __webpack_require__(259);
+	    baseIteratee = __webpack_require__(231),
+	    toInteger = __webpack_require__(254);
 
 	/* Built-in method references for those with the same name as other `lodash` methods. */
 	var nativeMax = Math.max;
@@ -12329,14 +11988,14 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 236 */
+/* 231 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseMatches = __webpack_require__(237),
-	    baseMatchesProperty = __webpack_require__(242),
+	var baseMatches = __webpack_require__(232),
+	    baseMatchesProperty = __webpack_require__(237),
 	    identity = __webpack_require__(76),
 	    isArray = __webpack_require__(26),
-	    property = __webpack_require__(256);
+	    property = __webpack_require__(251);
 
 	/**
 	 * The base implementation of `_.iteratee`.
@@ -12366,12 +12025,12 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 237 */
+/* 232 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseIsMatch = __webpack_require__(238),
-	    getMatchData = __webpack_require__(239),
-	    matchesStrictComparable = __webpack_require__(241);
+	var baseIsMatch = __webpack_require__(233),
+	    getMatchData = __webpack_require__(234),
+	    matchesStrictComparable = __webpack_require__(236);
 
 	/**
 	 * The base implementation of `_.matches` which doesn't clone `source`.
@@ -12394,11 +12053,11 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 238 */
+/* 233 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Stack = __webpack_require__(186),
-	    baseIsEqual = __webpack_require__(207);
+	var Stack = __webpack_require__(181),
+	    baseIsEqual = __webpack_require__(202);
 
 	/** Used to compose bitmasks for value comparisons. */
 	var COMPARE_PARTIAL_FLAG = 1,
@@ -12462,11 +12121,11 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 239 */
+/* 234 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isStrictComparable = __webpack_require__(240),
-	    keys = __webpack_require__(218);
+	var isStrictComparable = __webpack_require__(235),
+	    keys = __webpack_require__(213);
 
 	/**
 	 * Gets the property names, values, and compare flags of `object`.
@@ -12492,7 +12151,7 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 240 */
+/* 235 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var isObject = __webpack_require__(27);
@@ -12513,7 +12172,7 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 241 */
+/* 236 */
 /***/ function(module, exports) {
 
 	/**
@@ -12539,16 +12198,16 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 242 */
+/* 237 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseIsEqual = __webpack_require__(207),
-	    get = __webpack_require__(243),
-	    hasIn = __webpack_require__(253),
-	    isKey = __webpack_require__(246),
-	    isStrictComparable = __webpack_require__(240),
-	    matchesStrictComparable = __webpack_require__(241),
-	    toKey = __webpack_require__(252);
+	var baseIsEqual = __webpack_require__(202),
+	    get = __webpack_require__(238),
+	    hasIn = __webpack_require__(248),
+	    isKey = __webpack_require__(241),
+	    isStrictComparable = __webpack_require__(235),
+	    matchesStrictComparable = __webpack_require__(236),
+	    toKey = __webpack_require__(247);
 
 	/** Used to compose bitmasks for value comparisons. */
 	var COMPARE_PARTIAL_FLAG = 1,
@@ -12578,10 +12237,10 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 243 */
+/* 238 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseGet = __webpack_require__(244);
+	var baseGet = __webpack_require__(239);
 
 	/**
 	 * Gets the value at `path` of `object`. If the resolved value is
@@ -12617,11 +12276,11 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 244 */
+/* 239 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var castPath = __webpack_require__(245),
-	    toKey = __webpack_require__(252);
+	var castPath = __webpack_require__(240),
+	    toKey = __webpack_require__(247);
 
 	/**
 	 * The base implementation of `_.get` without support for default values.
@@ -12647,13 +12306,13 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 245 */
+/* 240 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var isArray = __webpack_require__(26),
-	    isKey = __webpack_require__(246),
-	    stringToPath = __webpack_require__(248),
-	    toString = __webpack_require__(250);
+	    isKey = __webpack_require__(241),
+	    stringToPath = __webpack_require__(243),
+	    toString = __webpack_require__(245);
 
 	/**
 	 * Casts `value` to a path array if it's not one.
@@ -12674,11 +12333,11 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 246 */
+/* 241 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var isArray = __webpack_require__(26),
-	    isSymbol = __webpack_require__(247);
+	    isSymbol = __webpack_require__(242);
 
 	/** Used to match property names within property paths. */
 	var reIsDeepProp = /\.|\[(?:[^[\]]*|(["'])(?:(?!\1)[^\\]|\\.)*?\1)\]/,
@@ -12709,7 +12368,7 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 247 */
+/* 242 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var baseGetTag = __webpack_require__(8),
@@ -12744,10 +12403,10 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 248 */
+/* 243 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var memoizeCapped = __webpack_require__(249);
+	var memoizeCapped = __webpack_require__(244);
 
 	/** Used to match property names within property paths. */
 	var reLeadingDot = /^\./,
@@ -12778,7 +12437,7 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 249 */
+/* 244 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var memoize = __webpack_require__(165);
@@ -12810,10 +12469,10 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 250 */
+/* 245 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseToString = __webpack_require__(251);
+	var baseToString = __webpack_require__(246);
 
 	/**
 	 * Converts `value` to a string. An empty string is returned for `null`
@@ -12844,13 +12503,13 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 251 */
+/* 246 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Symbol = __webpack_require__(9),
 	    arrayMap = __webpack_require__(72),
 	    isArray = __webpack_require__(26),
-	    isSymbol = __webpack_require__(247);
+	    isSymbol = __webpack_require__(242);
 
 	/** Used as references for various `Number` constants. */
 	var INFINITY = 1 / 0;
@@ -12887,10 +12546,10 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 252 */
+/* 247 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isSymbol = __webpack_require__(247);
+	var isSymbol = __webpack_require__(242);
 
 	/** Used as references for various `Number` constants. */
 	var INFINITY = 1 / 0;
@@ -12914,11 +12573,11 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 253 */
+/* 248 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseHasIn = __webpack_require__(254),
-	    hasPath = __webpack_require__(255);
+	var baseHasIn = __webpack_require__(249),
+	    hasPath = __webpack_require__(250);
 
 	/**
 	 * Checks if `path` is a direct or inherited property of `object`.
@@ -12954,7 +12613,7 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 254 */
+/* 249 */
 /***/ function(module, exports) {
 
 	/**
@@ -12973,15 +12632,15 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 255 */
+/* 250 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var castPath = __webpack_require__(245),
+	var castPath = __webpack_require__(240),
 	    isArguments = __webpack_require__(96),
 	    isArray = __webpack_require__(26),
 	    isIndex = __webpack_require__(148),
 	    isLength = __webpack_require__(86),
-	    toKey = __webpack_require__(252);
+	    toKey = __webpack_require__(247);
 
 	/**
 	 * Checks if `path` exists on `object`.
@@ -13018,13 +12677,13 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 256 */
+/* 251 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseProperty = __webpack_require__(257),
-	    basePropertyDeep = __webpack_require__(258),
-	    isKey = __webpack_require__(246),
-	    toKey = __webpack_require__(252);
+	var baseProperty = __webpack_require__(252),
+	    basePropertyDeep = __webpack_require__(253),
+	    isKey = __webpack_require__(241),
+	    toKey = __webpack_require__(247);
 
 	/**
 	 * Creates a function that returns the value at `path` of a given object.
@@ -13056,7 +12715,7 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 257 */
+/* 252 */
 /***/ function(module, exports) {
 
 	/**
@@ -13076,10 +12735,10 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 258 */
+/* 253 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseGet = __webpack_require__(244);
+	var baseGet = __webpack_require__(239);
 
 	/**
 	 * A specialized version of `baseProperty` which supports deep paths.
@@ -13098,10 +12757,10 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 259 */
+/* 254 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var toFinite = __webpack_require__(260);
+	var toFinite = __webpack_require__(255);
 
 	/**
 	 * Converts `value` to an integer.
@@ -13140,10 +12799,10 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 260 */
+/* 255 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var toNumber = __webpack_require__(261);
+	var toNumber = __webpack_require__(256);
 
 	/** Used as references for various `Number` constants. */
 	var INFINITY = 1 / 0,
@@ -13188,11 +12847,11 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 261 */
+/* 256 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var isObject = __webpack_require__(27),
-	    isSymbol = __webpack_require__(247);
+	    isSymbol = __webpack_require__(242);
 
 	/** Used as references for various `Number` constants. */
 	var NAN = 0 / 0;
@@ -13260,10 +12919,10 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 262 */
+/* 257 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseClone = __webpack_require__(263);
+	var baseClone = __webpack_require__(258);
 
 	/** Used to compose bitmasks for cloning. */
 	var CLONE_DEEP_FLAG = 1,
@@ -13295,28 +12954,28 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 263 */
+/* 258 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Stack = __webpack_require__(186),
-	    arrayEach = __webpack_require__(264),
+	var Stack = __webpack_require__(181),
+	    arrayEach = __webpack_require__(259),
 	    assignValue = __webpack_require__(144),
-	    baseAssign = __webpack_require__(265),
-	    baseAssignIn = __webpack_require__(266),
-	    cloneBuffer = __webpack_require__(196),
-	    copyArray = __webpack_require__(200),
-	    copySymbols = __webpack_require__(267),
-	    copySymbolsIn = __webpack_require__(268),
-	    getAllKeys = __webpack_require__(214),
-	    getAllKeysIn = __webpack_require__(270),
-	    getTag = __webpack_require__(221),
-	    initCloneArray = __webpack_require__(271),
-	    initCloneByTag = __webpack_require__(272),
-	    initCloneObject = __webpack_require__(201),
+	    baseAssign = __webpack_require__(260),
+	    baseAssignIn = __webpack_require__(261),
+	    cloneBuffer = __webpack_require__(191),
+	    copyArray = __webpack_require__(195),
+	    copySymbols = __webpack_require__(262),
+	    copySymbolsIn = __webpack_require__(263),
+	    getAllKeys = __webpack_require__(209),
+	    getAllKeysIn = __webpack_require__(265),
+	    getTag = __webpack_require__(216),
+	    initCloneArray = __webpack_require__(266),
+	    initCloneByTag = __webpack_require__(267),
+	    initCloneObject = __webpack_require__(196),
 	    isArray = __webpack_require__(26),
 	    isBuffer = __webpack_require__(152),
 	    isObject = __webpack_require__(27),
-	    keys = __webpack_require__(218);
+	    keys = __webpack_require__(213);
 
 	/** Used to compose bitmasks for cloning. */
 	var CLONE_DEEP_FLAG = 1,
@@ -13454,7 +13113,7 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 264 */
+/* 259 */
 /***/ function(module, exports) {
 
 	/**
@@ -13482,11 +13141,11 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 265 */
+/* 260 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var copyObject = __webpack_require__(143),
-	    keys = __webpack_require__(218);
+	    keys = __webpack_require__(213);
 
 	/**
 	 * The base implementation of `_.assign` without support for multiple sources
@@ -13505,7 +13164,7 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 266 */
+/* 261 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var copyObject = __webpack_require__(143),
@@ -13528,11 +13187,11 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 267 */
+/* 262 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var copyObject = __webpack_require__(143),
-	    getSymbols = __webpack_require__(216);
+	    getSymbols = __webpack_require__(211);
 
 	/**
 	 * Copies own symbols of `source` to `object`.
@@ -13550,11 +13209,11 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 268 */
+/* 263 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var copyObject = __webpack_require__(143),
-	    getSymbolsIn = __webpack_require__(269);
+	    getSymbolsIn = __webpack_require__(264);
 
 	/**
 	 * Copies own and inherited symbols of `source` to `object`.
@@ -13572,13 +13231,13 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 269 */
+/* 264 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var arrayPush = __webpack_require__(94),
 	    getPrototype = __webpack_require__(14),
-	    getSymbols = __webpack_require__(216),
-	    stubArray = __webpack_require__(217);
+	    getSymbols = __webpack_require__(211),
+	    stubArray = __webpack_require__(212);
 
 	/* Built-in method references for those with the same name as other `lodash` methods. */
 	var nativeGetSymbols = Object.getOwnPropertySymbols;
@@ -13603,11 +13262,11 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 270 */
+/* 265 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseGetAllKeys = __webpack_require__(215),
-	    getSymbolsIn = __webpack_require__(269),
+	var baseGetAllKeys = __webpack_require__(210),
+	    getSymbolsIn = __webpack_require__(264),
 	    keysIn = __webpack_require__(149);
 
 	/**
@@ -13626,7 +13285,7 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 271 */
+/* 266 */
 /***/ function(module, exports) {
 
 	/** Used for built-in method references. */
@@ -13658,16 +13317,16 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 272 */
+/* 267 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var cloneArrayBuffer = __webpack_require__(198),
-	    cloneDataView = __webpack_require__(273),
-	    cloneMap = __webpack_require__(274),
-	    cloneRegExp = __webpack_require__(277),
-	    cloneSet = __webpack_require__(278),
-	    cloneSymbol = __webpack_require__(280),
-	    cloneTypedArray = __webpack_require__(197);
+	var cloneArrayBuffer = __webpack_require__(193),
+	    cloneDataView = __webpack_require__(268),
+	    cloneMap = __webpack_require__(269),
+	    cloneRegExp = __webpack_require__(272),
+	    cloneSet = __webpack_require__(273),
+	    cloneSymbol = __webpack_require__(275),
+	    cloneTypedArray = __webpack_require__(192);
 
 	/** `Object#toString` result references. */
 	var boolTag = '[object Boolean]',
@@ -13744,10 +13403,10 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 273 */
+/* 268 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var cloneArrayBuffer = __webpack_require__(198);
+	var cloneArrayBuffer = __webpack_require__(193);
 
 	/**
 	 * Creates a clone of `dataView`.
@@ -13766,12 +13425,12 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 274 */
+/* 269 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var addMapEntry = __webpack_require__(275),
-	    arrayReduce = __webpack_require__(276),
-	    mapToArray = __webpack_require__(212);
+	var addMapEntry = __webpack_require__(270),
+	    arrayReduce = __webpack_require__(271),
+	    mapToArray = __webpack_require__(207);
 
 	/** Used to compose bitmasks for cloning. */
 	var CLONE_DEEP_FLAG = 1;
@@ -13794,7 +13453,7 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 275 */
+/* 270 */
 /***/ function(module, exports) {
 
 	/**
@@ -13815,7 +13474,7 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 276 */
+/* 271 */
 /***/ function(module, exports) {
 
 	/**
@@ -13847,7 +13506,7 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 277 */
+/* 272 */
 /***/ function(module, exports) {
 
 	/** Used to match `RegExp` flags from their coerced string values. */
@@ -13870,11 +13529,11 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 278 */
+/* 273 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var addSetEntry = __webpack_require__(279),
-	    arrayReduce = __webpack_require__(276),
+	var addSetEntry = __webpack_require__(274),
+	    arrayReduce = __webpack_require__(271),
 	    setToArray = __webpack_require__(102);
 
 	/** Used to compose bitmasks for cloning. */
@@ -13898,7 +13557,7 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 279 */
+/* 274 */
 /***/ function(module, exports) {
 
 	/**
@@ -13919,7 +13578,7 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 280 */
+/* 275 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Symbol = __webpack_require__(9);

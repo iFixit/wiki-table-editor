@@ -1,7 +1,6 @@
 import React from 'react';
 import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
-import * as edit from 'react-edit';
 import * as Table from 'reactabular-table';
 import * as dnd from 'reactabular-dnd';
 import cloneDeep from 'lodash/cloneDeep';
@@ -38,25 +37,18 @@ class TableEditor extends React.Component {
     this.onRow = this.onRow.bind(this);
     this.onMoveRow = this.onMoveRow.bind(this);
     this.addRow = this.addRow.bind(this);
-    this.setRow = this.setRow.bind(this);
+    this.onCellChange = this.onCellChange.bind(this);
+    this.onNewCellChange = this.onNewCellChange.bind(this);
     this.deleteButtonFormatter = this.deleteButtonFormatter.bind(this);
     this.addNewButtonFormatter = this.addNewButtonFormatter.bind(this);
-
-    // Specify our custom editing behavior.
-    this.editableTransform = this.getEditableTransform(this.setRow);
 
     // The "newRow" is the row at the bottom of the table. It gets added to the
     // table when the user clicks "Add Row."
     this.state = {
        newRow: {id: 1}
     };
-
-    // Specify editing behavior for the "newRow."
-    this.newRowEditableTransform =
-     this.getEditableTransform((rowId, properties) => {
-      this.setState({
-        newRow: {...this.state.newRow, ...properties}
-      });
+    this.props.columns.forEach((column) => {
+       this.state.newRow[column.property] = '';
     });
   }
 
@@ -69,11 +61,11 @@ class TableEditor extends React.Component {
     };
 
     const rows = this.props.rows;
-    const columns = this.getColumns(this.editableTransform,
+    const columns = this.getColumns(this.onCellChange,
      this.deleteButtonFormatter, this.props.getDragHandle);
 
     const newRows = [this.state.newRow];
-    const newColumns = this.getColumns(this.newRowEditableTransform,
+    const newColumns = this.getColumns(this.onNewCellChange,
      this.addNewButtonFormatter, () => null);
 
     return (
@@ -92,7 +84,7 @@ class TableEditor extends React.Component {
   /**
    * Transform our `columns` prop into column definitions for reactabular.
    */
-  getColumns(editTransform, actionButtonFormatter, dragHandleFormatter) {
+  getColumns(onCellChange, actionButtonFormatter, dragHandleFormatter) {
     return [
     // The "drag this row" handle.
     {
@@ -119,14 +111,15 @@ class TableEditor extends React.Component {
            }
         },
         cell: {
-          transforms: [editTransform],
           formatters: [
             // Wrap <td> contents in a <div>. This makes it easier to style
             // the table cells.
             (value, { rowData }) => (
-              <div className={'cell-content' +
-               (rowData[property] ? '' : ' placeholder')}>
-                { rowData[property] || label }
+              <div className="cell-content">
+                <input type="text"
+                 value={rowData[property]}
+                 placeholder={label}
+                 onChange={onCellChange.bind(this, rowData.id, property)} />
               </div>
             )
           ],
@@ -151,34 +144,6 @@ class TableEditor extends React.Component {
         }
       }
     }];
-  }
-
-  /**
-   * Returns a transform that can be used in a column's cell's 'transforms'
-   * property. This transform allows editing the contents of the cell.
-   *
-   * `setRow(rowId, {property: value})` is a function that will change
-   * properties of one row.
-   */
-  getEditableTransform(setRow) {
-    const editable = edit.edit({
-      isEditing: ({ columnIndex, rowData }) => {
-        return columnIndex === rowData.columnIndexEditing;
-      },
-
-      onActivate: ({ columnIndex, rowData }) => {
-        setRow(rowData.id, { columnIndexEditing: columnIndex });
-      },
-
-      onValue: ({ value, rowData, property }) => {
-        setRow(rowData.id, {
-          [property]: value,
-          columnIndexEditing: null
-        });
-      }
-    });
-
-    return editable(edit.input());
   }
 
   /**
@@ -265,23 +230,35 @@ class TableEditor extends React.Component {
     this.props.setRows(rows);
 
     // Clear the "add new row" row.
-    this.setState({
-       newRow: {id: 1}
+    let newRow = {id: 1};
+    this.props.columns.forEach((column) => {
+       newRow[column.property] = '';
     });
+    this.setState({ newRow });
   }
 
   /**
-   * Change the value of properties on one row.
+   * Change the value of one property on one row.
    */
-  setRow(rowId, properties) {
+  onCellChange(rowId, property, event) {
      const index = findIndex(this.props.rows, { id: rowId });
      const rows = cloneDeep(this.props.rows);
 
-     for (var property in properties) {
-       rows[index][property] = properties[property];
-     }
+     rows[index][property] = event.target.value;
 
      this.props.setRows(rows);
+  }
+
+  /**
+   * Change the value of a cell in the "add new row" bar.
+   */
+  onNewCellChange(rowId, property, event) {
+    this.setState({
+      newRow: {
+        ...this.state.newRow,
+        [property]: event.target.value
+      }
+    });
   }
 }
 
