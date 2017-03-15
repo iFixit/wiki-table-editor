@@ -38,34 +38,10 @@ class TableEditor extends React.Component {
     this.onRow = this.onRow.bind(this);
     this.onMoveRow = this.onMoveRow.bind(this);
     this.addRow = this.addRow.bind(this);
+    this.setRow = this.setRow.bind(this);
 
     // Specify our custom editing behavior.
-    const editable = edit.edit({
-      isEditing: ({ columnIndex, rowData }) => {
-        return columnIndex === rowData.columnIndexEditing;
-      },
-
-      onActivate: ({ columnIndex, rowData }) => {
-        const index = findIndex(this.props.rows, { id: rowData.id });
-        const rows = cloneDeep(this.props.rows);
-
-        rows[index].columnIndexEditing = columnIndex;
-
-        this.props.setRows(rows);
-      },
-
-      onValue: ({ value, rowData, property }) => {
-        const index = findIndex(this.props.rows, { id: rowData.id });
-        const rows = cloneDeep(this.props.rows);
-
-        rows[index][property] = value;
-        delete rows[index].columnIndexEditing;
-
-        this.props.setRows(rows);
-      }
-    });
-
-    this.editableTransform = editable(edit.input());
+    this.editableTransform = this.getEditableTransform(this.setRow);
   }
 
   render() {
@@ -134,6 +110,34 @@ class TableEditor extends React.Component {
         ]
       }
     }];
+  }
+
+  /**
+   * Returns a transform that can be used in a column's cell's 'transforms'
+   * property. This transform allows editing the contents of the cell.
+   *
+   * `setRow(rowId, {property: value})` is a function that will change
+   * properties of one row.
+   */
+  getEditableTransform(setRow) {
+    const editable = edit.edit({
+      isEditing: ({ columnIndex, rowData }) => {
+        return columnIndex === rowData.columnIndexEditing;
+      },
+
+      onActivate: ({ columnIndex, rowData }) => {
+        setRow(rowData.id, { columnIndexEditing: columnIndex });
+      },
+
+      onValue: ({ value, rowData, property }) => {
+        setRow(rowData.id, {
+          [property]: value,
+          columnIndexEditing: undefined
+        });
+      }
+    });
+
+    return editable(edit.input());
   }
 
   /**
@@ -209,6 +213,20 @@ class TableEditor extends React.Component {
 
     rows.push(newRow);
     this.props.setRows(rows);
+  }
+
+  /**
+   * Change the value of properties on one row.
+   */
+  setRow(rowId, properties) {
+     const index = findIndex(this.props.rows, { id: rowId });
+     const rows = cloneDeep(this.props.rows);
+
+     for (var property in properties) {
+       rows[index][property] = properties[property];
+     }
+
+     this.props.setRows(rows);
   }
 }
 
