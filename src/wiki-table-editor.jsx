@@ -98,17 +98,13 @@ class TableEditor extends React.Component {
     {
       header: {
         props: {
-          style: {
-            width: 20
-          }
+          className: 'drag-handle-cell'
         }
       },
       cell: {
         formatters: [dragHandleFormatter],
         props: {
-          style: {
-            width: 20
-          }
+          className: 'drag-handle-cell'
         }
       }
     },
@@ -127,7 +123,10 @@ class TableEditor extends React.Component {
             (value, { rowData }) => (
               <div className="cell-content">{ rowData[property] }</div>
             )
-          ]
+          ],
+          props: {
+            className: property + '-cell'
+          }
         }
       };
     }),
@@ -136,17 +135,13 @@ class TableEditor extends React.Component {
     {
       header: {
         props: {
-          style: {
-            width: 50
-          }
+          className: 'action-button-cell'
         }
       },
       cell: {
         formatters: [actionButtonFormatter],
         props: {
-          style: {
-            width: 50
-          }
+          className: 'action-button-cell'
         }
       }
     }];

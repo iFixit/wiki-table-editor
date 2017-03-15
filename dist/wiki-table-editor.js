@@ -199,17 +199,13 @@ var WikiTableEditor =
 	      {
 	        header: {
 	          props: {
-	            style: {
-	              width: 20
-	            }
+	            className: 'drag-handle-cell'
 	          }
 	        },
 	        cell: {
 	          formatters: [dragHandleFormatter],
 	          props: {
-	            style: {
-	              width: 20
-	            }
+	            className: 'drag-handle-cell'
 	          }
 	        }
 	      }].concat(_toConsumableArray(this.props.columns.map(function (_ref) {
@@ -233,7 +229,10 @@ var WikiTableEditor =
 	                { className: 'cell-content' },
 	                rowData[property]
 	              );
-	            }]
+	            }],
+	            props: {
+	              className: property + '-cell'
+	            }
 	          }
 	        };
 	      })), [
@@ -242,17 +241,13 @@ var WikiTableEditor =
 	      {
 	        header: {
 	          props: {
-	            style: {
-	              width: 50
-	            }
+	            className: 'action-button-cell'
 	          }
 	        },
 	        cell: {
 	          formatters: [actionButtonFormatter],
 	          props: {
-	            style: {
-	              width: 50
-	            }
+	            className: 'action-button-cell'
 	          }
 	        }
 	      }]);
