@@ -215,7 +215,10 @@ var WikiTableEditor =
 	        return {
 	          property: property,
 	          header: {
-	            label: label
+	            label: label,
+	            props: {
+	              className: property + '-cell'
+	            }
 	          },
 	          cell: {
 	            transforms: [editTransform],
@@ -226,8 +229,8 @@ var WikiTableEditor =
 	              var rowData = _ref2.rowData;
 	              return _react2.default.createElement(
 	                'div',
-	                { className: 'cell-content' },
-	                rowData[property]
+	                { className: 'cell-content' + (rowData[property] ? '' : ' placeholder') },
+	                rowData[property] || label
 	              );
 	            }],
 	            props: {

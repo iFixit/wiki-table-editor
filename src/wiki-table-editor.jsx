@@ -113,7 +113,10 @@ class TableEditor extends React.Component {
       return {
         property: property,
         header: {
-          label: label
+           label: label,
+           props: {
+             className: property + '-cell'
+           }
         },
         cell: {
           transforms: [editTransform],
@@ -121,7 +124,10 @@ class TableEditor extends React.Component {
             // Wrap <td> contents in a <div>. This makes it easier to style
             // the table cells.
             (value, { rowData }) => (
-              <div className="cell-content">{ rowData[property] }</div>
+              <div className={'cell-content' +
+               (rowData[property] ? '' : ' placeholder')}>
+                { rowData[property] || label }
+              </div>
             )
           ],
           props: {
