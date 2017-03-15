@@ -39,6 +39,7 @@ class TableEditor extends React.Component {
     this.onMoveRow = this.onMoveRow.bind(this);
     this.addRow = this.addRow.bind(this);
     this.setRow = this.setRow.bind(this);
+    this.deleteButtonFormatter = this.deleteButtonFormatter.bind(this);
 
     // Specify our custom editing behavior.
     this.editableTransform = this.getEditableTransform(this.setRow);
@@ -53,7 +54,8 @@ class TableEditor extends React.Component {
     };
 
     const rows = this.props.rows;
-    const columns = this.getColumns();
+    const columns =
+     this.getColumns(this.editableTransform, this.deleteButtonFormatter);
 
     return (
       <div className="wiki-table-editor">
@@ -70,7 +72,7 @@ class TableEditor extends React.Component {
   /**
    * Transform our `columns` prop into column definitions for reactabular.
    */
-  getColumns() {
+  getColumns(editTransform, actionButtonFormatter) {
     return [...this.props.columns.map(({ property, label }) => {
       return {
         property: property,
@@ -78,7 +80,7 @@ class TableEditor extends React.Component {
           label: label
         },
         cell: {
-          transforms: [this.editableTransform],
+          transforms: [editTransform],
           formatters: [
             // Wrap <td> contents in a <div>. This makes it easier to style
             // the table cells.
@@ -89,7 +91,8 @@ class TableEditor extends React.Component {
         }
       };
     }),
-    // Include one more column for the delete button.
+    // Include one more column for a button. This can be a delete button or
+    // anything that the caller wants.
     {
       header: {
         props: {
@@ -99,15 +102,7 @@ class TableEditor extends React.Component {
         }
       },
       cell: {
-        formatters: [
-          (value, { rowData }) => (
-            <button type="button"
-             onClick={this.deleteRow.bind(this, rowData.id)}
-             className="delete-button">
-              &times;
-            </button>
-          )
-        ]
+        formatters: [actionButtonFormatter]
       }
     }];
   }
@@ -138,6 +133,19 @@ class TableEditor extends React.Component {
     });
 
     return editable(edit.input());
+  }
+
+  /**
+   * Given a row, returns a delete button for that row.
+   */
+  deleteButtonFormatter(value, { rowData }) {
+    return (
+      <button type="button"
+       onClick={this.deleteRow.bind(this, rowData.id)}
+       className="delete-button">
+        &times;
+      </button>
+    );
   }
 
   /**
