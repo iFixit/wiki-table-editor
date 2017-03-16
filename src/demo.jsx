@@ -73,7 +73,10 @@ class SpecificWikiTableEditor extends React.Component {
         <WikiTableEditor
          rows={this.state.rows}
          columns={this.state.columns}
-         setRows={this.setRows} />
+         setRows={this.setRows}
+         getDeleteButton={(onClick) => <button onClick={onClick}>Delete</button>}
+         getAddButton={(onClick) => <button onClick={onClick}>Add</button>}
+         getDragHandle={() => <p>Drag</p>}/>
         <button onClick={this.printJSON}>Print JSON</button>
       </div>
     );
