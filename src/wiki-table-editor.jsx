@@ -37,8 +37,8 @@ class TableEditor extends React.Component {
     this.onRow = this.onRow.bind(this);
     this.onMoveRow = this.onMoveRow.bind(this);
     this.addRow = this.addRow.bind(this);
-    this.onCellChange = this.onCellChange.bind(this);
-    this.onNewCellChange = this.onNewCellChange.bind(this);
+    this.setCell = this.setCell.bind(this);
+    this.setNewCell = this.setNewCell.bind(this);
     this.onFocus = this.onFocus.bind(this);
     this.onBlur = this.onBlur.bind(this);
     this.deleteButtonFormatter = this.deleteButtonFormatter.bind(this);
@@ -66,15 +66,17 @@ class TableEditor extends React.Component {
     };
 
     const rows = this.props.rows;
-    const columns = this.getColumns(this.onCellChange,
+    const columns = this.getColumns(this.setCell,
      this.deleteButtonFormatter, this.props.getDragHandle);
 
     const newRows = [this.state.newRow];
-    const newColumns = this.getColumns(this.onNewCellChange,
+    const newColumns = this.getColumns(this.setNewCell,
      this.addNewButtonFormatter, () => null);
 
+    const isDragging = this.props.rows.some((row) => row.dragging);
+
     return (
-      <div className="wiki-table-editor">
+      <div className={'wiki-table-editor' + (isDragging ? ' dragging' : '')}>
         <Table.Provider components={components} columns={columns}>
           <Table.Header headerRows={[columns]} />
           <Table.Body rows={rows} rowKey="id" onRow={this.onRow} />
@@ -126,7 +128,9 @@ class TableEditor extends React.Component {
                  placeholder={label}
                  onFocus={this.onFocus}
                  onBlur={this.onBlur}
-                 onChange={onCellChange.bind(this, rowData.id, property)} />
+                 onChange={(event) => {
+                   onCellChange(rowData.id, property, event.target.value)
+                 }} />
               </div>
             )
           ],
@@ -180,7 +184,10 @@ class TableEditor extends React.Component {
       rowId: row.id,
       onMove: this.onMoveRow,
       // Don't allow drag-and-drop if a cell is being edited.
-      onCanMove: () => !this.state.isEditing
+      onCanMove: () => !this.state.isEditing,
+      onMoveStart: () => this.setCell(row.id, 'dragging', true),
+      onMoveEnd: () => this.setCell(row.id, 'dragging', false),
+      className: row.dragging ? 'dragging' : ''
     };
   }
 
@@ -245,11 +252,11 @@ class TableEditor extends React.Component {
   /**
    * Change the value of one property on one row.
    */
-  onCellChange(rowId, property, event) {
+  setCell(rowId, property, value) {
      const index = findIndex(this.props.rows, { id: rowId });
      const rows = cloneDeep(this.props.rows);
 
-     rows[index][property] = event.target.value;
+     rows[index][property] = value;
 
      this.props.setRows(rows);
   }
@@ -257,11 +264,11 @@ class TableEditor extends React.Component {
   /**
    * Change the value of a cell in the "add new row" bar.
    */
-  onNewCellChange(rowId, property, event) {
+  setNewCell(rowId, property, value) {
     this.setState({
       newRow: {
         ...this.state.newRow,
-        [property]: event.target.value
+        [property]: value
       }
     });
   }
