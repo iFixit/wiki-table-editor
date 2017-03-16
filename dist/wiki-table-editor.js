@@ -128,6 +128,8 @@ var WikiTableEditor =
 	    _this.addRow = _this.addRow.bind(_this);
 	    _this.onCellChange = _this.onCellChange.bind(_this);
 	    _this.onNewCellChange = _this.onNewCellChange.bind(_this);
+	    _this.onFocus = _this.onFocus.bind(_this);
+	    _this.onBlur = _this.onBlur.bind(_this);
 	    _this.deleteButtonFormatter = _this.deleteButtonFormatter.bind(_this);
 	    _this.addNewButtonFormatter = _this.addNewButtonFormatter.bind(_this);
 
@@ -139,6 +141,9 @@ var WikiTableEditor =
 	    _this.props.columns.forEach(function (column) {
 	      _this.state.newRow[column.property] = '';
 	    });
+
+	    // Whether the user has an <input> in focus.
+	    _this.state.isEditing = false;
 	    return _this;
 	  }
 
@@ -224,6 +229,8 @@ var WikiTableEditor =
 	                _react2.default.createElement('input', { type: 'text',
 	                  value: rowData[property],
 	                  placeholder: label,
+	                  onFocus: _this2.onFocus,
+	                  onBlur: _this2.onBlur,
 	                  onChange: onCellChange.bind(_this2, rowData.id, property) })
 	              );
 	            }],
@@ -292,9 +299,7 @@ var WikiTableEditor =
 	        onMove: this.onMoveRow,
 	        // Don't allow drag-and-drop if a cell is being edited.
 	        onCanMove: function onCanMove() {
-	          return !_this3.props.rows.some(function (rowData) {
-	            return rowData.columnIndexEditing !== undefined && rowData.columnIndexEditing !== null;
-	          });
+	          return !_this3.state.isEditing;
 	        }
 	      };
 	    }
@@ -393,6 +398,20 @@ var WikiTableEditor =
 	    value: function onNewCellChange(rowId, property, event) {
 	      this.setState({
 	        newRow: _extends({}, this.state.newRow, _defineProperty({}, property, event.target.value))
+	      });
+	    }
+	  }, {
+	    key: 'onFocus',
+	    value: function onFocus() {
+	      this.setState({
+	        isEditing: true
+	      });
+	    }
+	  }, {
+	    key: 'onBlur',
+	    value: function onBlur() {
+	      this.setState({
+	        isEditing: false
 	      });
 	    }
 	  }]);

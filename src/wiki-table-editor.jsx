@@ -39,6 +39,8 @@ class TableEditor extends React.Component {
     this.addRow = this.addRow.bind(this);
     this.onCellChange = this.onCellChange.bind(this);
     this.onNewCellChange = this.onNewCellChange.bind(this);
+    this.onFocus = this.onFocus.bind(this);
+    this.onBlur = this.onBlur.bind(this);
     this.deleteButtonFormatter = this.deleteButtonFormatter.bind(this);
     this.addNewButtonFormatter = this.addNewButtonFormatter.bind(this);
 
@@ -50,6 +52,9 @@ class TableEditor extends React.Component {
     this.props.columns.forEach((column) => {
        this.state.newRow[column.property] = '';
     });
+
+    // Whether the user has an <input> in focus.
+    this.state.isEditing = false;
   }
 
   render() {
@@ -119,6 +124,8 @@ class TableEditor extends React.Component {
                 <input type="text"
                  value={rowData[property]}
                  placeholder={label}
+                 onFocus={this.onFocus}
+                 onBlur={this.onBlur}
                  onChange={onCellChange.bind(this, rowData.id, property)} />
               </div>
             )
@@ -173,9 +180,7 @@ class TableEditor extends React.Component {
       rowId: row.id,
       onMove: this.onMoveRow,
       // Don't allow drag-and-drop if a cell is being edited.
-      onCanMove: () => !this.props.rows.some(
-       (rowData) => rowData.columnIndexEditing !== undefined &&
-                    rowData.columnIndexEditing !== null)
+      onCanMove: () => !this.state.isEditing
     };
   }
 
@@ -258,6 +263,18 @@ class TableEditor extends React.Component {
         ...this.state.newRow,
         [property]: event.target.value
       }
+    });
+  }
+
+  onFocus() {
+    this.setState({
+      isEditing: true
+    });
+  }
+
+  onBlur() {
+    this.setState({
+      isEditing: false
     });
   }
 }
