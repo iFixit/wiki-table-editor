@@ -57,23 +57,23 @@ var WikiTableEditor =
 
 	var _reactDnd = __webpack_require__(2);
 
-	var _reactDndHtml5Backend = __webpack_require__(139);
+	var _reactDndHtml5Backend = __webpack_require__(141);
 
 	var _reactDndHtml5Backend2 = _interopRequireDefault(_reactDndHtml5Backend);
 
-	var _reactabularTable = __webpack_require__(171);
+	var _reactabularTable = __webpack_require__(173);
 
 	var Table = _interopRequireWildcard(_reactabularTable);
 
-	var _reactabularDnd = __webpack_require__(224);
+	var _reactabularDnd = __webpack_require__(226);
 
 	var dnd = _interopRequireWildcard(_reactabularDnd);
 
-	var _cloneDeep = __webpack_require__(257);
+	var _cloneDeep = __webpack_require__(259);
 
 	var _cloneDeep2 = _interopRequireDefault(_cloneDeep);
 
-	var _findIndex = __webpack_require__(230);
+	var _findIndex = __webpack_require__(232);
 
 	var _findIndex2 = _interopRequireDefault(_findIndex);
 
@@ -285,9 +285,17 @@ var WikiTableEditor =
 	  }, {
 	    key: 'onRow',
 	    value: function onRow(row) {
+	      var _this3 = this;
+
 	      return {
 	        rowId: row.id,
-	        onMove: this.onMoveRow
+	        onMove: this.onMoveRow,
+	        // Don't allow drag-and-drop if a cell is being edited.
+	        onCanMove: function onCanMove() {
+	          return !_this3.props.rows.some(function (rowData) {
+	            return rowData.columnIndexEditing !== undefined && rowData.columnIndexEditing !== null;
+	          });
+	        }
 	      };
 	    }
 
@@ -408,25 +416,56 @@ var WikiTableEditor =
 
 	'use strict';
 
-	exports.__esModule = true;
-
-	function _interopRequire(obj) { return obj && obj.__esModule ? obj['default'] : obj; }
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
 
 	var _DragDropContext = __webpack_require__(3);
 
-	exports.DragDropContext = _interopRequire(_DragDropContext);
+	Object.defineProperty(exports, 'DragDropContext', {
+	  enumerable: true,
+	  get: function get() {
+	    return _interopRequireDefault(_DragDropContext).default;
+	  }
+	});
 
-	var _DragLayer = __webpack_require__(116);
+	var _DragDropContextProvider = __webpack_require__(117);
 
-	exports.DragLayer = _interopRequire(_DragLayer);
+	Object.defineProperty(exports, 'DragDropContextProvider', {
+	  enumerable: true,
+	  get: function get() {
+	    return _interopRequireDefault(_DragDropContextProvider).default;
+	  }
+	});
 
-	var _DragSource = __webpack_require__(119);
+	var _DragLayer = __webpack_require__(118);
 
-	exports.DragSource = _interopRequire(_DragSource);
+	Object.defineProperty(exports, 'DragLayer', {
+	  enumerable: true,
+	  get: function get() {
+	    return _interopRequireDefault(_DragLayer).default;
+	  }
+	});
 
-	var _DropTarget = __webpack_require__(134);
+	var _DragSource = __webpack_require__(121);
 
-	exports.DropTarget = _interopRequire(_DropTarget);
+	Object.defineProperty(exports, 'DragSource', {
+	  enumerable: true,
+	  get: function get() {
+	    return _interopRequireDefault(_DragSource).default;
+	  }
+	});
+
+	var _DropTarget = __webpack_require__(136);
+
+	Object.defineProperty(exports, 'DropTarget', {
+	  enumerable: true,
+	  get: function get() {
+	    return _interopRequireDefault(_DropTarget).default;
+	  }
+	});
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ },
 /* 3 */
@@ -434,21 +473,18 @@ var WikiTableEditor =
 
 	'use strict';
 
-	exports.__esModule = true;
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.unpackBackendForEs5Users = exports.createChildContext = exports.CHILD_CONTEXT_TYPES = undefined;
 
 	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-	var _slice = Array.prototype.slice;
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-	exports['default'] = DragDropContext;
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	exports.default = DragDropContext;
 
 	var _react = __webpack_require__(1);
 
@@ -460,78 +496,98 @@ var WikiTableEditor =
 
 	var _invariant2 = _interopRequireDefault(_invariant);
 
-	var _utilsCheckDecoratorArguments = __webpack_require__(115);
+	var _hoistNonReactStatics = __webpack_require__(115);
 
-	var _utilsCheckDecoratorArguments2 = _interopRequireDefault(_utilsCheckDecoratorArguments);
+	var _hoistNonReactStatics2 = _interopRequireDefault(_hoistNonReactStatics);
+
+	var _checkDecoratorArguments = __webpack_require__(116);
+
+	var _checkDecoratorArguments2 = _interopRequireDefault(_checkDecoratorArguments);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var CHILD_CONTEXT_TYPES = exports.CHILD_CONTEXT_TYPES = {
+	  dragDropManager: _react.PropTypes.object.isRequired
+	};
+
+	var createChildContext = exports.createChildContext = function createChildContext(backend, context) {
+	  return {
+	    dragDropManager: new _dndCore.DragDropManager(backend, context)
+	  };
+	};
+
+	var unpackBackendForEs5Users = exports.unpackBackendForEs5Users = function unpackBackendForEs5Users(backendOrModule) {
+	  // Auto-detect ES6 default export for people still using ES5
+	  var backend = backendOrModule;
+	  if ((typeof backend === 'undefined' ? 'undefined' : _typeof(backend)) === 'object' && typeof backend.default === 'function') {
+	    backend = backend.default;
+	  }
+	  (0, _invariant2.default)(typeof backend === 'function', 'Expected the backend to be a function or an ES6 module exporting a default function. ' + 'Read more: http://react-dnd.github.io/react-dnd/docs-drag-drop-context.html');
+	  return backend;
+	};
 
 	function DragDropContext(backendOrModule) {
-	  _utilsCheckDecoratorArguments2['default'].apply(undefined, ['DragDropContext', 'backend'].concat(_slice.call(arguments)));
+	  _checkDecoratorArguments2.default.apply(undefined, ['DragDropContext', 'backend'].concat(Array.prototype.slice.call(arguments))); // eslint-disable-line prefer-rest-params
 
-	  // Auto-detect ES6 default export for people still using ES5
-	  var backend = undefined;
-	  if (typeof backendOrModule === 'object' && typeof backendOrModule['default'] === 'function') {
-	    backend = backendOrModule['default'];
-	  } else {
-	    backend = backendOrModule;
-	  }
-
-	  _invariant2['default'](typeof backend === 'function', 'Expected the backend to be a function or an ES6 module exporting a default function. ' + 'Read more: http://gaearon.github.io/react-dnd/docs-drag-drop-context.html');
-
-	  var childContext = {
-	    dragDropManager: new _dndCore.DragDropManager(backend)
-	  };
+	  var backend = unpackBackendForEs5Users(backendOrModule);
+	  var childContext = createChildContext(backend);
 
 	  return function decorateContext(DecoratedComponent) {
+	    var _class, _temp;
+
 	    var displayName = DecoratedComponent.displayName || DecoratedComponent.name || 'Component';
 
-	    return (function (_Component) {
+	    var DragDropContextContainer = (_temp = _class = function (_Component) {
 	      _inherits(DragDropContextContainer, _Component);
 
 	      function DragDropContextContainer() {
 	        _classCallCheck(this, DragDropContextContainer);
 
-	        _Component.apply(this, arguments);
+	        return _possibleConstructorReturn(this, (DragDropContextContainer.__proto__ || Object.getPrototypeOf(DragDropContextContainer)).apply(this, arguments));
 	      }
 
-	      DragDropContextContainer.prototype.getDecoratedComponentInstance = function getDecoratedComponentInstance() {
-	        return this.refs.child;
-	      };
-
-	      DragDropContextContainer.prototype.getManager = function getManager() {
-	        return childContext.dragDropManager;
-	      };
-
-	      DragDropContextContainer.prototype.getChildContext = function getChildContext() {
-	        return childContext;
-	      };
-
-	      DragDropContextContainer.prototype.render = function render() {
-	        return _react2['default'].createElement(DecoratedComponent, _extends({}, this.props, {
-	          ref: 'child' }));
-	      };
-
-	      _createClass(DragDropContextContainer, null, [{
-	        key: 'DecoratedComponent',
-	        value: DecoratedComponent,
-	        enumerable: true
+	      _createClass(DragDropContextContainer, [{
+	        key: 'getDecoratedComponentInstance',
+	        value: function getDecoratedComponentInstance() {
+	          (0, _invariant2.default)(this.child, 'In order to access an instance of the decorated component it can ' + 'not be a stateless component.');
+	          return this.child;
+	        }
 	      }, {
-	        key: 'displayName',
-	        value: 'DragDropContext(' + displayName + ')',
-	        enumerable: true
+	        key: 'getManager',
+	        value: function getManager() {
+	          return childContext.dragDropManager;
+	        }
 	      }, {
-	        key: 'childContextTypes',
-	        value: {
-	          dragDropManager: _react.PropTypes.object.isRequired
-	        },
-	        enumerable: true
+	        key: 'getChildContext',
+	        value: function getChildContext() {
+	          return childContext;
+	        }
+	      }, {
+	        key: 'render',
+	        value: function render() {
+	          var _this2 = this;
+
+	          return _react2.default.createElement(DecoratedComponent, _extends({}, this.props, {
+	            ref: function ref(child) {
+	              return _this2.child = child;
+	            }
+	          }));
+	        }
 	      }]);
 
 	      return DragDropContextContainer;
-	    })(_react.Component);
+	    }(_react.Component), _class.DecoratedComponent = DecoratedComponent, _class.displayName = 'DragDropContext(' + displayName + ')', _class.childContextTypes = CHILD_CONTEXT_TYPES, _temp);
+
+
+	    return (0, _hoistNonReactStatics2.default)(DragDropContextContainer, DecoratedComponent);
 	  };
 	}
-
-	module.exports = exports['default'];
 
 /***/ },
 /* 4 */
@@ -5435,185 +5491,335 @@ var WikiTableEditor =
 
 /***/ },
 /* 115 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ function(module, exports) {
 
-	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
+	/**
+	 * Copyright 2015, Yahoo! Inc.
+	 * Copyrights licensed under the New BSD License. See the accompanying LICENSE file for terms.
+	 */
+	'use strict';
 
-	exports.__esModule = true;
-	exports['default'] = checkDecoratorArguments;
+	var REACT_STATICS = {
+	    childContextTypes: true,
+	    contextTypes: true,
+	    defaultProps: true,
+	    displayName: true,
+	    getDefaultProps: true,
+	    mixins: true,
+	    propTypes: true,
+	    type: true
+	};
 
-	function checkDecoratorArguments(functionName, signature) {
-	  if (process.env.NODE_ENV !== 'production') {
-	    for (var _len = arguments.length, args = Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
-	      args[_key - 2] = arguments[_key];
+	var KNOWN_STATICS = {
+	    name: true,
+	    length: true,
+	    prototype: true,
+	    caller: true,
+	    arguments: true,
+	    arity: true
+	};
+
+	var isGetOwnPropertySymbolsAvailable = typeof Object.getOwnPropertySymbols === 'function';
+
+	module.exports = function hoistNonReactStatics(targetComponent, sourceComponent, customStatics) {
+	    if (typeof sourceComponent !== 'string') { // don't hoist over string (html) components
+	        var keys = Object.getOwnPropertyNames(sourceComponent);
+
+	        /* istanbul ignore else */
+	        if (isGetOwnPropertySymbolsAvailable) {
+	            keys = keys.concat(Object.getOwnPropertySymbols(sourceComponent));
+	        }
+
+	        for (var i = 0; i < keys.length; ++i) {
+	            if (!REACT_STATICS[keys[i]] && !KNOWN_STATICS[keys[i]] && (!customStatics || !customStatics[keys[i]])) {
+	                try {
+	                    targetComponent[keys[i]] = sourceComponent[keys[i]];
+	                } catch (error) {
+
+	                }
+	            }
+	        }
 	    }
 
-	    for (var i = 0; i < args.length; i++) {
-	      var arg = args[i];
-	      if (arg && arg.prototype && arg.prototype.render) {
-	        console.error( // eslint-disable-line no-console
-	        'You seem to be applying the arguments in the wrong order. ' + ('It should be ' + functionName + '(' + signature + ')(Component), not the other way around. ') + 'Read more: http://gaearon.github.io/react-dnd/docs-troubleshooting.html#you-seem-to-be-applying-the-arguments-in-the-wrong-order');
-	        return;
-	      }
-	    }
-	  }
-	}
+	    return targetComponent;
+	};
 
-	module.exports = exports['default'];
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(25)))
 
 /***/ },
 /* 116 */
 /***/ function(module, exports, __webpack_require__) {
 
+	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = checkDecoratorArguments;
+	function checkDecoratorArguments(functionName, signature) {
+	  if (process.env.NODE_ENV !== 'production') {
+	    for (var i = 0; i < (arguments.length <= 2 ? 0 : arguments.length - 2); i += 1) {
+	      var arg = arguments.length <= i + 2 ? undefined : arguments[i + 2];
+	      if (arg && arg.prototype && arg.prototype.render) {
+	        console.error( // eslint-disable-line no-console
+	        'You seem to be applying the arguments in the wrong order. ' + ('It should be ' + functionName + '(' + signature + ')(Component), not the other way around. ') + 'Read more: http://react-dnd.github.io/react-dnd/docs-troubleshooting.html#you-seem-to-be-applying-the-arguments-in-the-wrong-order');
+	        return;
+	      }
+	    }
+	  }
+	}
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(25)))
+
+/***/ },
+/* 117 */
+/***/ function(module, exports, __webpack_require__) {
+
 	'use strict';
 
-	exports.__esModule = true;
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = undefined;
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _class, _temp;
+
+	var _react = __webpack_require__(1);
+
+	var _DragDropContext = __webpack_require__(3);
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	/**
+	 * This class is a React-Component based version of the DragDropContext.
+	 * This is an alternative to decorating an application component with an ES7 decorator.
+	 */
+	var DragDropContextProvider = (_temp = _class = function (_Component) {
+	  _inherits(DragDropContextProvider, _Component);
+
+	  function DragDropContextProvider(props, context) {
+	    _classCallCheck(this, DragDropContextProvider);
+
+	    var _this = _possibleConstructorReturn(this, (DragDropContextProvider.__proto__ || Object.getPrototypeOf(DragDropContextProvider)).call(this, props, context));
+
+	    _this.backend = (0, _DragDropContext.unpackBackendForEs5Users)(props.backend);
+	    return _this;
+	  }
+
+	  _createClass(DragDropContextProvider, [{
+	    key: 'getChildContext',
+	    value: function getChildContext() {
+	      var _this2 = this;
+
+	      /**
+	       * This property determines which window global to use for creating the DragDropManager.
+	       * If a window has been injected explicitly via props, that is used first. If it is available
+	       * as a context value, then use that, otherwise use the browser global.
+	       */
+	      var getWindow = function getWindow() {
+	        if (_this2.props && _this2.props.window) {
+	          return _this2.props.window;
+	        } else if (_this2.context && _this2.context.window) {
+	          return _this2.context.window;
+	        } else if (typeof window !== 'undefined') {
+	          return window;
+	        }
+	        return undefined;
+	      };
+
+	      return (0, _DragDropContext.createChildContext)(this.backend, { window: getWindow() });
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      return _react.Children.only(this.props.children);
+	    }
+	  }]);
+
+	  return DragDropContextProvider;
+	}(_react.Component), _class.propTypes = {
+	  backend: _react.PropTypes.oneOfType([_react.PropTypes.func, _react.PropTypes.object]).isRequired,
+	  children: _react.PropTypes.element.isRequired,
+	  window: _react.PropTypes.object }, _class.defaultProps = {
+	  window: undefined
+	}, _class.childContextTypes = _DragDropContext.CHILD_CONTEXT_TYPES, _class.displayName = 'DragDropContextProvider', _class.contextTypes = {
+	  window: _react.PropTypes.object
+	}, _temp);
+	exports.default = DragDropContextProvider;
+
+/***/ },
+/* 118 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
 
 	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-	var _slice = Array.prototype.slice;
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	exports['default'] = DragLayer;
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	exports.default = DragLayer;
 
 	var _react = __webpack_require__(1);
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _utilsShallowEqual = __webpack_require__(117);
+	var _hoistNonReactStatics = __webpack_require__(115);
 
-	var _utilsShallowEqual2 = _interopRequireDefault(_utilsShallowEqual);
+	var _hoistNonReactStatics2 = _interopRequireDefault(_hoistNonReactStatics);
 
-	var _utilsShallowEqualScalar = __webpack_require__(118);
+	var _isPlainObject = __webpack_require__(7);
 
-	var _utilsShallowEqualScalar2 = _interopRequireDefault(_utilsShallowEqualScalar);
-
-	var _lodashIsPlainObject = __webpack_require__(7);
-
-	var _lodashIsPlainObject2 = _interopRequireDefault(_lodashIsPlainObject);
+	var _isPlainObject2 = _interopRequireDefault(_isPlainObject);
 
 	var _invariant = __webpack_require__(24);
 
 	var _invariant2 = _interopRequireDefault(_invariant);
 
-	var _utilsCheckDecoratorArguments = __webpack_require__(115);
+	var _shallowEqual = __webpack_require__(119);
 
-	var _utilsCheckDecoratorArguments2 = _interopRequireDefault(_utilsCheckDecoratorArguments);
+	var _shallowEqual2 = _interopRequireDefault(_shallowEqual);
+
+	var _shallowEqualScalar = __webpack_require__(120);
+
+	var _shallowEqualScalar2 = _interopRequireDefault(_shallowEqualScalar);
+
+	var _checkDecoratorArguments = __webpack_require__(116);
+
+	var _checkDecoratorArguments2 = _interopRequireDefault(_checkDecoratorArguments);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 	function DragLayer(collect) {
-	  var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+	  var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
-	  _utilsCheckDecoratorArguments2['default'].apply(undefined, ['DragLayer', 'collect[, options]'].concat(_slice.call(arguments)));
-	  _invariant2['default'](typeof collect === 'function', 'Expected "collect" provided as the first argument to DragLayer ' + 'to be a function that collects props to inject into the component. ', 'Instead, received %s. ' + 'Read more: http://gaearon.github.io/react-dnd/docs-drag-layer.html', collect);
-	  _invariant2['default'](_lodashIsPlainObject2['default'](options), 'Expected "options" provided as the second argument to DragLayer to be ' + 'a plain object when specified. ' + 'Instead, received %s. ' + 'Read more: http://gaearon.github.io/react-dnd/docs-drag-layer.html', options);
+	  _checkDecoratorArguments2.default.apply(undefined, ['DragLayer', 'collect[, options]'].concat(Array.prototype.slice.call(arguments))); // eslint-disable-line prefer-rest-params
+	  (0, _invariant2.default)(typeof collect === 'function', 'Expected "collect" provided as the first argument to DragLayer ' + 'to be a function that collects props to inject into the component. ', 'Instead, received %s. ' + 'Read more: http://react-dnd.github.io/react-dnd/docs-drag-layer.html', collect);
+	  (0, _invariant2.default)((0, _isPlainObject2.default)(options), 'Expected "options" provided as the second argument to DragLayer to be ' + 'a plain object when specified. ' + 'Instead, received %s. ' + 'Read more: http://react-dnd.github.io/react-dnd/docs-drag-layer.html', options);
 
 	  return function decorateLayer(DecoratedComponent) {
-	    var _options$arePropsEqual = options.arePropsEqual;
-	    var arePropsEqual = _options$arePropsEqual === undefined ? _utilsShallowEqualScalar2['default'] : _options$arePropsEqual;
+	    var _class, _temp;
+
+	    var _options$arePropsEqua = options.arePropsEqual,
+	        arePropsEqual = _options$arePropsEqua === undefined ? _shallowEqualScalar2.default : _options$arePropsEqua;
 
 	    var displayName = DecoratedComponent.displayName || DecoratedComponent.name || 'Component';
 
-	    return (function (_Component) {
+	    var DragLayerContainer = (_temp = _class = function (_Component) {
 	      _inherits(DragLayerContainer, _Component);
 
-	      DragLayerContainer.prototype.getDecoratedComponentInstance = function getDecoratedComponentInstance() {
-	        return this.refs.child;
-	      };
-
-	      DragLayerContainer.prototype.shouldComponentUpdate = function shouldComponentUpdate(nextProps, nextState) {
-	        return !arePropsEqual(nextProps, this.props) || !_utilsShallowEqual2['default'](nextState, this.state);
-	      };
-
-	      _createClass(DragLayerContainer, null, [{
-	        key: 'DecoratedComponent',
-	        value: DecoratedComponent,
-	        enumerable: true
+	      _createClass(DragLayerContainer, [{
+	        key: 'getDecoratedComponentInstance',
+	        value: function getDecoratedComponentInstance() {
+	          (0, _invariant2.default)(this.child, 'In order to access an instance of the decorated component it can ' + 'not be a stateless component.');
+	          return this.child;
+	        }
 	      }, {
-	        key: 'displayName',
-	        value: 'DragLayer(' + displayName + ')',
-	        enumerable: true
-	      }, {
-	        key: 'contextTypes',
-	        value: {
-	          dragDropManager: _react.PropTypes.object.isRequired
-	        },
-	        enumerable: true
+	        key: 'shouldComponentUpdate',
+	        value: function shouldComponentUpdate(nextProps, nextState) {
+	          return !arePropsEqual(nextProps, this.props) || !(0, _shallowEqual2.default)(nextState, this.state);
+	        }
 	      }]);
 
 	      function DragLayerContainer(props, context) {
 	        _classCallCheck(this, DragLayerContainer);
 
-	        _Component.call(this, props);
-	        this.handleChange = this.handleChange.bind(this);
+	        var _this = _possibleConstructorReturn(this, (DragLayerContainer.__proto__ || Object.getPrototypeOf(DragLayerContainer)).call(this, props));
 
-	        this.manager = context.dragDropManager;
-	        _invariant2['default'](typeof this.manager === 'object', 'Could not find the drag and drop manager in the context of %s. ' + 'Make sure to wrap the top-level component of your app with DragDropContext. ' + 'Read more: http://gaearon.github.io/react-dnd/docs-troubleshooting.html#could-not-find-the-drag-and-drop-manager-in-the-context', displayName, displayName);
+	        _this.handleChange = _this.handleChange.bind(_this);
 
-	        this.state = this.getCurrentState();
+	        _this.manager = context.dragDropManager;
+	        (0, _invariant2.default)(_typeof(_this.manager) === 'object', 'Could not find the drag and drop manager in the context of %s. ' + 'Make sure to wrap the top-level component of your app with DragDropContext. ' + 'Read more: http://react-dnd.github.io/react-dnd/docs-troubleshooting.html#could-not-find-the-drag-and-drop-manager-in-the-context', displayName, displayName);
+
+	        _this.state = _this.getCurrentState();
+	        return _this;
 	      }
 
-	      DragLayerContainer.prototype.componentDidMount = function componentDidMount() {
-	        this.isCurrentlyMounted = true;
+	      _createClass(DragLayerContainer, [{
+	        key: 'componentDidMount',
+	        value: function componentDidMount() {
+	          this.isCurrentlyMounted = true;
 
-	        var monitor = this.manager.getMonitor();
-	        this.unsubscribeFromOffsetChange = monitor.subscribeToOffsetChange(this.handleChange);
-	        this.unsubscribeFromStateChange = monitor.subscribeToStateChange(this.handleChange);
+	          var monitor = this.manager.getMonitor();
+	          this.unsubscribeFromOffsetChange = monitor.subscribeToOffsetChange(this.handleChange);
+	          this.unsubscribeFromStateChange = monitor.subscribeToStateChange(this.handleChange);
 
-	        this.handleChange();
-	      };
-
-	      DragLayerContainer.prototype.componentWillUnmount = function componentWillUnmount() {
-	        this.isCurrentlyMounted = false;
-
-	        this.unsubscribeFromOffsetChange();
-	        this.unsubscribeFromStateChange();
-	      };
-
-	      DragLayerContainer.prototype.handleChange = function handleChange() {
-	        if (!this.isCurrentlyMounted) {
-	          return;
+	          this.handleChange();
 	        }
+	      }, {
+	        key: 'componentWillUnmount',
+	        value: function componentWillUnmount() {
+	          this.isCurrentlyMounted = false;
 
-	        var nextState = this.getCurrentState();
-	        if (!_utilsShallowEqual2['default'](nextState, this.state)) {
-	          this.setState(nextState);
+	          this.unsubscribeFromOffsetChange();
+	          this.unsubscribeFromStateChange();
 	        }
-	      };
+	      }, {
+	        key: 'handleChange',
+	        value: function handleChange() {
+	          if (!this.isCurrentlyMounted) {
+	            return;
+	          }
 
-	      DragLayerContainer.prototype.getCurrentState = function getCurrentState() {
-	        var monitor = this.manager.getMonitor();
-	        return collect(monitor);
-	      };
+	          var nextState = this.getCurrentState();
+	          if (!(0, _shallowEqual2.default)(nextState, this.state)) {
+	            this.setState(nextState);
+	          }
+	        }
+	      }, {
+	        key: 'getCurrentState',
+	        value: function getCurrentState() {
+	          var monitor = this.manager.getMonitor();
+	          return collect(monitor);
+	        }
+	      }, {
+	        key: 'render',
+	        value: function render() {
+	          var _this2 = this;
 
-	      DragLayerContainer.prototype.render = function render() {
-	        return _react2['default'].createElement(DecoratedComponent, _extends({}, this.props, this.state, {
-	          ref: 'child' }));
-	      };
+	          return _react2.default.createElement(DecoratedComponent, _extends({}, this.props, this.state, {
+	            ref: function ref(child) {
+	              return _this2.child = child;
+	            }
+	          }));
+	        }
+	      }]);
 
 	      return DragLayerContainer;
-	    })(_react.Component);
+	    }(_react.Component), _class.DecoratedComponent = DecoratedComponent, _class.displayName = 'DragLayer(' + displayName + ')', _class.contextTypes = {
+	      dragDropManager: _react.PropTypes.object.isRequired
+	    }, _temp);
+
+
+	    return (0, _hoistNonReactStatics2.default)(DragLayerContainer, DecoratedComponent);
 	  };
 	}
 
-	module.exports = exports['default'];
-
 /***/ },
-/* 117 */
+/* 119 */
 /***/ function(module, exports) {
 
 	"use strict";
 
-	exports.__esModule = true;
-	exports["default"] = shallowEqual;
-
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = shallowEqual;
 	function shallowEqual(objA, objB) {
 	  if (objA === objB) {
 	    return true;
@@ -5628,7 +5834,7 @@ var WikiTableEditor =
 
 	  // Test for A's keys different from B.
 	  var hasOwn = Object.prototype.hasOwnProperty;
-	  for (var i = 0; i < keysA.length; i++) {
+	  for (var i = 0; i < keysA.length; i += 1) {
 	    if (!hasOwn.call(objB, keysA[i]) || objA[keysA[i]] !== objB[keysA[i]]) {
 	      return false;
 	    }
@@ -5644,23 +5850,25 @@ var WikiTableEditor =
 	  return true;
 	}
 
-	module.exports = exports["default"];
-
 /***/ },
-/* 118 */
+/* 120 */
 /***/ function(module, exports) {
 
 	'use strict';
 
-	exports.__esModule = true;
-	exports['default'] = shallowEqualScalar;
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
 
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+	exports.default = shallowEqualScalar;
 	function shallowEqualScalar(objA, objB) {
 	  if (objA === objB) {
 	    return true;
 	  }
 
-	  if (typeof objA !== 'object' || objA === null || typeof objB !== 'object' || objB === null) {
+	  if ((typeof objA === 'undefined' ? 'undefined' : _typeof(objA)) !== 'object' || objA === null || (typeof objB === 'undefined' ? 'undefined' : _typeof(objB)) !== 'object' || objB === null) {
 	    return false;
 	  }
 
@@ -5673,7 +5881,7 @@ var WikiTableEditor =
 
 	  // Test for A's keys different from B.
 	  var hasOwn = Object.prototype.hasOwnProperty;
-	  for (var i = 0; i < keysA.length; i++) {
+	  for (var i = 0; i < keysA.length; i += 1) {
 	    if (!hasOwn.call(objB, keysA[i])) {
 	      return false;
 	    }
@@ -5681,7 +5889,7 @@ var WikiTableEditor =
 	    var valA = objA[keysA[i]];
 	    var valB = objB[keysA[i]];
 
-	    if (valA !== valB || typeof valA === 'object' || typeof valB === 'object') {
+	    if (valA !== valB || (typeof valA === 'undefined' ? 'undefined' : _typeof(valA)) === 'object' || (typeof valB === 'undefined' ? 'undefined' : _typeof(valB)) === 'object') {
 	      return false;
 	    }
 	  }
@@ -5689,82 +5897,81 @@ var WikiTableEditor =
 	  return true;
 	}
 
-	module.exports = exports['default'];
-
 /***/ },
-/* 119 */
+/* 121 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	exports.__esModule = true;
-	var _slice = Array.prototype.slice;
-	exports['default'] = DragSource;
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = DragSource;
 
 	var _invariant = __webpack_require__(24);
 
 	var _invariant2 = _interopRequireDefault(_invariant);
 
-	var _lodashIsPlainObject = __webpack_require__(7);
+	var _isPlainObject = __webpack_require__(7);
 
-	var _lodashIsPlainObject2 = _interopRequireDefault(_lodashIsPlainObject);
+	var _isPlainObject2 = _interopRequireDefault(_isPlainObject);
 
-	var _utilsCheckDecoratorArguments = __webpack_require__(115);
+	var _checkDecoratorArguments = __webpack_require__(116);
 
-	var _utilsCheckDecoratorArguments2 = _interopRequireDefault(_utilsCheckDecoratorArguments);
+	var _checkDecoratorArguments2 = _interopRequireDefault(_checkDecoratorArguments);
 
-	var _decorateHandler = __webpack_require__(120);
+	var _decorateHandler = __webpack_require__(122);
 
 	var _decorateHandler2 = _interopRequireDefault(_decorateHandler);
 
-	var _registerSource = __webpack_require__(126);
+	var _registerSource = __webpack_require__(128);
 
 	var _registerSource2 = _interopRequireDefault(_registerSource);
 
-	var _createSourceFactory = __webpack_require__(127);
+	var _createSourceFactory = __webpack_require__(129);
 
 	var _createSourceFactory2 = _interopRequireDefault(_createSourceFactory);
 
-	var _createSourceMonitor = __webpack_require__(128);
+	var _createSourceMonitor = __webpack_require__(130);
 
 	var _createSourceMonitor2 = _interopRequireDefault(_createSourceMonitor);
 
-	var _createSourceConnector = __webpack_require__(129);
+	var _createSourceConnector = __webpack_require__(131);
 
 	var _createSourceConnector2 = _interopRequireDefault(_createSourceConnector);
 
-	var _utilsIsValidType = __webpack_require__(133);
+	var _isValidType = __webpack_require__(135);
 
-	var _utilsIsValidType2 = _interopRequireDefault(_utilsIsValidType);
+	var _isValidType2 = _interopRequireDefault(_isValidType);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function DragSource(type, spec, collect) {
-	  var options = arguments.length <= 3 || arguments[3] === undefined ? {} : arguments[3];
+	  var options = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : {};
 
-	  _utilsCheckDecoratorArguments2['default'].apply(undefined, ['DragSource', 'type, spec, collect[, options]'].concat(_slice.call(arguments)));
+	  _checkDecoratorArguments2.default.apply(undefined, ['DragSource', 'type, spec, collect[, options]'].concat(Array.prototype.slice.call(arguments))); // eslint-disable-line prefer-rest-params
 	  var getType = type;
 	  if (typeof type !== 'function') {
-	    _invariant2['default'](_utilsIsValidType2['default'](type), 'Expected "type" provided as the first argument to DragSource to be ' + 'a string, or a function that returns a string given the current props. ' + 'Instead, received %s. ' + 'Read more: http://gaearon.github.io/react-dnd/docs-drag-source.html', type);
-	    getType = function () {
+	    (0, _invariant2.default)((0, _isValidType2.default)(type), 'Expected "type" provided as the first argument to DragSource to be ' + 'a string, or a function that returns a string given the current props. ' + 'Instead, received %s. ' + 'Read more: http://react-dnd.github.io/react-dnd/docs-drag-source.html', type);
+	    getType = function getType() {
 	      return type;
 	    };
 	  }
-	  _invariant2['default'](_lodashIsPlainObject2['default'](spec), 'Expected "spec" provided as the second argument to DragSource to be ' + 'a plain object. Instead, received %s. ' + 'Read more: http://gaearon.github.io/react-dnd/docs-drag-source.html', spec);
-	  var createSource = _createSourceFactory2['default'](spec);
-	  _invariant2['default'](typeof collect === 'function', 'Expected "collect" provided as the third argument to DragSource to be ' + 'a function that returns a plain object of props to inject. ' + 'Instead, received %s. ' + 'Read more: http://gaearon.github.io/react-dnd/docs-drag-source.html', collect);
-	  _invariant2['default'](_lodashIsPlainObject2['default'](options), 'Expected "options" provided as the fourth argument to DragSource to be ' + 'a plain object when specified. ' + 'Instead, received %s. ' + 'Read more: http://gaearon.github.io/react-dnd/docs-drag-source.html', collect);
+	  (0, _invariant2.default)((0, _isPlainObject2.default)(spec), 'Expected "spec" provided as the second argument to DragSource to be ' + 'a plain object. Instead, received %s. ' + 'Read more: http://react-dnd.github.io/react-dnd/docs-drag-source.html', spec);
+	  var createSource = (0, _createSourceFactory2.default)(spec);
+	  (0, _invariant2.default)(typeof collect === 'function', 'Expected "collect" provided as the third argument to DragSource to be ' + 'a function that returns a plain object of props to inject. ' + 'Instead, received %s. ' + 'Read more: http://react-dnd.github.io/react-dnd/docs-drag-source.html', collect);
+	  (0, _invariant2.default)((0, _isPlainObject2.default)(options), 'Expected "options" provided as the fourth argument to DragSource to be ' + 'a plain object when specified. ' + 'Instead, received %s. ' + 'Read more: http://react-dnd.github.io/react-dnd/docs-drag-source.html', collect);
 
 	  return function decorateSource(DecoratedComponent) {
-	    return _decorateHandler2['default']({
+	    return (0, _decorateHandler2.default)({
 	      connectBackend: function connectBackend(backend, sourceId) {
 	        return backend.connectDragSource(sourceId);
 	      },
 	      containerDisplayName: 'DragSource',
 	      createHandler: createSource,
-	      registerHandler: _registerSource2['default'],
-	      createMonitor: _createSourceMonitor2['default'],
-	      createConnector: _createSourceConnector2['default'],
+	      registerHandler: _registerSource2.default,
+	      createMonitor: _createSourceMonitor2.default,
+	      createConnector: _createSourceConnector2.default,
 	      DecoratedComponent: DecoratedComponent,
 	      getType: getType,
 	      collect: collect,
@@ -5773,208 +5980,224 @@ var WikiTableEditor =
 	  };
 	}
 
-	module.exports = exports['default'];
-
 /***/ },
-/* 120 */
+/* 122 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
 
-	exports.__esModule = true;
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
 
 	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-	exports['default'] = decorateHandler;
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	exports.default = decorateHandler;
 
 	var _react = __webpack_require__(1);
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _disposables = __webpack_require__(121);
+	var _disposables = __webpack_require__(123);
 
-	var _utilsShallowEqual = __webpack_require__(117);
+	var _isPlainObject = __webpack_require__(7);
 
-	var _utilsShallowEqual2 = _interopRequireDefault(_utilsShallowEqual);
-
-	var _utilsShallowEqualScalar = __webpack_require__(118);
-
-	var _utilsShallowEqualScalar2 = _interopRequireDefault(_utilsShallowEqualScalar);
-
-	var _lodashIsPlainObject = __webpack_require__(7);
-
-	var _lodashIsPlainObject2 = _interopRequireDefault(_lodashIsPlainObject);
+	var _isPlainObject2 = _interopRequireDefault(_isPlainObject);
 
 	var _invariant = __webpack_require__(24);
 
 	var _invariant2 = _interopRequireDefault(_invariant);
 
+	var _hoistNonReactStatics = __webpack_require__(115);
+
+	var _hoistNonReactStatics2 = _interopRequireDefault(_hoistNonReactStatics);
+
+	var _shallowEqual = __webpack_require__(119);
+
+	var _shallowEqual2 = _interopRequireDefault(_shallowEqual);
+
+	var _shallowEqualScalar = __webpack_require__(120);
+
+	var _shallowEqualScalar2 = _interopRequireDefault(_shallowEqualScalar);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
 	function decorateHandler(_ref) {
-	  var DecoratedComponent = _ref.DecoratedComponent;
-	  var createHandler = _ref.createHandler;
-	  var createMonitor = _ref.createMonitor;
-	  var createConnector = _ref.createConnector;
-	  var registerHandler = _ref.registerHandler;
-	  var containerDisplayName = _ref.containerDisplayName;
-	  var getType = _ref.getType;
-	  var collect = _ref.collect;
-	  var options = _ref.options;
-	  var _options$arePropsEqual = options.arePropsEqual;
-	  var arePropsEqual = _options$arePropsEqual === undefined ? _utilsShallowEqualScalar2['default'] : _options$arePropsEqual;
+	  var _class, _temp;
+
+	  var DecoratedComponent = _ref.DecoratedComponent,
+	      createHandler = _ref.createHandler,
+	      createMonitor = _ref.createMonitor,
+	      createConnector = _ref.createConnector,
+	      registerHandler = _ref.registerHandler,
+	      containerDisplayName = _ref.containerDisplayName,
+	      getType = _ref.getType,
+	      collect = _ref.collect,
+	      options = _ref.options;
+	  var _options$arePropsEqua = options.arePropsEqual,
+	      arePropsEqual = _options$arePropsEqua === undefined ? _shallowEqualScalar2.default : _options$arePropsEqua;
 
 	  var displayName = DecoratedComponent.displayName || DecoratedComponent.name || 'Component';
 
-	  return (function (_Component) {
+	  var DragDropContainer = (_temp = _class = function (_Component) {
 	    _inherits(DragDropContainer, _Component);
 
-	    DragDropContainer.prototype.getHandlerId = function getHandlerId() {
-	      return this.handlerId;
-	    };
-
-	    DragDropContainer.prototype.getDecoratedComponentInstance = function getDecoratedComponentInstance() {
-	      return this.decoratedComponentInstance;
-	    };
-
-	    DragDropContainer.prototype.shouldComponentUpdate = function shouldComponentUpdate(nextProps, nextState) {
-	      return !arePropsEqual(nextProps, this.props) || !_utilsShallowEqual2['default'](nextState, this.state);
-	    };
-
-	    _createClass(DragDropContainer, null, [{
-	      key: 'DecoratedComponent',
-	      value: DecoratedComponent,
-	      enumerable: true
+	    _createClass(DragDropContainer, [{
+	      key: 'getHandlerId',
+	      value: function getHandlerId() {
+	        return this.handlerId;
+	      }
 	    }, {
-	      key: 'displayName',
-	      value: containerDisplayName + '(' + displayName + ')',
-	      enumerable: true
+	      key: 'getDecoratedComponentInstance',
+	      value: function getDecoratedComponentInstance() {
+	        return this.decoratedComponentInstance;
+	      }
 	    }, {
-	      key: 'contextTypes',
-	      value: {
-	        dragDropManager: _react.PropTypes.object.isRequired
-	      },
-	      enumerable: true
+	      key: 'shouldComponentUpdate',
+	      value: function shouldComponentUpdate(nextProps, nextState) {
+	        return !arePropsEqual(nextProps, this.props) || !(0, _shallowEqual2.default)(nextState, this.state);
+	      }
 	    }]);
 
 	    function DragDropContainer(props, context) {
 	      _classCallCheck(this, DragDropContainer);
 
-	      _Component.call(this, props, context);
-	      this.handleChange = this.handleChange.bind(this);
-	      this.handleChildRef = this.handleChildRef.bind(this);
+	      var _this = _possibleConstructorReturn(this, (DragDropContainer.__proto__ || Object.getPrototypeOf(DragDropContainer)).call(this, props, context));
 
-	      _invariant2['default'](typeof this.context.dragDropManager === 'object', 'Could not find the drag and drop manager in the context of %s. ' + 'Make sure to wrap the top-level component of your app with DragDropContext. ' + 'Read more: http://gaearon.github.io/react-dnd/docs-troubleshooting.html#could-not-find-the-drag-and-drop-manager-in-the-context', displayName, displayName);
+	      _this.handleChange = _this.handleChange.bind(_this);
+	      _this.handleChildRef = _this.handleChildRef.bind(_this);
 
-	      this.manager = this.context.dragDropManager;
-	      this.handlerMonitor = createMonitor(this.manager);
-	      this.handlerConnector = createConnector(this.manager.getBackend());
-	      this.handler = createHandler(this.handlerMonitor);
+	      (0, _invariant2.default)(_typeof(_this.context.dragDropManager) === 'object', 'Could not find the drag and drop manager in the context of %s. ' + 'Make sure to wrap the top-level component of your app with DragDropContext. ' + 'Read more: http://react-dnd.github.io/react-dnd/docs-troubleshooting.html#could-not-find-the-drag-and-drop-manager-in-the-context', displayName, displayName);
 
-	      this.disposable = new _disposables.SerialDisposable();
-	      this.receiveProps(props);
-	      this.state = this.getCurrentState();
-	      this.dispose();
+	      _this.manager = _this.context.dragDropManager;
+	      _this.handlerMonitor = createMonitor(_this.manager);
+	      _this.handlerConnector = createConnector(_this.manager.getBackend());
+	      _this.handler = createHandler(_this.handlerMonitor);
+
+	      _this.disposable = new _disposables.SerialDisposable();
+	      _this.receiveProps(props);
+	      _this.state = _this.getCurrentState();
+	      _this.dispose();
+	      return _this;
 	    }
 
-	    DragDropContainer.prototype.componentDidMount = function componentDidMount() {
-	      this.isCurrentlyMounted = true;
-	      this.disposable = new _disposables.SerialDisposable();
-	      this.currentType = null;
-	      this.receiveProps(this.props);
-	      this.handleChange();
-	    };
-
-	    DragDropContainer.prototype.componentWillReceiveProps = function componentWillReceiveProps(nextProps) {
-	      if (!arePropsEqual(nextProps, this.props)) {
-	        this.receiveProps(nextProps);
+	    _createClass(DragDropContainer, [{
+	      key: 'componentDidMount',
+	      value: function componentDidMount() {
+	        this.isCurrentlyMounted = true;
+	        this.disposable = new _disposables.SerialDisposable();
+	        this.currentType = null;
+	        this.receiveProps(this.props);
 	        this.handleChange();
 	      }
-	    };
-
-	    DragDropContainer.prototype.componentWillUnmount = function componentWillUnmount() {
-	      this.dispose();
-	      this.isCurrentlyMounted = false;
-	    };
-
-	    DragDropContainer.prototype.receiveProps = function receiveProps(props) {
-	      this.handler.receiveProps(props);
-	      this.receiveType(getType(props));
-	    };
-
-	    DragDropContainer.prototype.receiveType = function receiveType(type) {
-	      if (type === this.currentType) {
-	        return;
+	    }, {
+	      key: 'componentWillReceiveProps',
+	      value: function componentWillReceiveProps(nextProps) {
+	        if (!arePropsEqual(nextProps, this.props)) {
+	          this.receiveProps(nextProps);
+	          this.handleChange();
+	        }
 	      }
-
-	      this.currentType = type;
-
-	      var _registerHandler = registerHandler(type, this.handler, this.manager);
-
-	      var handlerId = _registerHandler.handlerId;
-	      var unregister = _registerHandler.unregister;
-
-	      this.handlerId = handlerId;
-	      this.handlerMonitor.receiveHandlerId(handlerId);
-	      this.handlerConnector.receiveHandlerId(handlerId);
-
-	      var globalMonitor = this.manager.getMonitor();
-	      var unsubscribe = globalMonitor.subscribeToStateChange(this.handleChange, { handlerIds: [handlerId] });
-
-	      this.disposable.setDisposable(new _disposables.CompositeDisposable(new _disposables.Disposable(unsubscribe), new _disposables.Disposable(unregister)));
-	    };
-
-	    DragDropContainer.prototype.handleChange = function handleChange() {
-	      if (!this.isCurrentlyMounted) {
-	        return;
+	    }, {
+	      key: 'componentWillUnmount',
+	      value: function componentWillUnmount() {
+	        this.dispose();
+	        this.isCurrentlyMounted = false;
 	      }
-
-	      var nextState = this.getCurrentState();
-	      if (!_utilsShallowEqual2['default'](nextState, this.state)) {
-	        this.setState(nextState);
+	    }, {
+	      key: 'receiveProps',
+	      value: function receiveProps(props) {
+	        this.handler.receiveProps(props);
+	        this.receiveType(getType(props));
 	      }
-	    };
+	    }, {
+	      key: 'receiveType',
+	      value: function receiveType(type) {
+	        if (type === this.currentType) {
+	          return;
+	        }
 
-	    DragDropContainer.prototype.dispose = function dispose() {
-	      this.disposable.dispose();
-	      this.handlerConnector.receiveHandlerId(null);
-	    };
+	        this.currentType = type;
 
-	    DragDropContainer.prototype.handleChildRef = function handleChildRef(component) {
-	      this.decoratedComponentInstance = component;
-	      this.handler.receiveComponent(component);
-	    };
+	        var _registerHandler = registerHandler(type, this.handler, this.manager),
+	            handlerId = _registerHandler.handlerId,
+	            unregister = _registerHandler.unregister;
 
-	    DragDropContainer.prototype.getCurrentState = function getCurrentState() {
-	      var nextState = collect(this.handlerConnector.hooks, this.handlerMonitor);
+	        this.handlerId = handlerId;
+	        this.handlerMonitor.receiveHandlerId(handlerId);
+	        this.handlerConnector.receiveHandlerId(handlerId);
 
-	      if (process.env.NODE_ENV !== 'production') {
-	        _invariant2['default'](_lodashIsPlainObject2['default'](nextState), 'Expected `collect` specified as the second argument to ' + '%s for %s to return a plain object of props to inject. ' + 'Instead, received %s.', containerDisplayName, displayName, nextState);
+	        var globalMonitor = this.manager.getMonitor();
+	        var unsubscribe = globalMonitor.subscribeToStateChange(this.handleChange, { handlerIds: [handlerId] });
+
+	        this.disposable.setDisposable(new _disposables.CompositeDisposable(new _disposables.Disposable(unsubscribe), new _disposables.Disposable(unregister)));
 	      }
+	    }, {
+	      key: 'handleChange',
+	      value: function handleChange() {
+	        if (!this.isCurrentlyMounted) {
+	          return;
+	        }
 
-	      return nextState;
-	    };
+	        var nextState = this.getCurrentState();
+	        if (!(0, _shallowEqual2.default)(nextState, this.state)) {
+	          this.setState(nextState);
+	        }
+	      }
+	    }, {
+	      key: 'dispose',
+	      value: function dispose() {
+	        this.disposable.dispose();
+	        this.handlerConnector.receiveHandlerId(null);
+	      }
+	    }, {
+	      key: 'handleChildRef',
+	      value: function handleChildRef(component) {
+	        this.decoratedComponentInstance = component;
+	        this.handler.receiveComponent(component);
+	      }
+	    }, {
+	      key: 'getCurrentState',
+	      value: function getCurrentState() {
+	        var nextState = collect(this.handlerConnector.hooks, this.handlerMonitor);
 
-	    DragDropContainer.prototype.render = function render() {
-	      return _react2['default'].createElement(DecoratedComponent, _extends({}, this.props, this.state, {
-	        ref: this.handleChildRef }));
-	    };
+	        if (process.env.NODE_ENV !== 'production') {
+	          (0, _invariant2.default)((0, _isPlainObject2.default)(nextState), 'Expected `collect` specified as the second argument to ' + '%s for %s to return a plain object of props to inject. ' + 'Instead, received %s.', containerDisplayName, displayName, nextState);
+	        }
+
+	        return nextState;
+	      }
+	    }, {
+	      key: 'render',
+	      value: function render() {
+	        return _react2.default.createElement(DecoratedComponent, _extends({}, this.props, this.state, {
+	          ref: this.handleChildRef
+	        }));
+	      }
+	    }]);
 
 	    return DragDropContainer;
-	  })(_react.Component);
-	}
+	  }(_react.Component), _class.DecoratedComponent = DecoratedComponent, _class.displayName = containerDisplayName + '(' + displayName + ')', _class.contextTypes = {
+	    dragDropManager: _react.PropTypes.object.isRequired
+	  }, _temp);
 
-	module.exports = exports['default'];
+
+	  return (0, _hoistNonReactStatics2.default)(DragDropContainer, DecoratedComponent);
+	}
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(25)))
 
 /***/ },
-/* 121 */
+/* 123 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5983,32 +6206,32 @@ var WikiTableEditor =
 
 	exports.__esModule = true;
 
-	var _isDisposable2 = __webpack_require__(122);
+	var _isDisposable2 = __webpack_require__(124);
 
 	var _isDisposable3 = _interopRequireWildcard(_isDisposable2);
 
 	exports.isDisposable = _isDisposable3['default'];
 
-	var _Disposable2 = __webpack_require__(123);
+	var _Disposable2 = __webpack_require__(125);
 
 	var _Disposable3 = _interopRequireWildcard(_Disposable2);
 
 	exports.Disposable = _Disposable3['default'];
 
-	var _CompositeDisposable2 = __webpack_require__(124);
+	var _CompositeDisposable2 = __webpack_require__(126);
 
 	var _CompositeDisposable3 = _interopRequireWildcard(_CompositeDisposable2);
 
 	exports.CompositeDisposable = _CompositeDisposable3['default'];
 
-	var _SerialDisposable2 = __webpack_require__(125);
+	var _SerialDisposable2 = __webpack_require__(127);
 
 	var _SerialDisposable3 = _interopRequireWildcard(_SerialDisposable2);
 
 	exports.SerialDisposable = _SerialDisposable3['default'];
 
 /***/ },
-/* 122 */
+/* 124 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -6023,7 +6246,7 @@ var WikiTableEditor =
 	module.exports = exports['default'];
 
 /***/ },
-/* 123 */
+/* 125 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -6067,7 +6290,7 @@ var WikiTableEditor =
 	module.exports = exports["default"];
 
 /***/ },
-/* 124 */
+/* 126 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -6078,7 +6301,7 @@ var WikiTableEditor =
 
 	exports.__esModule = true;
 
-	var _isDisposable = __webpack_require__(122);
+	var _isDisposable = __webpack_require__(124);
 
 	var _isDisposable2 = _interopRequireWildcard(_isDisposable);
 
@@ -6173,7 +6396,7 @@ var WikiTableEditor =
 	module.exports = exports['default'];
 
 /***/ },
-/* 125 */
+/* 127 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -6184,7 +6407,7 @@ var WikiTableEditor =
 
 	exports.__esModule = true;
 
-	var _isDisposable = __webpack_require__(122);
+	var _isDisposable = __webpack_require__(124);
 
 	var _isDisposable2 = _interopRequireWildcard(_isDisposable);
 
@@ -6259,14 +6482,15 @@ var WikiTableEditor =
 	module.exports = exports['default'];
 
 /***/ },
-/* 126 */
+/* 128 */
 /***/ function(module, exports) {
 
 	"use strict";
 
-	exports.__esModule = true;
-	exports["default"] = registerSource;
-
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = registerSource;
 	function registerSource(type, source, manager) {
 	  var registry = manager.getRegistry();
 	  var sourceId = registry.addSource(type, source);
@@ -6281,42 +6505,45 @@ var WikiTableEditor =
 	  };
 	}
 
-	module.exports = exports["default"];
-
 /***/ },
-/* 127 */
+/* 129 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
 
-	exports.__esModule = true;
-	exports['default'] = createSourceFactory;
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	exports.default = createSourceFactory;
 
 	var _invariant = __webpack_require__(24);
 
 	var _invariant2 = _interopRequireDefault(_invariant);
 
-	var _lodashIsPlainObject = __webpack_require__(7);
+	var _isPlainObject = __webpack_require__(7);
 
-	var _lodashIsPlainObject2 = _interopRequireDefault(_lodashIsPlainObject);
+	var _isPlainObject2 = _interopRequireDefault(_isPlainObject);
 
-	var ALLOWED_SPEC_METHODS = ['canDrag', 'beginDrag', 'canDrag', 'isDragging', 'endDrag'];
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var ALLOWED_SPEC_METHODS = ['canDrag', 'beginDrag', 'isDragging', 'endDrag'];
 	var REQUIRED_SPEC_METHODS = ['beginDrag'];
 
 	function createSourceFactory(spec) {
 	  Object.keys(spec).forEach(function (key) {
-	    _invariant2['default'](ALLOWED_SPEC_METHODS.indexOf(key) > -1, 'Expected the drag source specification to only have ' + 'some of the following keys: %s. ' + 'Instead received a specification with an unexpected "%s" key. ' + 'Read more: http://gaearon.github.io/react-dnd/docs-drag-source.html', ALLOWED_SPEC_METHODS.join(', '), key);
-	    _invariant2['default'](typeof spec[key] === 'function', 'Expected %s in the drag source specification to be a function. ' + 'Instead received a specification with %s: %s. ' + 'Read more: http://gaearon.github.io/react-dnd/docs-drag-source.html', key, key, spec[key]);
+	    (0, _invariant2.default)(ALLOWED_SPEC_METHODS.indexOf(key) > -1, 'Expected the drag source specification to only have ' + 'some of the following keys: %s. ' + 'Instead received a specification with an unexpected "%s" key. ' + 'Read more: http://react-dnd.github.io/react-dnd/docs-drag-source.html', ALLOWED_SPEC_METHODS.join(', '), key);
+	    (0, _invariant2.default)(typeof spec[key] === 'function', 'Expected %s in the drag source specification to be a function. ' + 'Instead received a specification with %s: %s. ' + 'Read more: http://react-dnd.github.io/react-dnd/docs-drag-source.html', key, key, spec[key]);
 	  });
 	  REQUIRED_SPEC_METHODS.forEach(function (key) {
-	    _invariant2['default'](typeof spec[key] === 'function', 'Expected %s in the drag source specification to be a function. ' + 'Instead received a specification with %s: %s. ' + 'Read more: http://gaearon.github.io/react-dnd/docs-drag-source.html', key, key, spec[key]);
+	    (0, _invariant2.default)(typeof spec[key] === 'function', 'Expected %s in the drag source specification to be a function. ' + 'Instead received a specification with %s: %s. ' + 'Read more: http://react-dnd.github.io/react-dnd/docs-drag-source.html', key, key, spec[key]);
 	  });
 
-	  var Source = (function () {
+	  var Source = function () {
 	    function Source(monitor) {
 	      _classCallCheck(this, Source);
 
@@ -6325,184 +6552,209 @@ var WikiTableEditor =
 	      this.component = null;
 	    }
 
-	    Source.prototype.receiveProps = function receiveProps(props) {
-	      this.props = props;
-	    };
-
-	    Source.prototype.receiveComponent = function receiveComponent(component) {
-	      this.component = component;
-	    };
-
-	    Source.prototype.canDrag = function canDrag() {
-	      if (!spec.canDrag) {
-	        return true;
+	    _createClass(Source, [{
+	      key: 'receiveProps',
+	      value: function receiveProps(props) {
+	        this.props = props;
 	      }
-
-	      return spec.canDrag(this.props, this.monitor);
-	    };
-
-	    Source.prototype.isDragging = function isDragging(globalMonitor, sourceId) {
-	      if (!spec.isDragging) {
-	        return sourceId === globalMonitor.getSourceId();
+	    }, {
+	      key: 'receiveComponent',
+	      value: function receiveComponent(component) {
+	        this.component = component;
 	      }
+	    }, {
+	      key: 'canDrag',
+	      value: function canDrag() {
+	        if (!spec.canDrag) {
+	          return true;
+	        }
 
-	      return spec.isDragging(this.props, this.monitor);
-	    };
-
-	    Source.prototype.beginDrag = function beginDrag() {
-	      var item = spec.beginDrag(this.props, this.monitor, this.component);
-	      if (process.env.NODE_ENV !== 'production') {
-	        _invariant2['default'](_lodashIsPlainObject2['default'](item), 'beginDrag() must return a plain object that represents the dragged item. ' + 'Instead received %s. ' + 'Read more: http://gaearon.github.io/react-dnd/docs-drag-source.html', item);
+	        return spec.canDrag(this.props, this.monitor);
 	      }
-	      return item;
-	    };
+	    }, {
+	      key: 'isDragging',
+	      value: function isDragging(globalMonitor, sourceId) {
+	        if (!spec.isDragging) {
+	          return sourceId === globalMonitor.getSourceId();
+	        }
 
-	    Source.prototype.endDrag = function endDrag() {
-	      if (!spec.endDrag) {
-	        return;
+	        return spec.isDragging(this.props, this.monitor);
 	      }
+	    }, {
+	      key: 'beginDrag',
+	      value: function beginDrag() {
+	        var item = spec.beginDrag(this.props, this.monitor, this.component);
+	        if (process.env.NODE_ENV !== 'production') {
+	          (0, _invariant2.default)((0, _isPlainObject2.default)(item), 'beginDrag() must return a plain object that represents the dragged item. ' + 'Instead received %s. ' + 'Read more: http://react-dnd.github.io/react-dnd/docs-drag-source.html', item);
+	        }
+	        return item;
+	      }
+	    }, {
+	      key: 'endDrag',
+	      value: function endDrag() {
+	        if (!spec.endDrag) {
+	          return;
+	        }
 
-	      spec.endDrag(this.props, this.monitor, this.component);
-	    };
+	        spec.endDrag(this.props, this.monitor, this.component);
+	      }
+	    }]);
 
 	    return Source;
-	  })();
+	  }();
 
 	  return function createSource(monitor) {
 	    return new Source(monitor);
 	  };
 	}
-
-	module.exports = exports['default'];
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(25)))
 
 /***/ },
-/* 128 */
+/* 130 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	exports.__esModule = true;
-	exports['default'] = createSourceMonitor;
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	exports.default = createSourceMonitor;
 
 	var _invariant = __webpack_require__(24);
 
 	var _invariant2 = _interopRequireDefault(_invariant);
 
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
 	var isCallingCanDrag = false;
 	var isCallingIsDragging = false;
 
-	var SourceMonitor = (function () {
+	var SourceMonitor = function () {
 	  function SourceMonitor(manager) {
 	    _classCallCheck(this, SourceMonitor);
 
 	    this.internalMonitor = manager.getMonitor();
 	  }
 
-	  SourceMonitor.prototype.receiveHandlerId = function receiveHandlerId(sourceId) {
-	    this.sourceId = sourceId;
-	  };
-
-	  SourceMonitor.prototype.canDrag = function canDrag() {
-	    _invariant2['default'](!isCallingCanDrag, 'You may not call monitor.canDrag() inside your canDrag() implementation. ' + 'Read more: http://gaearon.github.io/react-dnd/docs-drag-source-monitor.html');
-
-	    try {
-	      isCallingCanDrag = true;
-	      return this.internalMonitor.canDragSource(this.sourceId);
-	    } finally {
-	      isCallingCanDrag = false;
+	  _createClass(SourceMonitor, [{
+	    key: 'receiveHandlerId',
+	    value: function receiveHandlerId(sourceId) {
+	      this.sourceId = sourceId;
 	    }
-	  };
+	  }, {
+	    key: 'canDrag',
+	    value: function canDrag() {
+	      (0, _invariant2.default)(!isCallingCanDrag, 'You may not call monitor.canDrag() inside your canDrag() implementation. ' + 'Read more: http://react-dnd.github.io/react-dnd/docs-drag-source-monitor.html');
 
-	  SourceMonitor.prototype.isDragging = function isDragging() {
-	    _invariant2['default'](!isCallingIsDragging, 'You may not call monitor.isDragging() inside your isDragging() implementation. ' + 'Read more: http://gaearon.github.io/react-dnd/docs-drag-source-monitor.html');
-
-	    try {
-	      isCallingIsDragging = true;
-	      return this.internalMonitor.isDraggingSource(this.sourceId);
-	    } finally {
-	      isCallingIsDragging = false;
+	      try {
+	        isCallingCanDrag = true;
+	        return this.internalMonitor.canDragSource(this.sourceId);
+	      } finally {
+	        isCallingCanDrag = false;
+	      }
 	    }
-	  };
+	  }, {
+	    key: 'isDragging',
+	    value: function isDragging() {
+	      (0, _invariant2.default)(!isCallingIsDragging, 'You may not call monitor.isDragging() inside your isDragging() implementation. ' + 'Read more: http://react-dnd.github.io/react-dnd/docs-drag-source-monitor.html');
 
-	  SourceMonitor.prototype.getItemType = function getItemType() {
-	    return this.internalMonitor.getItemType();
-	  };
-
-	  SourceMonitor.prototype.getItem = function getItem() {
-	    return this.internalMonitor.getItem();
-	  };
-
-	  SourceMonitor.prototype.getDropResult = function getDropResult() {
-	    return this.internalMonitor.getDropResult();
-	  };
-
-	  SourceMonitor.prototype.didDrop = function didDrop() {
-	    return this.internalMonitor.didDrop();
-	  };
-
-	  SourceMonitor.prototype.getInitialClientOffset = function getInitialClientOffset() {
-	    return this.internalMonitor.getInitialClientOffset();
-	  };
-
-	  SourceMonitor.prototype.getInitialSourceClientOffset = function getInitialSourceClientOffset() {
-	    return this.internalMonitor.getInitialSourceClientOffset();
-	  };
-
-	  SourceMonitor.prototype.getSourceClientOffset = function getSourceClientOffset() {
-	    return this.internalMonitor.getSourceClientOffset();
-	  };
-
-	  SourceMonitor.prototype.getClientOffset = function getClientOffset() {
-	    return this.internalMonitor.getClientOffset();
-	  };
-
-	  SourceMonitor.prototype.getDifferenceFromInitialOffset = function getDifferenceFromInitialOffset() {
-	    return this.internalMonitor.getDifferenceFromInitialOffset();
-	  };
+	      try {
+	        isCallingIsDragging = true;
+	        return this.internalMonitor.isDraggingSource(this.sourceId);
+	      } finally {
+	        isCallingIsDragging = false;
+	      }
+	    }
+	  }, {
+	    key: 'getItemType',
+	    value: function getItemType() {
+	      return this.internalMonitor.getItemType();
+	    }
+	  }, {
+	    key: 'getItem',
+	    value: function getItem() {
+	      return this.internalMonitor.getItem();
+	    }
+	  }, {
+	    key: 'getDropResult',
+	    value: function getDropResult() {
+	      return this.internalMonitor.getDropResult();
+	    }
+	  }, {
+	    key: 'didDrop',
+	    value: function didDrop() {
+	      return this.internalMonitor.didDrop();
+	    }
+	  }, {
+	    key: 'getInitialClientOffset',
+	    value: function getInitialClientOffset() {
+	      return this.internalMonitor.getInitialClientOffset();
+	    }
+	  }, {
+	    key: 'getInitialSourceClientOffset',
+	    value: function getInitialSourceClientOffset() {
+	      return this.internalMonitor.getInitialSourceClientOffset();
+	    }
+	  }, {
+	    key: 'getSourceClientOffset',
+	    value: function getSourceClientOffset() {
+	      return this.internalMonitor.getSourceClientOffset();
+	    }
+	  }, {
+	    key: 'getClientOffset',
+	    value: function getClientOffset() {
+	      return this.internalMonitor.getClientOffset();
+	    }
+	  }, {
+	    key: 'getDifferenceFromInitialOffset',
+	    value: function getDifferenceFromInitialOffset() {
+	      return this.internalMonitor.getDifferenceFromInitialOffset();
+	    }
+	  }]);
 
 	  return SourceMonitor;
-	})();
+	}();
 
 	function createSourceMonitor(manager) {
 	  return new SourceMonitor(manager);
 	}
 
-	module.exports = exports['default'];
-
 /***/ },
-/* 129 */
+/* 131 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	exports.__esModule = true;
-	exports['default'] = createSourceConnector;
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = createSourceConnector;
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-	var _wrapConnectorHooks = __webpack_require__(130);
+	var _wrapConnectorHooks = __webpack_require__(132);
 
 	var _wrapConnectorHooks2 = _interopRequireDefault(_wrapConnectorHooks);
 
-	var _areOptionsEqual = __webpack_require__(132);
+	var _areOptionsEqual = __webpack_require__(134);
 
 	var _areOptionsEqual2 = _interopRequireDefault(_areOptionsEqual);
 
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 	function createSourceConnector(backend) {
-	  var currentHandlerId = undefined;
+	  var currentHandlerId = void 0;
 
-	  var currentDragSourceNode = undefined;
-	  var currentDragSourceOptions = undefined;
-	  var disconnectCurrentDragSource = undefined;
+	  var currentDragSourceNode = void 0;
+	  var currentDragSourceOptions = void 0;
+	  var disconnectCurrentDragSource = void 0;
 
-	  var currentDragPreviewNode = undefined;
-	  var currentDragPreviewOptions = undefined;
-	  var disconnectCurrentDragPreview = undefined;
+	  var currentDragPreviewNode = void 0;
+	  var currentDragPreviewOptions = void 0;
+	  var disconnectCurrentDragPreview = void 0;
 
 	  function reconnectDragSource() {
 	    if (disconnectCurrentDragSource) {
@@ -6536,9 +6788,9 @@ var WikiTableEditor =
 	    reconnectDragPreview();
 	  }
 
-	  var hooks = _wrapConnectorHooks2['default']({
+	  var hooks = (0, _wrapConnectorHooks2.default)({
 	    dragSource: function connectDragSource(node, options) {
-	      if (node === currentDragSourceNode && _areOptionsEqual2['default'](options, currentDragSourceOptions)) {
+	      if (node === currentDragSourceNode && (0, _areOptionsEqual2.default)(options, currentDragSourceOptions)) {
 	        return;
 	      }
 
@@ -6549,7 +6801,7 @@ var WikiTableEditor =
 	    },
 
 	    dragPreview: function connectDragPreview(node, options) {
-	      if (node === currentDragPreviewNode && _areOptionsEqual2['default'](options, currentDragPreviewOptions)) {
+	      if (node === currentDragPreviewNode && (0, _areOptionsEqual2.default)(options, currentDragPreviewOptions)) {
 	        return;
 	      }
 
@@ -6566,24 +6818,24 @@ var WikiTableEditor =
 	  };
 	}
 
-	module.exports = exports['default'];
-
 /***/ },
-/* 130 */
+/* 132 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	exports.__esModule = true;
-	exports['default'] = wrapConnectorHooks;
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-	var _utilsCloneWithRef = __webpack_require__(131);
-
-	var _utilsCloneWithRef2 = _interopRequireDefault(_utilsCloneWithRef);
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = wrapConnectorHooks;
 
 	var _react = __webpack_require__(1);
+
+	var _cloneWithRef = __webpack_require__(133);
+
+	var _cloneWithRef2 = _interopRequireDefault(_cloneWithRef);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function throwIfCompositeComponentElement(element) {
 	  // Custom components can no longer be wrapped directly in React DnD 2.0
@@ -6594,19 +6846,19 @@ var WikiTableEditor =
 
 	  var displayName = element.type.displayName || element.type.name || 'the component';
 
-	  throw new Error('Only native element nodes can now be passed to React DnD connectors. ' + ('You can either wrap ' + displayName + ' into a <div>, or turn it into a ') + 'drag source or a drop target itself.');
+	  throw new Error('Only native element nodes can now be passed to React DnD connectors.' + ('You can either wrap ' + displayName + ' into a <div>, or turn it into a ') + 'drag source or a drop target itself.');
 	}
 
 	function wrapHookToRecognizeElement(hook) {
 	  return function () {
-	    var elementOrNode = arguments.length <= 0 || arguments[0] === undefined ? null : arguments[0];
-	    var options = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
+	    var elementOrNode = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+	    var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
 
 	    // When passed a node, call the hook straight away.
-	    if (!_react.isValidElement(elementOrNode)) {
+	    if (!(0, _react.isValidElement)(elementOrNode)) {
 	      var node = elementOrNode;
 	      hook(node, options);
-	      return;
+	      return undefined;
 	    }
 
 	    // If passed a ReactElement, clone it and attach this function as a ref.
@@ -6620,7 +6872,7 @@ var WikiTableEditor =
 	      return hook(node, options);
 	    } : hook;
 
-	    return _utilsCloneWithRef2['default'](element, ref);
+	    return (0, _cloneWithRef2.default)(element, ref);
 	  };
 	}
 
@@ -6638,18 +6890,16 @@ var WikiTableEditor =
 	  return wrappedHooks;
 	}
 
-	module.exports = exports['default'];
-
 /***/ },
-/* 131 */
+/* 133 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	exports.__esModule = true;
-	exports['default'] = cloneWithRef;
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = cloneWithRef;
 
 	var _invariant = __webpack_require__(24);
 
@@ -6657,18 +6907,20 @@ var WikiTableEditor =
 
 	var _react = __webpack_require__(1);
 
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 	function cloneWithRef(element, newRef) {
 	  var previousRef = element.ref;
-	  _invariant2['default'](typeof previousRef !== 'string', 'Cannot connect React DnD to an element with an existing string ref. ' + 'Please convert it to use a callback ref instead, or wrap it into a <span> or <div>. ' + 'Read more: https://facebook.github.io/react/docs/more-about-refs.html#the-ref-callback-attribute');
+	  (0, _invariant2.default)(typeof previousRef !== 'string', 'Cannot connect React DnD to an element with an existing string ref. ' + 'Please convert it to use a callback ref instead, or wrap it into a <span> or <div>. ' + 'Read more: https://facebook.github.io/react/docs/more-about-refs.html#the-ref-callback-attribute');
 
 	  if (!previousRef) {
 	    // When there is no ref on the element, use the new ref directly
-	    return _react.cloneElement(element, {
+	    return (0, _react.cloneElement)(element, {
 	      ref: newRef
 	    });
 	  }
 
-	  return _react.cloneElement(element, {
+	  return (0, _react.cloneElement)(element, {
 	    ref: function ref(node) {
 	      newRef(node);
 
@@ -6679,130 +6931,132 @@ var WikiTableEditor =
 	  });
 	}
 
-	module.exports = exports['default'];
-
-/***/ },
-/* 132 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	exports.__esModule = true;
-	exports['default'] = areOptionsEqual;
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-	var _utilsShallowEqual = __webpack_require__(117);
-
-	var _utilsShallowEqual2 = _interopRequireDefault(_utilsShallowEqual);
-
-	function areOptionsEqual(nextOptions, currentOptions) {
-	  if (currentOptions === nextOptions) {
-	    return true;
-	  }
-
-	  return currentOptions !== null && nextOptions !== null && _utilsShallowEqual2['default'](currentOptions, nextOptions);
-	}
-
-	module.exports = exports['default'];
-
-/***/ },
-/* 133 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	exports.__esModule = true;
-	exports['default'] = isValidType;
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-	var _lodashIsArray = __webpack_require__(26);
-
-	var _lodashIsArray2 = _interopRequireDefault(_lodashIsArray);
-
-	function isValidType(type, allowArray) {
-	       return typeof type === 'string' || typeof type === 'symbol' || allowArray && _lodashIsArray2['default'](type) && type.every(function (t) {
-	              return isValidType(t, false);
-	       });
-	}
-
-	module.exports = exports['default'];
-
 /***/ },
 /* 134 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	exports.__esModule = true;
-	var _slice = Array.prototype.slice;
-	exports['default'] = DropTarget;
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = areOptionsEqual;
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	var _shallowEqual = __webpack_require__(119);
+
+	var _shallowEqual2 = _interopRequireDefault(_shallowEqual);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function areOptionsEqual(nextOptions, currentOptions) {
+	  if (currentOptions === nextOptions) {
+	    return true;
+	  }
+
+	  return currentOptions !== null && nextOptions !== null && (0, _shallowEqual2.default)(currentOptions, nextOptions);
+	}
+
+/***/ },
+/* 135 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	       value: true
+	});
+
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+	exports.default = isValidType;
+
+	var _isArray = __webpack_require__(26);
+
+	var _isArray2 = _interopRequireDefault(_isArray);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function isValidType(type, allowArray) {
+	       return typeof type === 'string' || (typeof type === 'undefined' ? 'undefined' : _typeof(type)) === 'symbol' || allowArray && (0, _isArray2.default)(type) && type.every(function (t) {
+	              return isValidType(t, false);
+	       });
+	}
+
+/***/ },
+/* 136 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = DropTarget;
 
 	var _invariant = __webpack_require__(24);
 
 	var _invariant2 = _interopRequireDefault(_invariant);
 
-	var _lodashIsPlainObject = __webpack_require__(7);
+	var _isPlainObject = __webpack_require__(7);
 
-	var _lodashIsPlainObject2 = _interopRequireDefault(_lodashIsPlainObject);
+	var _isPlainObject2 = _interopRequireDefault(_isPlainObject);
 
-	var _utilsCheckDecoratorArguments = __webpack_require__(115);
+	var _checkDecoratorArguments = __webpack_require__(116);
 
-	var _utilsCheckDecoratorArguments2 = _interopRequireDefault(_utilsCheckDecoratorArguments);
+	var _checkDecoratorArguments2 = _interopRequireDefault(_checkDecoratorArguments);
 
-	var _decorateHandler = __webpack_require__(120);
+	var _decorateHandler = __webpack_require__(122);
 
 	var _decorateHandler2 = _interopRequireDefault(_decorateHandler);
 
-	var _registerTarget = __webpack_require__(135);
+	var _registerTarget = __webpack_require__(137);
 
 	var _registerTarget2 = _interopRequireDefault(_registerTarget);
 
-	var _createTargetFactory = __webpack_require__(136);
+	var _createTargetFactory = __webpack_require__(138);
 
 	var _createTargetFactory2 = _interopRequireDefault(_createTargetFactory);
 
-	var _createTargetMonitor = __webpack_require__(137);
+	var _createTargetMonitor = __webpack_require__(139);
 
 	var _createTargetMonitor2 = _interopRequireDefault(_createTargetMonitor);
 
-	var _createTargetConnector = __webpack_require__(138);
+	var _createTargetConnector = __webpack_require__(140);
 
 	var _createTargetConnector2 = _interopRequireDefault(_createTargetConnector);
 
-	var _utilsIsValidType = __webpack_require__(133);
+	var _isValidType = __webpack_require__(135);
 
-	var _utilsIsValidType2 = _interopRequireDefault(_utilsIsValidType);
+	var _isValidType2 = _interopRequireDefault(_isValidType);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function DropTarget(type, spec, collect) {
-	  var options = arguments.length <= 3 || arguments[3] === undefined ? {} : arguments[3];
+	  var options = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : {};
 
-	  _utilsCheckDecoratorArguments2['default'].apply(undefined, ['DropTarget', 'type, spec, collect[, options]'].concat(_slice.call(arguments)));
+	  _checkDecoratorArguments2.default.apply(undefined, ['DropTarget', 'type, spec, collect[, options]'].concat(Array.prototype.slice.call(arguments))); // eslint-disable-line prefer-rest-params
 	  var getType = type;
 	  if (typeof type !== 'function') {
-	    _invariant2['default'](_utilsIsValidType2['default'](type, true), 'Expected "type" provided as the first argument to DropTarget to be ' + 'a string, an array of strings, or a function that returns either given ' + 'the current props. Instead, received %s. ' + 'Read more: http://gaearon.github.io/react-dnd/docs-drop-target.html', type);
-	    getType = function () {
+	    (0, _invariant2.default)((0, _isValidType2.default)(type, true), 'Expected "type" provided as the first argument to DropTarget to be ' + 'a string, an array of strings, or a function that returns either given ' + 'the current props. Instead, received %s. ' + 'Read more: http://react-dnd.github.io/react-dnd/docs-drop-target.html', type);
+	    getType = function getType() {
 	      return type;
 	    };
 	  }
-	  _invariant2['default'](_lodashIsPlainObject2['default'](spec), 'Expected "spec" provided as the second argument to DropTarget to be ' + 'a plain object. Instead, received %s. ' + 'Read more: http://gaearon.github.io/react-dnd/docs-drop-target.html', spec);
-	  var createTarget = _createTargetFactory2['default'](spec);
-	  _invariant2['default'](typeof collect === 'function', 'Expected "collect" provided as the third argument to DropTarget to be ' + 'a function that returns a plain object of props to inject. ' + 'Instead, received %s. ' + 'Read more: http://gaearon.github.io/react-dnd/docs-drop-target.html', collect);
-	  _invariant2['default'](_lodashIsPlainObject2['default'](options), 'Expected "options" provided as the fourth argument to DropTarget to be ' + 'a plain object when specified. ' + 'Instead, received %s. ' + 'Read more: http://gaearon.github.io/react-dnd/docs-drop-target.html', collect);
+	  (0, _invariant2.default)((0, _isPlainObject2.default)(spec), 'Expected "spec" provided as the second argument to DropTarget to be ' + 'a plain object. Instead, received %s. ' + 'Read more: http://react-dnd.github.io/react-dnd/docs-drop-target.html', spec);
+	  var createTarget = (0, _createTargetFactory2.default)(spec);
+	  (0, _invariant2.default)(typeof collect === 'function', 'Expected "collect" provided as the third argument to DropTarget to be ' + 'a function that returns a plain object of props to inject. ' + 'Instead, received %s. ' + 'Read more: http://react-dnd.github.io/react-dnd/docs-drop-target.html', collect);
+	  (0, _invariant2.default)((0, _isPlainObject2.default)(options), 'Expected "options" provided as the fourth argument to DropTarget to be ' + 'a plain object when specified. ' + 'Instead, received %s. ' + 'Read more: http://react-dnd.github.io/react-dnd/docs-drop-target.html', collect);
 
 	  return function decorateTarget(DecoratedComponent) {
-	    return _decorateHandler2['default']({
+	    return (0, _decorateHandler2.default)({
 	      connectBackend: function connectBackend(backend, targetId) {
 	        return backend.connectDropTarget(targetId);
 	      },
 	      containerDisplayName: 'DropTarget',
 	      createHandler: createTarget,
-	      registerHandler: _registerTarget2['default'],
-	      createMonitor: _createTargetMonitor2['default'],
-	      createConnector: _createTargetConnector2['default'],
+	      registerHandler: _registerTarget2.default,
+	      createMonitor: _createTargetMonitor2.default,
+	      createConnector: _createTargetConnector2.default,
 	      DecoratedComponent: DecoratedComponent,
 	      getType: getType,
 	      collect: collect,
@@ -6811,17 +7065,16 @@ var WikiTableEditor =
 	  };
 	}
 
-	module.exports = exports['default'];
-
 /***/ },
-/* 135 */
+/* 137 */
 /***/ function(module, exports) {
 
 	"use strict";
 
-	exports.__esModule = true;
-	exports["default"] = registerTarget;
-
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = registerTarget;
 	function registerTarget(type, target, manager) {
 	  var registry = manager.getRegistry();
 	  var targetId = registry.addTarget(type, target);
@@ -6836,38 +7089,41 @@ var WikiTableEditor =
 	  };
 	}
 
-	module.exports = exports["default"];
-
 /***/ },
-/* 136 */
+/* 138 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
 
-	exports.__esModule = true;
-	exports['default'] = createTargetFactory;
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	exports.default = createTargetFactory;
 
 	var _invariant = __webpack_require__(24);
 
 	var _invariant2 = _interopRequireDefault(_invariant);
 
-	var _lodashIsPlainObject = __webpack_require__(7);
+	var _isPlainObject = __webpack_require__(7);
 
-	var _lodashIsPlainObject2 = _interopRequireDefault(_lodashIsPlainObject);
+	var _isPlainObject2 = _interopRequireDefault(_isPlainObject);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 	var ALLOWED_SPEC_METHODS = ['canDrop', 'hover', 'drop'];
 
 	function createTargetFactory(spec) {
 	  Object.keys(spec).forEach(function (key) {
-	    _invariant2['default'](ALLOWED_SPEC_METHODS.indexOf(key) > -1, 'Expected the drop target specification to only have ' + 'some of the following keys: %s. ' + 'Instead received a specification with an unexpected "%s" key. ' + 'Read more: http://gaearon.github.io/react-dnd/docs-drop-target.html', ALLOWED_SPEC_METHODS.join(', '), key);
-	    _invariant2['default'](typeof spec[key] === 'function', 'Expected %s in the drop target specification to be a function. ' + 'Instead received a specification with %s: %s. ' + 'Read more: http://gaearon.github.io/react-dnd/docs-drop-target.html', key, key, spec[key]);
+	    (0, _invariant2.default)(ALLOWED_SPEC_METHODS.indexOf(key) > -1, 'Expected the drop target specification to only have ' + 'some of the following keys: %s. ' + 'Instead received a specification with an unexpected "%s" key. ' + 'Read more: http://react-dnd.github.io/react-dnd/docs-drop-target.html', ALLOWED_SPEC_METHODS.join(', '), key);
+	    (0, _invariant2.default)(typeof spec[key] === 'function', 'Expected %s in the drop target specification to be a function. ' + 'Instead received a specification with %s: %s. ' + 'Read more: http://react-dnd.github.io/react-dnd/docs-drop-target.html', key, key, spec[key]);
 	  });
 
-	  var Target = (function () {
+	  var Target = function () {
 	    function Target(monitor) {
 	      _classCallCheck(this, Target);
 
@@ -6876,172 +7132,197 @@ var WikiTableEditor =
 	      this.component = null;
 	    }
 
-	    Target.prototype.receiveProps = function receiveProps(props) {
-	      this.props = props;
-	    };
-
-	    Target.prototype.receiveMonitor = function receiveMonitor(monitor) {
-	      this.monitor = monitor;
-	    };
-
-	    Target.prototype.receiveComponent = function receiveComponent(component) {
-	      this.component = component;
-	    };
-
-	    Target.prototype.canDrop = function canDrop() {
-	      if (!spec.canDrop) {
-	        return true;
+	    _createClass(Target, [{
+	      key: 'receiveProps',
+	      value: function receiveProps(props) {
+	        this.props = props;
 	      }
-
-	      return spec.canDrop(this.props, this.monitor);
-	    };
-
-	    Target.prototype.hover = function hover() {
-	      if (!spec.hover) {
-	        return;
+	    }, {
+	      key: 'receiveMonitor',
+	      value: function receiveMonitor(monitor) {
+	        this.monitor = monitor;
 	      }
-
-	      spec.hover(this.props, this.monitor, this.component);
-	    };
-
-	    Target.prototype.drop = function drop() {
-	      if (!spec.drop) {
-	        return;
+	    }, {
+	      key: 'receiveComponent',
+	      value: function receiveComponent(component) {
+	        this.component = component;
 	      }
+	    }, {
+	      key: 'canDrop',
+	      value: function canDrop() {
+	        if (!spec.canDrop) {
+	          return true;
+	        }
 
-	      var dropResult = spec.drop(this.props, this.monitor, this.component);
-	      if (process.env.NODE_ENV !== 'production') {
-	        _invariant2['default'](typeof dropResult === 'undefined' || _lodashIsPlainObject2['default'](dropResult), 'drop() must either return undefined, or an object that represents the drop result. ' + 'Instead received %s. ' + 'Read more: http://gaearon.github.io/react-dnd/docs-drop-target.html', dropResult);
+	        return spec.canDrop(this.props, this.monitor);
 	      }
-	      return dropResult;
-	    };
+	    }, {
+	      key: 'hover',
+	      value: function hover() {
+	        if (!spec.hover) {
+	          return;
+	        }
+
+	        spec.hover(this.props, this.monitor, this.component);
+	      }
+	    }, {
+	      key: 'drop',
+	      value: function drop() {
+	        if (!spec.drop) {
+	          return undefined;
+	        }
+
+	        var dropResult = spec.drop(this.props, this.monitor, this.component);
+	        if (process.env.NODE_ENV !== 'production') {
+	          (0, _invariant2.default)(typeof dropResult === 'undefined' || (0, _isPlainObject2.default)(dropResult), 'drop() must either return undefined, or an object that represents the drop result. ' + 'Instead received %s. ' + 'Read more: http://react-dnd.github.io/react-dnd/docs-drop-target.html', dropResult);
+	        }
+	        return dropResult;
+	      }
+	    }]);
 
 	    return Target;
-	  })();
+	  }();
 
 	  return function createTarget(monitor) {
 	    return new Target(monitor);
 	  };
 	}
-
-	module.exports = exports['default'];
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(25)))
 
 /***/ },
-/* 137 */
+/* 139 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	exports.__esModule = true;
-	exports['default'] = createTargetMonitor;
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	exports.default = createTargetMonitor;
 
 	var _invariant = __webpack_require__(24);
 
 	var _invariant2 = _interopRequireDefault(_invariant);
 
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
 	var isCallingCanDrop = false;
 
-	var TargetMonitor = (function () {
+	var TargetMonitor = function () {
 	  function TargetMonitor(manager) {
 	    _classCallCheck(this, TargetMonitor);
 
 	    this.internalMonitor = manager.getMonitor();
 	  }
 
-	  TargetMonitor.prototype.receiveHandlerId = function receiveHandlerId(targetId) {
-	    this.targetId = targetId;
-	  };
-
-	  TargetMonitor.prototype.canDrop = function canDrop() {
-	    _invariant2['default'](!isCallingCanDrop, 'You may not call monitor.canDrop() inside your canDrop() implementation. ' + 'Read more: http://gaearon.github.io/react-dnd/docs-drop-target-monitor.html');
-
-	    try {
-	      isCallingCanDrop = true;
-	      return this.internalMonitor.canDropOnTarget(this.targetId);
-	    } finally {
-	      isCallingCanDrop = false;
+	  _createClass(TargetMonitor, [{
+	    key: 'receiveHandlerId',
+	    value: function receiveHandlerId(targetId) {
+	      this.targetId = targetId;
 	    }
-	  };
+	  }, {
+	    key: 'canDrop',
+	    value: function canDrop() {
+	      (0, _invariant2.default)(!isCallingCanDrop, 'You may not call monitor.canDrop() inside your canDrop() implementation. ' + 'Read more: http://react-dnd.github.io/react-dnd/docs-drop-target-monitor.html');
 
-	  TargetMonitor.prototype.isOver = function isOver(options) {
-	    return this.internalMonitor.isOverTarget(this.targetId, options);
-	  };
-
-	  TargetMonitor.prototype.getItemType = function getItemType() {
-	    return this.internalMonitor.getItemType();
-	  };
-
-	  TargetMonitor.prototype.getItem = function getItem() {
-	    return this.internalMonitor.getItem();
-	  };
-
-	  TargetMonitor.prototype.getDropResult = function getDropResult() {
-	    return this.internalMonitor.getDropResult();
-	  };
-
-	  TargetMonitor.prototype.didDrop = function didDrop() {
-	    return this.internalMonitor.didDrop();
-	  };
-
-	  TargetMonitor.prototype.getInitialClientOffset = function getInitialClientOffset() {
-	    return this.internalMonitor.getInitialClientOffset();
-	  };
-
-	  TargetMonitor.prototype.getInitialSourceClientOffset = function getInitialSourceClientOffset() {
-	    return this.internalMonitor.getInitialSourceClientOffset();
-	  };
-
-	  TargetMonitor.prototype.getSourceClientOffset = function getSourceClientOffset() {
-	    return this.internalMonitor.getSourceClientOffset();
-	  };
-
-	  TargetMonitor.prototype.getClientOffset = function getClientOffset() {
-	    return this.internalMonitor.getClientOffset();
-	  };
-
-	  TargetMonitor.prototype.getDifferenceFromInitialOffset = function getDifferenceFromInitialOffset() {
-	    return this.internalMonitor.getDifferenceFromInitialOffset();
-	  };
+	      try {
+	        isCallingCanDrop = true;
+	        return this.internalMonitor.canDropOnTarget(this.targetId);
+	      } finally {
+	        isCallingCanDrop = false;
+	      }
+	    }
+	  }, {
+	    key: 'isOver',
+	    value: function isOver(options) {
+	      return this.internalMonitor.isOverTarget(this.targetId, options);
+	    }
+	  }, {
+	    key: 'getItemType',
+	    value: function getItemType() {
+	      return this.internalMonitor.getItemType();
+	    }
+	  }, {
+	    key: 'getItem',
+	    value: function getItem() {
+	      return this.internalMonitor.getItem();
+	    }
+	  }, {
+	    key: 'getDropResult',
+	    value: function getDropResult() {
+	      return this.internalMonitor.getDropResult();
+	    }
+	  }, {
+	    key: 'didDrop',
+	    value: function didDrop() {
+	      return this.internalMonitor.didDrop();
+	    }
+	  }, {
+	    key: 'getInitialClientOffset',
+	    value: function getInitialClientOffset() {
+	      return this.internalMonitor.getInitialClientOffset();
+	    }
+	  }, {
+	    key: 'getInitialSourceClientOffset',
+	    value: function getInitialSourceClientOffset() {
+	      return this.internalMonitor.getInitialSourceClientOffset();
+	    }
+	  }, {
+	    key: 'getSourceClientOffset',
+	    value: function getSourceClientOffset() {
+	      return this.internalMonitor.getSourceClientOffset();
+	    }
+	  }, {
+	    key: 'getClientOffset',
+	    value: function getClientOffset() {
+	      return this.internalMonitor.getClientOffset();
+	    }
+	  }, {
+	    key: 'getDifferenceFromInitialOffset',
+	    value: function getDifferenceFromInitialOffset() {
+	      return this.internalMonitor.getDifferenceFromInitialOffset();
+	    }
+	  }]);
 
 	  return TargetMonitor;
-	})();
+	}();
 
 	function createTargetMonitor(manager) {
 	  return new TargetMonitor(manager);
 	}
 
-	module.exports = exports['default'];
-
 /***/ },
-/* 138 */
+/* 140 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	exports.__esModule = true;
-	exports['default'] = createTargetConnector;
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = createTargetConnector;
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-	var _wrapConnectorHooks = __webpack_require__(130);
+	var _wrapConnectorHooks = __webpack_require__(132);
 
 	var _wrapConnectorHooks2 = _interopRequireDefault(_wrapConnectorHooks);
 
-	var _areOptionsEqual = __webpack_require__(132);
+	var _areOptionsEqual = __webpack_require__(134);
 
 	var _areOptionsEqual2 = _interopRequireDefault(_areOptionsEqual);
 
-	function createTargetConnector(backend) {
-	  var currentHandlerId = undefined;
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	  var currentDropTargetNode = undefined;
-	  var currentDropTargetOptions = undefined;
-	  var disconnectCurrentDropTarget = undefined;
+	function createTargetConnector(backend) {
+	  var currentHandlerId = void 0;
+
+	  var currentDropTargetNode = void 0;
+	  var currentDropTargetOptions = void 0;
+	  var disconnectCurrentDropTarget = void 0;
 
 	  function reconnectDropTarget() {
 	    if (disconnectCurrentDropTarget) {
@@ -7063,9 +7344,9 @@ var WikiTableEditor =
 	    reconnectDropTarget();
 	  }
 
-	  var hooks = _wrapConnectorHooks2['default']({
+	  var hooks = (0, _wrapConnectorHooks2.default)({
 	    dropTarget: function connectDropTarget(node, options) {
-	      if (node === currentDropTargetNode && _areOptionsEqual2['default'](options, currentDropTargetOptions)) {
+	      if (node === currentDropTargetNode && (0, _areOptionsEqual2.default)(options, currentDropTargetOptions)) {
 	        return;
 	      }
 
@@ -7082,89 +7363,94 @@ var WikiTableEditor =
 	  };
 	}
 
-	module.exports = exports['default'];
-
 /***/ },
-/* 139 */
+/* 141 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	exports.__esModule = true;
-	exports['default'] = createHTML5Backend;
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.getEmptyImage = exports.NativeTypes = undefined;
+	exports.default = createHTML5Backend;
 
-	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj['default'] = obj; return newObj; } }
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-	var _HTML5Backend = __webpack_require__(140);
+	var _HTML5Backend = __webpack_require__(142);
 
 	var _HTML5Backend2 = _interopRequireDefault(_HTML5Backend);
 
-	var _getEmptyImage = __webpack_require__(170);
+	var _getEmptyImage = __webpack_require__(172);
 
 	var _getEmptyImage2 = _interopRequireDefault(_getEmptyImage);
 
-	var _NativeTypes = __webpack_require__(169);
+	var _NativeTypes = __webpack_require__(171);
 
 	var NativeTypes = _interopRequireWildcard(_NativeTypes);
 
-	exports.NativeTypes = NativeTypes;
-	exports.getEmptyImage = _getEmptyImage2['default'];
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	exports.NativeTypes = NativeTypes;
+	exports.getEmptyImage = _getEmptyImage2.default;
 	function createHTML5Backend(manager) {
-	  return new _HTML5Backend2['default'](manager);
+	  return new _HTML5Backend2.default(manager);
 	}
 
 /***/ },
-/* 140 */
+/* 142 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	exports.__esModule = true;
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
 
-	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj['default'] = obj; return newObj; } }
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	var _defaults = __webpack_require__(143);
 
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	var _defaults2 = _interopRequireDefault(_defaults);
 
-	var _lodashDefaults = __webpack_require__(141);
-
-	var _lodashDefaults2 = _interopRequireDefault(_lodashDefaults);
-
-	var _shallowEqual = __webpack_require__(161);
+	var _shallowEqual = __webpack_require__(163);
 
 	var _shallowEqual2 = _interopRequireDefault(_shallowEqual);
 
-	var _EnterLeaveCounter = __webpack_require__(162);
+	var _EnterLeaveCounter = __webpack_require__(164);
 
 	var _EnterLeaveCounter2 = _interopRequireDefault(_EnterLeaveCounter);
 
-	var _BrowserDetector = __webpack_require__(164);
+	var _BrowserDetector = __webpack_require__(166);
 
-	var _OffsetUtils = __webpack_require__(166);
+	var _OffsetUtils = __webpack_require__(168);
 
-	var _NativeDragSources = __webpack_require__(168);
+	var _NativeDragSources = __webpack_require__(170);
 
-	var _NativeTypes = __webpack_require__(169);
+	var _NativeTypes = __webpack_require__(171);
 
 	var NativeTypes = _interopRequireWildcard(_NativeTypes);
 
-	var HTML5Backend = (function () {
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var HTML5Backend = function () {
 	  function HTML5Backend(manager) {
 	    _classCallCheck(this, HTML5Backend);
 
 	    this.actions = manager.getActions();
 	    this.monitor = manager.getMonitor();
 	    this.registry = manager.getRegistry();
+	    this.context = manager.getContext();
 
 	    this.sourcePreviewNodes = {};
 	    this.sourcePreviewNodeOptions = {};
 	    this.sourceNodes = {};
 	    this.sourceNodeOptions = {};
-	    this.enterLeaveCounter = new _EnterLeaveCounter2['default']();
+	    this.enterLeaveCounter = new _EnterLeaveCounter2.default();
 
 	    this.getSourceClientOffset = this.getSourceClientOffset.bind(this);
 	    this.handleTopDragStart = this.handleTopDragStart.bind(this);
@@ -7182,529 +7468,575 @@ var WikiTableEditor =
 	    this.endDragNativeItem = this.endDragNativeItem.bind(this);
 	  }
 
-	  HTML5Backend.prototype.setup = function setup() {
-	    if (typeof window === 'undefined') {
-	      return;
-	    }
-
-	    if (this.constructor.isSetUp) {
-	      throw new Error('Cannot have two HTML5 backends at the same time.');
-	    }
-	    this.constructor.isSetUp = true;
-	    this.addEventListeners(window);
-	  };
-
-	  HTML5Backend.prototype.teardown = function teardown() {
-	    if (typeof window === 'undefined') {
-	      return;
-	    }
-
-	    this.constructor.isSetUp = false;
-	    this.removeEventListeners(window);
-	    this.clearCurrentDragSourceNode();
-	  };
-
-	  HTML5Backend.prototype.addEventListeners = function addEventListeners(target) {
-	    target.addEventListener('dragstart', this.handleTopDragStart);
-	    target.addEventListener('dragstart', this.handleTopDragStartCapture, true);
-	    target.addEventListener('dragend', this.handleTopDragEndCapture, true);
-	    target.addEventListener('dragenter', this.handleTopDragEnter);
-	    target.addEventListener('dragenter', this.handleTopDragEnterCapture, true);
-	    target.addEventListener('dragleave', this.handleTopDragLeaveCapture, true);
-	    target.addEventListener('dragover', this.handleTopDragOver);
-	    target.addEventListener('dragover', this.handleTopDragOverCapture, true);
-	    target.addEventListener('drop', this.handleTopDrop);
-	    target.addEventListener('drop', this.handleTopDropCapture, true);
-	  };
-
-	  HTML5Backend.prototype.removeEventListeners = function removeEventListeners(target) {
-	    target.removeEventListener('dragstart', this.handleTopDragStart);
-	    target.removeEventListener('dragstart', this.handleTopDragStartCapture, true);
-	    target.removeEventListener('dragend', this.handleTopDragEndCapture, true);
-	    target.removeEventListener('dragenter', this.handleTopDragEnter);
-	    target.removeEventListener('dragenter', this.handleTopDragEnterCapture, true);
-	    target.removeEventListener('dragleave', this.handleTopDragLeaveCapture, true);
-	    target.removeEventListener('dragover', this.handleTopDragOver);
-	    target.removeEventListener('dragover', this.handleTopDragOverCapture, true);
-	    target.removeEventListener('drop', this.handleTopDrop);
-	    target.removeEventListener('drop', this.handleTopDropCapture, true);
-	  };
-
-	  HTML5Backend.prototype.connectDragPreview = function connectDragPreview(sourceId, node, options) {
-	    var _this = this;
-
-	    this.sourcePreviewNodeOptions[sourceId] = options;
-	    this.sourcePreviewNodes[sourceId] = node;
-
-	    return function () {
-	      delete _this.sourcePreviewNodes[sourceId];
-	      delete _this.sourcePreviewNodeOptions[sourceId];
-	    };
-	  };
-
-	  HTML5Backend.prototype.connectDragSource = function connectDragSource(sourceId, node, options) {
-	    var _this2 = this;
-
-	    this.sourceNodes[sourceId] = node;
-	    this.sourceNodeOptions[sourceId] = options;
-
-	    var handleDragStart = function handleDragStart(e) {
-	      return _this2.handleDragStart(e, sourceId);
-	    };
-	    var handleSelectStart = function handleSelectStart(e) {
-	      return _this2.handleSelectStart(e, sourceId);
-	    };
-
-	    node.setAttribute('draggable', true);
-	    node.addEventListener('dragstart', handleDragStart);
-	    node.addEventListener('selectstart', handleSelectStart);
-
-	    return function () {
-	      delete _this2.sourceNodes[sourceId];
-	      delete _this2.sourceNodeOptions[sourceId];
-
-	      node.removeEventListener('dragstart', handleDragStart);
-	      node.removeEventListener('selectstart', handleSelectStart);
-	      node.setAttribute('draggable', false);
-	    };
-	  };
-
-	  HTML5Backend.prototype.connectDropTarget = function connectDropTarget(targetId, node) {
-	    var _this3 = this;
-
-	    var handleDragEnter = function handleDragEnter(e) {
-	      return _this3.handleDragEnter(e, targetId);
-	    };
-	    var handleDragOver = function handleDragOver(e) {
-	      return _this3.handleDragOver(e, targetId);
-	    };
-	    var handleDrop = function handleDrop(e) {
-	      return _this3.handleDrop(e, targetId);
-	    };
-
-	    node.addEventListener('dragenter', handleDragEnter);
-	    node.addEventListener('dragover', handleDragOver);
-	    node.addEventListener('drop', handleDrop);
-
-	    return function () {
-	      node.removeEventListener('dragenter', handleDragEnter);
-	      node.removeEventListener('dragover', handleDragOver);
-	      node.removeEventListener('drop', handleDrop);
-	    };
-	  };
-
-	  HTML5Backend.prototype.getCurrentSourceNodeOptions = function getCurrentSourceNodeOptions() {
-	    var sourceId = this.monitor.getSourceId();
-	    var sourceNodeOptions = this.sourceNodeOptions[sourceId];
-
-	    return _lodashDefaults2['default'](sourceNodeOptions || {}, {
-	      dropEffect: 'move'
-	    });
-	  };
-
-	  HTML5Backend.prototype.getCurrentDropEffect = function getCurrentDropEffect() {
-	    if (this.isDraggingNativeItem()) {
-	      // It makes more sense to default to 'copy' for native resources
-	      return 'copy';
-	    }
-
-	    return this.getCurrentSourceNodeOptions().dropEffect;
-	  };
-
-	  HTML5Backend.prototype.getCurrentSourcePreviewNodeOptions = function getCurrentSourcePreviewNodeOptions() {
-	    var sourceId = this.monitor.getSourceId();
-	    var sourcePreviewNodeOptions = this.sourcePreviewNodeOptions[sourceId];
-
-	    return _lodashDefaults2['default'](sourcePreviewNodeOptions || {}, {
-	      anchorX: 0.5,
-	      anchorY: 0.5,
-	      captureDraggingState: false
-	    });
-	  };
-
-	  HTML5Backend.prototype.getSourceClientOffset = function getSourceClientOffset(sourceId) {
-	    return _OffsetUtils.getNodeClientOffset(this.sourceNodes[sourceId]);
-	  };
-
-	  HTML5Backend.prototype.isDraggingNativeItem = function isDraggingNativeItem() {
-	    var itemType = this.monitor.getItemType();
-	    return Object.keys(NativeTypes).some(function (key) {
-	      return NativeTypes[key] === itemType;
-	    });
-	  };
-
-	  HTML5Backend.prototype.beginDragNativeItem = function beginDragNativeItem(type) {
-	    this.clearCurrentDragSourceNode();
-
-	    var SourceType = _NativeDragSources.createNativeDragSource(type);
-	    this.currentNativeSource = new SourceType();
-	    this.currentNativeHandle = this.registry.addSource(type, this.currentNativeSource);
-	    this.actions.beginDrag([this.currentNativeHandle]);
-
-	    // On Firefox, if mousemove fires, the drag is over but browser failed to tell us.
-	    // This is not true for other browsers.
-	    if (_BrowserDetector.isFirefox()) {
-	      window.addEventListener('mousemove', this.endDragNativeItem, true);
-	    }
-	  };
-
-	  HTML5Backend.prototype.endDragNativeItem = function endDragNativeItem() {
-	    if (!this.isDraggingNativeItem()) {
-	      return;
-	    }
-
-	    if (_BrowserDetector.isFirefox()) {
-	      window.removeEventListener('mousemove', this.endDragNativeItem, true);
-	    }
-
-	    this.actions.endDrag();
-	    this.registry.removeSource(this.currentNativeHandle);
-	    this.currentNativeHandle = null;
-	    this.currentNativeSource = null;
-	  };
-
-	  HTML5Backend.prototype.endDragIfSourceWasRemovedFromDOM = function endDragIfSourceWasRemovedFromDOM() {
-	    var node = this.currentDragSourceNode;
-	    if (document.body.contains(node)) {
-	      return;
-	    }
-
-	    if (this.clearCurrentDragSourceNode()) {
-	      this.actions.endDrag();
-	    }
-	  };
-
-	  HTML5Backend.prototype.setCurrentDragSourceNode = function setCurrentDragSourceNode(node) {
-	    this.clearCurrentDragSourceNode();
-	    this.currentDragSourceNode = node;
-	    this.currentDragSourceNodeOffset = _OffsetUtils.getNodeClientOffset(node);
-	    this.currentDragSourceNodeOffsetChanged = false;
-
-	    // Receiving a mouse event in the middle of a dragging operation
-	    // means it has ended and the drag source node disappeared from DOM,
-	    // so the browser didn't dispatch the dragend event.
-	    window.addEventListener('mousemove', this.endDragIfSourceWasRemovedFromDOM, true);
-	  };
-
-	  HTML5Backend.prototype.clearCurrentDragSourceNode = function clearCurrentDragSourceNode() {
-	    if (this.currentDragSourceNode) {
-	      this.currentDragSourceNode = null;
-	      this.currentDragSourceNodeOffset = null;
-	      this.currentDragSourceNodeOffsetChanged = false;
-	      window.removeEventListener('mousemove', this.endDragIfSourceWasRemovedFromDOM, true);
-	      return true;
-	    }
-
-	    return false;
-	  };
-
-	  HTML5Backend.prototype.checkIfCurrentDragSourceRectChanged = function checkIfCurrentDragSourceRectChanged() {
-	    var node = this.currentDragSourceNode;
-	    if (!node) {
-	      return false;
-	    }
-
-	    if (this.currentDragSourceNodeOffsetChanged) {
-	      return true;
-	    }
-
-	    this.currentDragSourceNodeOffsetChanged = !_shallowEqual2['default'](_OffsetUtils.getNodeClientOffset(node), this.currentDragSourceNodeOffset);
-
-	    return this.currentDragSourceNodeOffsetChanged;
-	  };
-
-	  HTML5Backend.prototype.handleTopDragStartCapture = function handleTopDragStartCapture() {
-	    this.clearCurrentDragSourceNode();
-	    this.dragStartSourceIds = [];
-	  };
-
-	  HTML5Backend.prototype.handleDragStart = function handleDragStart(e, sourceId) {
-	    this.dragStartSourceIds.unshift(sourceId);
-	  };
-
-	  HTML5Backend.prototype.handleTopDragStart = function handleTopDragStart(e) {
-	    var _this4 = this;
-
-	    var dragStartSourceIds = this.dragStartSourceIds;
-
-	    this.dragStartSourceIds = null;
-
-	    var clientOffset = _OffsetUtils.getEventClientOffset(e);
-
-	    // Don't publish the source just yet (see why below)
-	    this.actions.beginDrag(dragStartSourceIds, {
-	      publishSource: false,
-	      getSourceClientOffset: this.getSourceClientOffset,
-	      clientOffset: clientOffset
-	    });
-
-	    var dataTransfer = e.dataTransfer;
-
-	    var nativeType = _NativeDragSources.matchNativeItemType(dataTransfer);
-
-	    if (this.monitor.isDragging()) {
-	      if (typeof dataTransfer.setDragImage === 'function') {
-	        // Use custom drag image if user specifies it.
-	        // If child drag source refuses drag but parent agrees,
-	        // use parent's node as drag image. Neither works in IE though.
-	        var sourceId = this.monitor.getSourceId();
-	        var sourceNode = this.sourceNodes[sourceId];
-	        var dragPreview = this.sourcePreviewNodes[sourceId] || sourceNode;
-
-	        var _getCurrentSourcePreviewNodeOptions = this.getCurrentSourcePreviewNodeOptions();
-
-	        var anchorX = _getCurrentSourcePreviewNodeOptions.anchorX;
-	        var anchorY = _getCurrentSourcePreviewNodeOptions.anchorY;
-
-	        var anchorPoint = { anchorX: anchorX, anchorY: anchorY };
-	        var dragPreviewOffset = _OffsetUtils.getDragPreviewOffset(sourceNode, dragPreview, clientOffset, anchorPoint);
-	        dataTransfer.setDragImage(dragPreview, dragPreviewOffset.x, dragPreviewOffset.y);
+	  _createClass(HTML5Backend, [{
+	    key: 'setup',
+	    value: function setup() {
+	      if (this.window === undefined) {
+	        return;
 	      }
 
-	      try {
-	        // Firefox won't drag without setting data
-	        dataTransfer.setData('application/json', {});
-	      } catch (err) {}
-	      // IE doesn't support MIME types in setData
-
-	      // Store drag source node so we can check whether
-	      // it is removed from DOM and trigger endDrag manually.
-	      this.setCurrentDragSourceNode(e.target);
-
-	      // Now we are ready to publish the drag source.. or are we not?
-
-	      var _getCurrentSourcePreviewNodeOptions2 = this.getCurrentSourcePreviewNodeOptions();
-
-	      var captureDraggingState = _getCurrentSourcePreviewNodeOptions2.captureDraggingState;
-
-	      if (!captureDraggingState) {
-	        // Usually we want to publish it in the next tick so that browser
-	        // is able to screenshot the current (not yet dragging) state.
-	        //
-	        // It also neatly avoids a situation where render() returns null
-	        // in the same tick for the source element, and browser freaks out.
-	        setTimeout(function () {
-	          return _this4.actions.publishDragSource();
-	        });
-	      } else {
-	        // In some cases the user may want to override this behavior, e.g.
-	        // to work around IE not supporting custom drag previews.
-	        //
-	        // When using a custom drag layer, the only way to prevent
-	        // the default drag preview from drawing in IE is to screenshot
-	        // the dragging state in which the node itself has zero opacity
-	        // and height. In this case, though, returning null from render()
-	        // will abruptly end the dragging, which is not obvious.
-	        //
-	        // This is the reason such behavior is strictly opt-in.
-	        this.actions.publishDragSource();
+	      if (this.window.__isReactDndBackendSetUp) {
+	        // eslint-disable-line no-underscore-dangle
+	        throw new Error('Cannot have two HTML5 backends at the same time.');
 	      }
-	    } else if (nativeType) {
-	      // A native item (such as URL) dragged from inside the document
-	      this.beginDragNativeItem(nativeType);
-	    } else if (!dataTransfer.types && (!e.target.hasAttribute || !e.target.hasAttribute('draggable'))) {
-	      // Looks like a Safari bug: dataTransfer.types is null, but there was no draggable.
-	      // Just let it drag. It's a native type (URL or text) and will be picked up in dragenter handler.
-	      return;
-	    } else {
-	      // If by this time no drag source reacted, tell browser not to drag.
-	      e.preventDefault();
+	      this.window.__isReactDndBackendSetUp = true; // eslint-disable-line no-underscore-dangle
+	      this.addEventListeners(this.window);
 	    }
-	  };
+	  }, {
+	    key: 'teardown',
+	    value: function teardown() {
+	      if (this.window === undefined) {
+	        return;
+	      }
 
-	  HTML5Backend.prototype.handleTopDragEndCapture = function handleTopDragEndCapture() {
-	    if (this.clearCurrentDragSourceNode()) {
-	      // Firefox can dispatch this event in an infinite loop
-	      // if dragend handler does something like showing an alert.
-	      // Only proceed if we have not handled it already.
-	      this.actions.endDrag();
+	      this.window.__isReactDndBackendSetUp = false; // eslint-disable-line no-underscore-dangle
+	      this.removeEventListeners(this.window);
+	      this.clearCurrentDragSourceNode();
 	    }
-	  };
-
-	  HTML5Backend.prototype.handleTopDragEnterCapture = function handleTopDragEnterCapture(e) {
-	    this.dragEnterTargetIds = [];
-
-	    var isFirstEnter = this.enterLeaveCounter.enter(e.target);
-	    if (!isFirstEnter || this.monitor.isDragging()) {
-	      return;
+	  }, {
+	    key: 'addEventListeners',
+	    value: function addEventListeners(target) {
+	      target.addEventListener('dragstart', this.handleTopDragStart);
+	      target.addEventListener('dragstart', this.handleTopDragStartCapture, true);
+	      target.addEventListener('dragend', this.handleTopDragEndCapture, true);
+	      target.addEventListener('dragenter', this.handleTopDragEnter);
+	      target.addEventListener('dragenter', this.handleTopDragEnterCapture, true);
+	      target.addEventListener('dragleave', this.handleTopDragLeaveCapture, true);
+	      target.addEventListener('dragover', this.handleTopDragOver);
+	      target.addEventListener('dragover', this.handleTopDragOverCapture, true);
+	      target.addEventListener('drop', this.handleTopDrop);
+	      target.addEventListener('drop', this.handleTopDropCapture, true);
 	    }
-
-	    var dataTransfer = e.dataTransfer;
-
-	    var nativeType = _NativeDragSources.matchNativeItemType(dataTransfer);
-
-	    if (nativeType) {
-	      // A native item (such as file or URL) dragged from outside the document
-	      this.beginDragNativeItem(nativeType);
+	  }, {
+	    key: 'removeEventListeners',
+	    value: function removeEventListeners(target) {
+	      target.removeEventListener('dragstart', this.handleTopDragStart);
+	      target.removeEventListener('dragstart', this.handleTopDragStartCapture, true);
+	      target.removeEventListener('dragend', this.handleTopDragEndCapture, true);
+	      target.removeEventListener('dragenter', this.handleTopDragEnter);
+	      target.removeEventListener('dragenter', this.handleTopDragEnterCapture, true);
+	      target.removeEventListener('dragleave', this.handleTopDragLeaveCapture, true);
+	      target.removeEventListener('dragover', this.handleTopDragOver);
+	      target.removeEventListener('dragover', this.handleTopDragOverCapture, true);
+	      target.removeEventListener('drop', this.handleTopDrop);
+	      target.removeEventListener('drop', this.handleTopDropCapture, true);
 	    }
-	  };
+	  }, {
+	    key: 'connectDragPreview',
+	    value: function connectDragPreview(sourceId, node, options) {
+	      var _this = this;
 
-	  HTML5Backend.prototype.handleDragEnter = function handleDragEnter(e, targetId) {
-	    this.dragEnterTargetIds.unshift(targetId);
-	  };
+	      this.sourcePreviewNodeOptions[sourceId] = options;
+	      this.sourcePreviewNodes[sourceId] = node;
 
-	  HTML5Backend.prototype.handleTopDragEnter = function handleTopDragEnter(e) {
-	    var _this5 = this;
-
-	    var dragEnterTargetIds = this.dragEnterTargetIds;
-
-	    this.dragEnterTargetIds = [];
-
-	    if (!this.monitor.isDragging()) {
-	      // This is probably a native item type we don't understand.
-	      return;
+	      return function () {
+	        delete _this.sourcePreviewNodes[sourceId];
+	        delete _this.sourcePreviewNodeOptions[sourceId];
+	      };
 	    }
+	  }, {
+	    key: 'connectDragSource',
+	    value: function connectDragSource(sourceId, node, options) {
+	      var _this2 = this;
 
-	    if (!_BrowserDetector.isFirefox()) {
-	      // Don't emit hover in `dragenter` on Firefox due to an edge case.
-	      // If the target changes position as the result of `dragenter`, Firefox
-	      // will still happily dispatch `dragover` despite target being no longer
-	      // there. The easy solution is to only fire `hover` in `dragover` on FF.
-	      this.actions.hover(dragEnterTargetIds, {
-	        clientOffset: _OffsetUtils.getEventClientOffset(e)
+	      this.sourceNodes[sourceId] = node;
+	      this.sourceNodeOptions[sourceId] = options;
+
+	      var handleDragStart = function handleDragStart(e) {
+	        return _this2.handleDragStart(e, sourceId);
+	      };
+	      var handleSelectStart = function handleSelectStart(e) {
+	        return _this2.handleSelectStart(e, sourceId);
+	      };
+
+	      node.setAttribute('draggable', true);
+	      node.addEventListener('dragstart', handleDragStart);
+	      node.addEventListener('selectstart', handleSelectStart);
+
+	      return function () {
+	        delete _this2.sourceNodes[sourceId];
+	        delete _this2.sourceNodeOptions[sourceId];
+
+	        node.removeEventListener('dragstart', handleDragStart);
+	        node.removeEventListener('selectstart', handleSelectStart);
+	        node.setAttribute('draggable', false);
+	      };
+	    }
+	  }, {
+	    key: 'connectDropTarget',
+	    value: function connectDropTarget(targetId, node) {
+	      var _this3 = this;
+
+	      var handleDragEnter = function handleDragEnter(e) {
+	        return _this3.handleDragEnter(e, targetId);
+	      };
+	      var handleDragOver = function handleDragOver(e) {
+	        return _this3.handleDragOver(e, targetId);
+	      };
+	      var handleDrop = function handleDrop(e) {
+	        return _this3.handleDrop(e, targetId);
+	      };
+
+	      node.addEventListener('dragenter', handleDragEnter);
+	      node.addEventListener('dragover', handleDragOver);
+	      node.addEventListener('drop', handleDrop);
+
+	      return function () {
+	        node.removeEventListener('dragenter', handleDragEnter);
+	        node.removeEventListener('dragover', handleDragOver);
+	        node.removeEventListener('drop', handleDrop);
+	      };
+	    }
+	  }, {
+	    key: 'getCurrentSourceNodeOptions',
+	    value: function getCurrentSourceNodeOptions() {
+	      var sourceId = this.monitor.getSourceId();
+	      var sourceNodeOptions = this.sourceNodeOptions[sourceId];
+
+	      return (0, _defaults2.default)(sourceNodeOptions || {}, {
+	        dropEffect: 'move'
 	      });
 	    }
+	  }, {
+	    key: 'getCurrentDropEffect',
+	    value: function getCurrentDropEffect() {
+	      if (this.isDraggingNativeItem()) {
+	        // It makes more sense to default to 'copy' for native resources
+	        return 'copy';
+	      }
 
-	    var canDrop = dragEnterTargetIds.some(function (targetId) {
-	      return _this5.monitor.canDropOnTarget(targetId);
-	    });
+	      return this.getCurrentSourceNodeOptions().dropEffect;
+	    }
+	  }, {
+	    key: 'getCurrentSourcePreviewNodeOptions',
+	    value: function getCurrentSourcePreviewNodeOptions() {
+	      var sourceId = this.monitor.getSourceId();
+	      var sourcePreviewNodeOptions = this.sourcePreviewNodeOptions[sourceId];
 
-	    if (canDrop) {
-	      // IE requires this to fire dragover events
+	      return (0, _defaults2.default)(sourcePreviewNodeOptions || {}, {
+	        anchorX: 0.5,
+	        anchorY: 0.5,
+	        captureDraggingState: false
+	      });
+	    }
+	  }, {
+	    key: 'getSourceClientOffset',
+	    value: function getSourceClientOffset(sourceId) {
+	      return (0, _OffsetUtils.getNodeClientOffset)(this.sourceNodes[sourceId]);
+	    }
+	  }, {
+	    key: 'isDraggingNativeItem',
+	    value: function isDraggingNativeItem() {
+	      var itemType = this.monitor.getItemType();
+	      return Object.keys(NativeTypes).some(function (key) {
+	        return NativeTypes[key] === itemType;
+	      });
+	    }
+	  }, {
+	    key: 'beginDragNativeItem',
+	    value: function beginDragNativeItem(type) {
+	      this.clearCurrentDragSourceNode();
+
+	      var SourceType = (0, _NativeDragSources.createNativeDragSource)(type);
+	      this.currentNativeSource = new SourceType();
+	      this.currentNativeHandle = this.registry.addSource(type, this.currentNativeSource);
+	      this.actions.beginDrag([this.currentNativeHandle]);
+
+	      // On Firefox, if mousemove fires, the drag is over but browser failed to tell us.
+	      // This is not true for other browsers.
+	      if ((0, _BrowserDetector.isFirefox)()) {
+	        this.window.addEventListener('mousemove', this.endDragNativeItem, true);
+	      }
+	    }
+	  }, {
+	    key: 'endDragNativeItem',
+	    value: function endDragNativeItem() {
+	      if (!this.isDraggingNativeItem()) {
+	        return;
+	      }
+
+	      if ((0, _BrowserDetector.isFirefox)()) {
+	        this.window.removeEventListener('mousemove', this.endDragNativeItem, true);
+	      }
+
+	      this.actions.endDrag();
+	      this.registry.removeSource(this.currentNativeHandle);
+	      this.currentNativeHandle = null;
+	      this.currentNativeSource = null;
+	    }
+	  }, {
+	    key: 'endDragIfSourceWasRemovedFromDOM',
+	    value: function endDragIfSourceWasRemovedFromDOM() {
+	      var node = this.currentDragSourceNode;
+	      if (document.body.contains(node)) {
+	        return;
+	      }
+
+	      if (this.clearCurrentDragSourceNode()) {
+	        this.actions.endDrag();
+	      }
+	    }
+	  }, {
+	    key: 'setCurrentDragSourceNode',
+	    value: function setCurrentDragSourceNode(node) {
+	      this.clearCurrentDragSourceNode();
+	      this.currentDragSourceNode = node;
+	      this.currentDragSourceNodeOffset = (0, _OffsetUtils.getNodeClientOffset)(node);
+	      this.currentDragSourceNodeOffsetChanged = false;
+
+	      // Receiving a mouse event in the middle of a dragging operation
+	      // means it has ended and the drag source node disappeared from DOM,
+	      // so the browser didn't dispatch the dragend event.
+	      this.window.addEventListener('mousemove', this.endDragIfSourceWasRemovedFromDOM, true);
+	    }
+	  }, {
+	    key: 'clearCurrentDragSourceNode',
+	    value: function clearCurrentDragSourceNode() {
+	      if (this.currentDragSourceNode) {
+	        this.currentDragSourceNode = null;
+	        this.currentDragSourceNodeOffset = null;
+	        this.currentDragSourceNodeOffsetChanged = false;
+	        this.window.removeEventListener('mousemove', this.endDragIfSourceWasRemovedFromDOM, true);
+	        return true;
+	      }
+
+	      return false;
+	    }
+	  }, {
+	    key: 'checkIfCurrentDragSourceRectChanged',
+	    value: function checkIfCurrentDragSourceRectChanged() {
+	      var node = this.currentDragSourceNode;
+	      if (!node) {
+	        return false;
+	      }
+
+	      if (this.currentDragSourceNodeOffsetChanged) {
+	        return true;
+	      }
+
+	      this.currentDragSourceNodeOffsetChanged = !(0, _shallowEqual2.default)((0, _OffsetUtils.getNodeClientOffset)(node), this.currentDragSourceNodeOffset);
+
+	      return this.currentDragSourceNodeOffsetChanged;
+	    }
+	  }, {
+	    key: 'handleTopDragStartCapture',
+	    value: function handleTopDragStartCapture() {
+	      this.clearCurrentDragSourceNode();
+	      this.dragStartSourceIds = [];
+	    }
+	  }, {
+	    key: 'handleDragStart',
+	    value: function handleDragStart(e, sourceId) {
+	      this.dragStartSourceIds.unshift(sourceId);
+	    }
+	  }, {
+	    key: 'handleTopDragStart',
+	    value: function handleTopDragStart(e) {
+	      var _this4 = this;
+
+	      var dragStartSourceIds = this.dragStartSourceIds;
+
+	      this.dragStartSourceIds = null;
+
+	      var clientOffset = (0, _OffsetUtils.getEventClientOffset)(e);
+
+	      // Don't publish the source just yet (see why below)
+	      this.actions.beginDrag(dragStartSourceIds, {
+	        publishSource: false,
+	        getSourceClientOffset: this.getSourceClientOffset,
+	        clientOffset: clientOffset
+	      });
+
+	      var dataTransfer = e.dataTransfer;
+
+	      var nativeType = (0, _NativeDragSources.matchNativeItemType)(dataTransfer);
+
+	      if (this.monitor.isDragging()) {
+	        if (typeof dataTransfer.setDragImage === 'function') {
+	          // Use custom drag image if user specifies it.
+	          // If child drag source refuses drag but parent agrees,
+	          // use parent's node as drag image. Neither works in IE though.
+	          var sourceId = this.monitor.getSourceId();
+	          var sourceNode = this.sourceNodes[sourceId];
+	          var dragPreview = this.sourcePreviewNodes[sourceId] || sourceNode;
+
+	          var _getCurrentSourcePrev = this.getCurrentSourcePreviewNodeOptions(),
+	              anchorX = _getCurrentSourcePrev.anchorX,
+	              anchorY = _getCurrentSourcePrev.anchorY;
+
+	          var anchorPoint = { anchorX: anchorX, anchorY: anchorY };
+	          var dragPreviewOffset = (0, _OffsetUtils.getDragPreviewOffset)(sourceNode, dragPreview, clientOffset, anchorPoint);
+	          dataTransfer.setDragImage(dragPreview, dragPreviewOffset.x, dragPreviewOffset.y);
+	        }
+
+	        try {
+	          // Firefox won't drag without setting data
+	          dataTransfer.setData('application/json', {});
+	        } catch (err) {}
+	        // IE doesn't support MIME types in setData
+
+
+	        // Store drag source node so we can check whether
+	        // it is removed from DOM and trigger endDrag manually.
+	        this.setCurrentDragSourceNode(e.target);
+
+	        // Now we are ready to publish the drag source.. or are we not?
+
+	        var _getCurrentSourcePrev2 = this.getCurrentSourcePreviewNodeOptions(),
+	            captureDraggingState = _getCurrentSourcePrev2.captureDraggingState;
+
+	        if (!captureDraggingState) {
+	          // Usually we want to publish it in the next tick so that browser
+	          // is able to screenshot the current (not yet dragging) state.
+	          //
+	          // It also neatly avoids a situation where render() returns null
+	          // in the same tick for the source element, and browser freaks out.
+	          setTimeout(function () {
+	            return _this4.actions.publishDragSource();
+	          });
+	        } else {
+	          // In some cases the user may want to override this behavior, e.g.
+	          // to work around IE not supporting custom drag previews.
+	          //
+	          // When using a custom drag layer, the only way to prevent
+	          // the default drag preview from drawing in IE is to screenshot
+	          // the dragging state in which the node itself has zero opacity
+	          // and height. In this case, though, returning null from render()
+	          // will abruptly end the dragging, which is not obvious.
+	          //
+	          // This is the reason such behavior is strictly opt-in.
+	          this.actions.publishDragSource();
+	        }
+	      } else if (nativeType) {
+	        // A native item (such as URL) dragged from inside the document
+	        this.beginDragNativeItem(nativeType);
+	      } else if (!dataTransfer.types && (!e.target.hasAttribute || !e.target.hasAttribute('draggable'))) {
+	        // Looks like a Safari bug: dataTransfer.types is null, but there was no draggable.
+	        // Just let it drag. It's a native type (URL or text) and will be picked up in
+	        // dragenter handler.
+	        return; // eslint-disable-line no-useless-return
+	      } else {
+	        // If by this time no drag source reacted, tell browser not to drag.
+	        e.preventDefault();
+	      }
+	    }
+	  }, {
+	    key: 'handleTopDragEndCapture',
+	    value: function handleTopDragEndCapture() {
+	      if (this.clearCurrentDragSourceNode()) {
+	        // Firefox can dispatch this event in an infinite loop
+	        // if dragend handler does something like showing an alert.
+	        // Only proceed if we have not handled it already.
+	        this.actions.endDrag();
+	      }
+	    }
+	  }, {
+	    key: 'handleTopDragEnterCapture',
+	    value: function handleTopDragEnterCapture(e) {
+	      this.dragEnterTargetIds = [];
+
+	      var isFirstEnter = this.enterLeaveCounter.enter(e.target);
+	      if (!isFirstEnter || this.monitor.isDragging()) {
+	        return;
+	      }
+
+	      var dataTransfer = e.dataTransfer;
+
+	      var nativeType = (0, _NativeDragSources.matchNativeItemType)(dataTransfer);
+
+	      if (nativeType) {
+	        // A native item (such as file or URL) dragged from outside the document
+	        this.beginDragNativeItem(nativeType);
+	      }
+	    }
+	  }, {
+	    key: 'handleDragEnter',
+	    value: function handleDragEnter(e, targetId) {
+	      this.dragEnterTargetIds.unshift(targetId);
+	    }
+	  }, {
+	    key: 'handleTopDragEnter',
+	    value: function handleTopDragEnter(e) {
+	      var _this5 = this;
+
+	      var dragEnterTargetIds = this.dragEnterTargetIds;
+
+	      this.dragEnterTargetIds = [];
+
+	      if (!this.monitor.isDragging()) {
+	        // This is probably a native item type we don't understand.
+	        return;
+	      }
+
+	      if (!(0, _BrowserDetector.isFirefox)()) {
+	        // Don't emit hover in `dragenter` on Firefox due to an edge case.
+	        // If the target changes position as the result of `dragenter`, Firefox
+	        // will still happily dispatch `dragover` despite target being no longer
+	        // there. The easy solution is to only fire `hover` in `dragover` on FF.
+	        this.actions.hover(dragEnterTargetIds, {
+	          clientOffset: (0, _OffsetUtils.getEventClientOffset)(e)
+	        });
+	      }
+
+	      var canDrop = dragEnterTargetIds.some(function (targetId) {
+	        return _this5.monitor.canDropOnTarget(targetId);
+	      });
+
+	      if (canDrop) {
+	        // IE requires this to fire dragover events
+	        e.preventDefault();
+	        e.dataTransfer.dropEffect = this.getCurrentDropEffect();
+	      }
+	    }
+	  }, {
+	    key: 'handleTopDragOverCapture',
+	    value: function handleTopDragOverCapture() {
+	      this.dragOverTargetIds = [];
+	    }
+	  }, {
+	    key: 'handleDragOver',
+	    value: function handleDragOver(e, targetId) {
+	      this.dragOverTargetIds.unshift(targetId);
+	    }
+	  }, {
+	    key: 'handleTopDragOver',
+	    value: function handleTopDragOver(e) {
+	      var _this6 = this;
+
+	      var dragOverTargetIds = this.dragOverTargetIds;
+
+	      this.dragOverTargetIds = [];
+
+	      if (!this.monitor.isDragging()) {
+	        // This is probably a native item type we don't understand.
+	        // Prevent default "drop and blow away the whole document" action.
+	        e.preventDefault();
+	        e.dataTransfer.dropEffect = 'none';
+	        return;
+	      }
+
+	      this.actions.hover(dragOverTargetIds, {
+	        clientOffset: (0, _OffsetUtils.getEventClientOffset)(e)
+	      });
+
+	      var canDrop = dragOverTargetIds.some(function (targetId) {
+	        return _this6.monitor.canDropOnTarget(targetId);
+	      });
+
+	      if (canDrop) {
+	        // Show user-specified drop effect.
+	        e.preventDefault();
+	        e.dataTransfer.dropEffect = this.getCurrentDropEffect();
+	      } else if (this.isDraggingNativeItem()) {
+	        // Don't show a nice cursor but still prevent default
+	        // "drop and blow away the whole document" action.
+	        e.preventDefault();
+	        e.dataTransfer.dropEffect = 'none';
+	      } else if (this.checkIfCurrentDragSourceRectChanged()) {
+	        // Prevent animating to incorrect position.
+	        // Drop effect must be other than 'none' to prevent animation.
+	        e.preventDefault();
+	        e.dataTransfer.dropEffect = 'move';
+	      }
+	    }
+	  }, {
+	    key: 'handleTopDragLeaveCapture',
+	    value: function handleTopDragLeaveCapture(e) {
+	      if (this.isDraggingNativeItem()) {
+	        e.preventDefault();
+	      }
+
+	      var isLastLeave = this.enterLeaveCounter.leave(e.target);
+	      if (!isLastLeave) {
+	        return;
+	      }
+
+	      if (this.isDraggingNativeItem()) {
+	        this.endDragNativeItem();
+	      }
+	    }
+	  }, {
+	    key: 'handleTopDropCapture',
+	    value: function handleTopDropCapture(e) {
+	      this.dropTargetIds = [];
 	      e.preventDefault();
-	      e.dataTransfer.dropEffect = this.getCurrentDropEffect();
+
+	      if (this.isDraggingNativeItem()) {
+	        this.currentNativeSource.mutateItemByReadingDataTransfer(e.dataTransfer);
+	      }
+
+	      this.enterLeaveCounter.reset();
 	    }
-	  };
+	  }, {
+	    key: 'handleDrop',
+	    value: function handleDrop(e, targetId) {
+	      this.dropTargetIds.unshift(targetId);
+	    }
+	  }, {
+	    key: 'handleTopDrop',
+	    value: function handleTopDrop(e) {
+	      var dropTargetIds = this.dropTargetIds;
 
-	  HTML5Backend.prototype.handleTopDragOverCapture = function handleTopDragOverCapture() {
-	    this.dragOverTargetIds = [];
-	  };
+	      this.dropTargetIds = [];
 
-	  HTML5Backend.prototype.handleDragOver = function handleDragOver(e, targetId) {
-	    this.dragOverTargetIds.unshift(targetId);
-	  };
+	      this.actions.hover(dropTargetIds, {
+	        clientOffset: (0, _OffsetUtils.getEventClientOffset)(e)
+	      });
+	      this.actions.drop();
 
-	  HTML5Backend.prototype.handleTopDragOver = function handleTopDragOver(e) {
-	    var _this6 = this;
+	      if (this.isDraggingNativeItem()) {
+	        this.endDragNativeItem();
+	      } else {
+	        this.endDragIfSourceWasRemovedFromDOM();
+	      }
+	    }
+	  }, {
+	    key: 'handleSelectStart',
+	    value: function handleSelectStart(e) {
+	      var target = e.target;
 
-	    var dragOverTargetIds = this.dragOverTargetIds;
+	      // Only IE requires us to explicitly say
+	      // we want drag drop operation to start
 
-	    this.dragOverTargetIds = [];
+	      if (typeof target.dragDrop !== 'function') {
+	        return;
+	      }
 
-	    if (!this.monitor.isDragging()) {
-	      // This is probably a native item type we don't understand.
-	      // Prevent default "drop and blow away the whole document" action.
+	      // Inputs and textareas should be selectable
+	      if (target.tagName === 'INPUT' || target.tagName === 'SELECT' || target.tagName === 'TEXTAREA' || target.isContentEditable) {
+	        return;
+	      }
+
+	      // For other targets, ask IE
+	      // to enable drag and drop
 	      e.preventDefault();
-	      e.dataTransfer.dropEffect = 'none';
-	      return;
+	      target.dragDrop();
 	    }
-
-	    this.actions.hover(dragOverTargetIds, {
-	      clientOffset: _OffsetUtils.getEventClientOffset(e)
-	    });
-
-	    var canDrop = dragOverTargetIds.some(function (targetId) {
-	      return _this6.monitor.canDropOnTarget(targetId);
-	    });
-
-	    if (canDrop) {
-	      // Show user-specified drop effect.
-	      e.preventDefault();
-	      e.dataTransfer.dropEffect = this.getCurrentDropEffect();
-	    } else if (this.isDraggingNativeItem()) {
-	      // Don't show a nice cursor but still prevent default
-	      // "drop and blow away the whole document" action.
-	      e.preventDefault();
-	      e.dataTransfer.dropEffect = 'none';
-	    } else if (this.checkIfCurrentDragSourceRectChanged()) {
-	      // Prevent animating to incorrect position.
-	      // Drop effect must be other than 'none' to prevent animation.
-	      e.preventDefault();
-	      e.dataTransfer.dropEffect = 'move';
+	  }, {
+	    key: 'window',
+	    get: function get() {
+	      if (this.context && this.context.window) {
+	        return this.context.window;
+	      } else if (typeof window !== 'undefined') {
+	        return window;
+	      }
+	      return undefined;
 	    }
-	  };
-
-	  HTML5Backend.prototype.handleTopDragLeaveCapture = function handleTopDragLeaveCapture(e) {
-	    if (this.isDraggingNativeItem()) {
-	      e.preventDefault();
-	    }
-
-	    var isLastLeave = this.enterLeaveCounter.leave(e.target);
-	    if (!isLastLeave) {
-	      return;
-	    }
-
-	    if (this.isDraggingNativeItem()) {
-	      this.endDragNativeItem();
-	    }
-	  };
-
-	  HTML5Backend.prototype.handleTopDropCapture = function handleTopDropCapture(e) {
-	    this.dropTargetIds = [];
-	    e.preventDefault();
-
-	    if (this.isDraggingNativeItem()) {
-	      this.currentNativeSource.mutateItemByReadingDataTransfer(e.dataTransfer);
-	    }
-
-	    this.enterLeaveCounter.reset();
-	  };
-
-	  HTML5Backend.prototype.handleDrop = function handleDrop(e, targetId) {
-	    this.dropTargetIds.unshift(targetId);
-	  };
-
-	  HTML5Backend.prototype.handleTopDrop = function handleTopDrop(e) {
-	    var dropTargetIds = this.dropTargetIds;
-
-	    this.dropTargetIds = [];
-
-	    this.actions.hover(dropTargetIds, {
-	      clientOffset: _OffsetUtils.getEventClientOffset(e)
-	    });
-	    this.actions.drop();
-
-	    if (this.isDraggingNativeItem()) {
-	      this.endDragNativeItem();
-	    } else {
-	      this.endDragIfSourceWasRemovedFromDOM();
-	    }
-	  };
-
-	  HTML5Backend.prototype.handleSelectStart = function handleSelectStart(e) {
-	    var target = e.target;
-
-	    // Only IE requires us to explicitly say
-	    // we want drag drop operation to start
-	    if (typeof target.dragDrop !== 'function') {
-	      return;
-	    }
-
-	    // Inputs and textareas should be selectable
-	    if (target.tagName === 'INPUT' || target.tagName === 'SELECT' || target.tagName === 'TEXTAREA' || target.isContentEditable) {
-	      return;
-	    }
-
-	    // For other targets, ask IE
-	    // to enable drag and drop
-	    e.preventDefault();
-	    target.dragDrop();
-	  };
+	  }]);
 
 	  return HTML5Backend;
-	})();
+	}();
 
-	exports['default'] = HTML5Backend;
-	module.exports = exports['default'];
+	exports.default = HTML5Backend;
 
 /***/ },
-/* 141 */
+/* 143 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var apply = __webpack_require__(78),
-	    assignInWith = __webpack_require__(142),
+	    assignInWith = __webpack_require__(144),
 	    baseRest = __webpack_require__(75),
-	    customDefaultsAssignIn = __webpack_require__(160);
+	    customDefaultsAssignIn = __webpack_require__(162);
 
 	/**
 	 * Assigns own and inherited enumerable string keyed properties of source
@@ -7736,12 +8068,12 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 142 */
+/* 144 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var copyObject = __webpack_require__(143),
-	    createAssigner = __webpack_require__(146),
-	    keysIn = __webpack_require__(149);
+	var copyObject = __webpack_require__(145),
+	    createAssigner = __webpack_require__(148),
+	    keysIn = __webpack_require__(151);
 
 	/**
 	 * This method is like `_.assignIn` except that it accepts `customizer`
@@ -7780,11 +8112,11 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 143 */
+/* 145 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var assignValue = __webpack_require__(144),
-	    baseAssignValue = __webpack_require__(145);
+	var assignValue = __webpack_require__(146),
+	    baseAssignValue = __webpack_require__(147);
 
 	/**
 	 * Copies properties of `source` to `object`.
@@ -7826,10 +8158,10 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 144 */
+/* 146 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseAssignValue = __webpack_require__(145),
+	var baseAssignValue = __webpack_require__(147),
 	    eq = __webpack_require__(53);
 
 	/** Used for built-in method references. */
@@ -7860,7 +8192,7 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 145 */
+/* 147 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var defineProperty = __webpack_require__(82);
@@ -7891,11 +8223,11 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 146 */
+/* 148 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var baseRest = __webpack_require__(75),
-	    isIterateeCall = __webpack_require__(147);
+	    isIterateeCall = __webpack_require__(149);
 
 	/**
 	 * Creates a function like `_.assign`.
@@ -7934,12 +8266,12 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 147 */
+/* 149 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var eq = __webpack_require__(53),
 	    isArrayLike = __webpack_require__(85),
-	    isIndex = __webpack_require__(148),
+	    isIndex = __webpack_require__(150),
 	    isObject = __webpack_require__(27);
 
 	/**
@@ -7970,7 +8302,7 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 148 */
+/* 150 */
 /***/ function(module, exports) {
 
 	/** Used as references for various `Number` constants. */
@@ -7998,11 +8330,11 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 149 */
+/* 151 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var arrayLikeKeys = __webpack_require__(150),
-	    baseKeysIn = __webpack_require__(157),
+	var arrayLikeKeys = __webpack_require__(152),
+	    baseKeysIn = __webpack_require__(159),
 	    isArrayLike = __webpack_require__(85);
 
 	/**
@@ -8036,15 +8368,15 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 150 */
+/* 152 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseTimes = __webpack_require__(151),
+	var baseTimes = __webpack_require__(153),
 	    isArguments = __webpack_require__(96),
 	    isArray = __webpack_require__(26),
-	    isBuffer = __webpack_require__(152),
-	    isIndex = __webpack_require__(148),
-	    isTypedArray = __webpack_require__(154);
+	    isBuffer = __webpack_require__(154),
+	    isIndex = __webpack_require__(150),
+	    isTypedArray = __webpack_require__(156);
 
 	/** Used for built-in method references. */
 	var objectProto = Object.prototype;
@@ -8091,7 +8423,7 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 151 */
+/* 153 */
 /***/ function(module, exports) {
 
 	/**
@@ -8117,11 +8449,11 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 152 */
+/* 154 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {var root = __webpack_require__(10),
-	    stubFalse = __webpack_require__(153);
+	    stubFalse = __webpack_require__(155);
 
 	/** Detect free variable `exports`. */
 	var freeExports = typeof exports == 'object' && exports && !exports.nodeType && exports;
@@ -8162,7 +8494,7 @@ var WikiTableEditor =
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(19)(module)))
 
 /***/ },
-/* 153 */
+/* 155 */
 /***/ function(module, exports) {
 
 	/**
@@ -8186,12 +8518,12 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 154 */
+/* 156 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseIsTypedArray = __webpack_require__(155),
+	var baseIsTypedArray = __webpack_require__(157),
 	    baseUnary = __webpack_require__(73),
-	    nodeUtil = __webpack_require__(156);
+	    nodeUtil = __webpack_require__(158);
 
 	/* Node.js helper references. */
 	var nodeIsTypedArray = nodeUtil && nodeUtil.isTypedArray;
@@ -8219,7 +8551,7 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 155 */
+/* 157 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var baseGetTag = __webpack_require__(8),
@@ -8285,7 +8617,7 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 156 */
+/* 158 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {var freeGlobal = __webpack_require__(11);
@@ -8314,12 +8646,12 @@ var WikiTableEditor =
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(19)(module)))
 
 /***/ },
-/* 157 */
+/* 159 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var isObject = __webpack_require__(27),
-	    isPrototype = __webpack_require__(158),
-	    nativeKeysIn = __webpack_require__(159);
+	    isPrototype = __webpack_require__(160),
+	    nativeKeysIn = __webpack_require__(161);
 
 	/** Used for built-in method references. */
 	var objectProto = Object.prototype;
@@ -8353,7 +8685,7 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 158 */
+/* 160 */
 /***/ function(module, exports) {
 
 	/** Used for built-in method references. */
@@ -8377,7 +8709,7 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 159 */
+/* 161 */
 /***/ function(module, exports) {
 
 	/**
@@ -8403,7 +8735,7 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 160 */
+/* 162 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var eq = __webpack_require__(53);
@@ -8438,14 +8770,15 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 161 */
+/* 163 */
 /***/ function(module, exports) {
 
 	"use strict";
 
-	exports.__esModule = true;
-	exports["default"] = shallowEqual;
-
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = shallowEqual;
 	function shallowEqual(objA, objB) {
 	  if (objA === objB) {
 	    return true;
@@ -8460,7 +8793,7 @@ var WikiTableEditor =
 
 	  // Test for A's keys different from B.
 	  var hasOwn = Object.prototype.hasOwnProperty;
-	  for (var i = 0; i < keysA.length; i++) {
+	  for (var i = 0; i < keysA.length; i += 1) {
 	    if (!hasOwn.call(objB, keysA[i]) || objA[keysA[i]] !== objB[keysA[i]]) {
 	      return false;
 	    }
@@ -8476,67 +8809,75 @@ var WikiTableEditor =
 	  return true;
 	}
 
-	module.exports = exports["default"];
-
 /***/ },
-/* 162 */
+/* 164 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	exports.__esModule = true;
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	var _union = __webpack_require__(165);
 
-	var _lodashUnion = __webpack_require__(163);
+	var _union2 = _interopRequireDefault(_union);
 
-	var _lodashUnion2 = _interopRequireDefault(_lodashUnion);
+	var _without = __webpack_require__(30);
 
-	var _lodashWithout = __webpack_require__(30);
+	var _without2 = _interopRequireDefault(_without);
 
-	var _lodashWithout2 = _interopRequireDefault(_lodashWithout);
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	var EnterLeaveCounter = (function () {
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var EnterLeaveCounter = function () {
 	  function EnterLeaveCounter() {
 	    _classCallCheck(this, EnterLeaveCounter);
 
 	    this.entered = [];
 	  }
 
-	  EnterLeaveCounter.prototype.enter = function enter(enteringNode) {
-	    var previousLength = this.entered.length;
+	  _createClass(EnterLeaveCounter, [{
+	    key: 'enter',
+	    value: function enter(enteringNode) {
+	      var previousLength = this.entered.length;
 
-	    this.entered = _lodashUnion2['default'](this.entered.filter(function (node) {
-	      return document.documentElement.contains(node) && (!node.contains || node.contains(enteringNode));
-	    }), [enteringNode]);
+	      var isNodeEntered = function isNodeEntered(node) {
+	        return document.documentElement.contains(node) && (!node.contains || node.contains(enteringNode));
+	      };
 
-	    return previousLength === 0 && this.entered.length > 0;
-	  };
+	      this.entered = (0, _union2.default)(this.entered.filter(isNodeEntered), [enteringNode]);
 
-	  EnterLeaveCounter.prototype.leave = function leave(leavingNode) {
-	    var previousLength = this.entered.length;
+	      return previousLength === 0 && this.entered.length > 0;
+	    }
+	  }, {
+	    key: 'leave',
+	    value: function leave(leavingNode) {
+	      var previousLength = this.entered.length;
 
-	    this.entered = _lodashWithout2['default'](this.entered.filter(function (node) {
-	      return document.documentElement.contains(node);
-	    }), leavingNode);
+	      this.entered = (0, _without2.default)(this.entered.filter(function (node) {
+	        return document.documentElement.contains(node);
+	      }), leavingNode);
 
-	    return previousLength > 0 && this.entered.length === 0;
-	  };
-
-	  EnterLeaveCounter.prototype.reset = function reset() {
-	    this.entered = [];
-	  };
+	      return previousLength > 0 && this.entered.length === 0;
+	    }
+	  }, {
+	    key: 'reset',
+	    value: function reset() {
+	      this.entered = [];
+	    }
+	  }]);
 
 	  return EnterLeaveCounter;
-	})();
+	}();
 
-	exports['default'] = EnterLeaveCounter;
-	module.exports = exports['default'];
+	exports.default = EnterLeaveCounter;
 
 /***/ },
-/* 163 */
+/* 165 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var baseFlatten = __webpack_require__(93),
@@ -8568,32 +8909,32 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 164 */
+/* 166 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	exports.__esModule = true;
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.isSafari = exports.isFirefox = undefined;
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	var _memoize = __webpack_require__(167);
 
-	var _lodashMemoize = __webpack_require__(165);
+	var _memoize2 = _interopRequireDefault(_memoize);
 
-	var _lodashMemoize2 = _interopRequireDefault(_lodashMemoize);
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	var isFirefox = _lodashMemoize2['default'](function () {
+	var isFirefox = exports.isFirefox = (0, _memoize2.default)(function () {
 	  return (/firefox/i.test(navigator.userAgent)
 	  );
 	});
-
-	exports.isFirefox = isFirefox;
-	var isSafari = _lodashMemoize2['default'](function () {
+	var isSafari = exports.isSafari = (0, _memoize2.default)(function () {
 	  return Boolean(window.safari);
 	});
-	exports.isSafari = isSafari;
 
 /***/ },
-/* 165 */
+/* 167 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var MapCache = __webpack_require__(33);
@@ -8672,24 +9013,29 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 166 */
+/* 168 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	exports.__esModule = true;
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
 	exports.getNodeClientOffset = getNodeClientOffset;
 	exports.getEventClientOffset = getEventClientOffset;
 	exports.getDragPreviewOffset = getDragPreviewOffset;
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	var _BrowserDetector = __webpack_require__(166);
 
-	var _BrowserDetector = __webpack_require__(164);
-
-	var _MonotonicInterpolant = __webpack_require__(167);
+	var _MonotonicInterpolant = __webpack_require__(169);
 
 	var _MonotonicInterpolant2 = _interopRequireDefault(_MonotonicInterpolant);
 
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	/* eslint
+	   no-mixed-operators: off
+	*/
 	var ELEMENT_NODE = 1;
 
 	function getNodeClientOffset(node) {
@@ -8699,10 +9045,9 @@ var WikiTableEditor =
 	    return null;
 	  }
 
-	  var _el$getBoundingClientRect = el.getBoundingClientRect();
-
-	  var top = _el$getBoundingClientRect.top;
-	  var left = _el$getBoundingClientRect.left;
+	  var _el$getBoundingClient = el.getBoundingClientRect(),
+	      top = _el$getBoundingClient.top,
+	      left = _el$getBoundingClient.left;
 
 	  return { x: left, y: top };
 	}
@@ -8717,7 +9062,7 @@ var WikiTableEditor =
 	function getDragPreviewOffset(sourceNode, dragPreview, clientOffset, anchorPoint) {
 	  // The browsers will use the image intrinsic size under different conditions.
 	  // Firefox only cares if it's an image, but WebKit also wants it to be detached.
-	  var isImage = dragPreview.nodeName === 'IMG' && (_BrowserDetector.isFirefox() || !document.documentElement.contains(dragPreview));
+	  var isImage = dragPreview.nodeName === 'IMG' && ((0, _BrowserDetector.isFirefox)() || !document.documentElement.contains(dragPreview));
 	  var dragPreviewNode = isImage ? sourceNode : dragPreview;
 
 	  var dragPreviewNodeOffsetFromClient = getNodeClientOffset(dragPreviewNode);
@@ -8726,33 +9071,34 @@ var WikiTableEditor =
 	    y: clientOffset.y - dragPreviewNodeOffsetFromClient.y
 	  };
 
-	  var sourceWidth = sourceNode.offsetWidth;
-	  var sourceHeight = sourceNode.offsetHeight;
-	  var anchorX = anchorPoint.anchorX;
-	  var anchorY = anchorPoint.anchorY;
+	  var sourceWidth = sourceNode.offsetWidth,
+	      sourceHeight = sourceNode.offsetHeight;
+	  var anchorX = anchorPoint.anchorX,
+	      anchorY = anchorPoint.anchorY;
+
 
 	  var dragPreviewWidth = isImage ? dragPreview.width : sourceWidth;
 	  var dragPreviewHeight = isImage ? dragPreview.height : sourceHeight;
 
 	  // Work around @2x coordinate discrepancies in browsers
-	  if (_BrowserDetector.isSafari() && isImage) {
+	  if ((0, _BrowserDetector.isSafari)() && isImage) {
 	    dragPreviewHeight /= window.devicePixelRatio;
 	    dragPreviewWidth /= window.devicePixelRatio;
-	  } else if (_BrowserDetector.isFirefox() && !isImage) {
+	  } else if ((0, _BrowserDetector.isFirefox)() && !isImage) {
 	    dragPreviewHeight *= window.devicePixelRatio;
 	    dragPreviewWidth *= window.devicePixelRatio;
 	  }
 
 	  // Interpolate coordinates depending on anchor point
 	  // If you know a simpler way to do this, let me know
-	  var interpolantX = new _MonotonicInterpolant2['default']([0, 0.5, 1], [
+	  var interpolantX = new _MonotonicInterpolant2.default([0, 0.5, 1], [
 	  // Dock to the left
 	  offsetFromDragPreview.x,
 	  // Align at the center
 	  offsetFromDragPreview.x / sourceWidth * dragPreviewWidth,
 	  // Dock to the right
 	  offsetFromDragPreview.x + dragPreviewWidth - sourceWidth]);
-	  var interpolantY = new _MonotonicInterpolant2['default']([0, 0.5, 1], [
+	  var interpolantY = new _MonotonicInterpolant2.default([0, 0.5, 1], [
 	  // Dock to the top
 	  offsetFromDragPreview.y,
 	  // Align at the center
@@ -8763,7 +9109,7 @@ var WikiTableEditor =
 	  var y = interpolantY.interpolate(anchorY);
 
 	  // Work around Safari 8 positioning bug
-	  if (_BrowserDetector.isSafari() && isImage) {
+	  if ((0, _BrowserDetector.isSafari)() && isImage) {
 	    // We'll have to wait for @3x to see if this is entirely correct
 	    y += (window.devicePixelRatio - 1) * dragPreviewHeight;
 	  }
@@ -8772,16 +9118,24 @@ var WikiTableEditor =
 	}
 
 /***/ },
-/* 167 */
+/* 169 */
 /***/ function(module, exports) {
 
 	"use strict";
 
-	exports.__esModule = true;
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-	var MonotonicInterpolant = (function () {
+	/* eslint
+	   no-plusplus: off,
+	   no-mixed-operators: off
+	*/
+	var MonotonicInterpolant = function () {
 	  function MonotonicInterpolant(xs, ys) {
 	    _classCallCheck(this, MonotonicInterpolant);
 
@@ -8800,11 +9154,11 @@ var WikiTableEditor =
 	    var dys = [];
 	    var dxs = [];
 	    var ms = [];
-	    var dx = undefined;
-	    var dy = undefined;
-	    for (var i = 0; i < length - 1; i++) {
-	      dx = xs[i + 1] - xs[i];
-	      dy = ys[i + 1] - ys[i];
+	    var dx = void 0;
+	    var dy = void 0;
+	    for (var _i = 0; _i < length - 1; _i++) {
+	      dx = xs[_i + 1] - xs[_i];
+	      dy = ys[_i + 1] - ys[_i];
 	      dxs.push(dx);
 	      dys.push(dy);
 	      ms.push(dy / dx);
@@ -8812,14 +9166,14 @@ var WikiTableEditor =
 
 	    // Get degree-1 coefficients
 	    var c1s = [ms[0]];
-	    for (var i = 0; i < dxs.length - 1; i++) {
-	      var _m = ms[i];
-	      var mNext = ms[i + 1];
+	    for (var _i2 = 0; _i2 < dxs.length - 1; _i2++) {
+	      var _m = ms[_i2];
+	      var mNext = ms[_i2 + 1];
 	      if (_m * mNext <= 0) {
 	        c1s.push(0);
 	      } else {
-	        dx = dxs[i];
-	        var dxNext = dxs[i + 1];
+	        dx = dxs[_i2];
+	        var dxNext = dxs[_i2 + 1];
 	        var common = dx + dxNext;
 	        c1s.push(3 * common / ((common + dxNext) / _m + (common + dx) / mNext));
 	      }
@@ -8829,14 +9183,14 @@ var WikiTableEditor =
 	    // Get degree-2 and degree-3 coefficients
 	    var c2s = [];
 	    var c3s = [];
-	    var m = undefined;
-	    for (var i = 0; i < c1s.length - 1; i++) {
-	      m = ms[i];
-	      var c1 = c1s[i];
-	      var invDx = 1 / dxs[i];
-	      var common = c1 + c1s[i + 1] - m - m;
-	      c2s.push((m - c1 - common) * invDx);
-	      c3s.push(common * invDx * invDx);
+	    var m = void 0;
+	    for (var _i3 = 0; _i3 < c1s.length - 1; _i3++) {
+	      m = ms[_i3];
+	      var c1 = c1s[_i3];
+	      var invDx = 1 / dxs[_i3];
+	      var _common = c1 + c1s[_i3 + 1] - m - m;
+	      c2s.push((m - c1 - _common) * invDx);
+	      c3s.push(_common * invDx * invDx);
 	    }
 
 	    this.xs = xs;
@@ -8846,70 +9200,79 @@ var WikiTableEditor =
 	    this.c3s = c3s;
 	  }
 
-	  MonotonicInterpolant.prototype.interpolate = function interpolate(x) {
-	    var xs = this.xs;
-	    var ys = this.ys;
-	    var c1s = this.c1s;
-	    var c2s = this.c2s;
-	    var c3s = this.c3s;
+	  _createClass(MonotonicInterpolant, [{
+	    key: "interpolate",
+	    value: function interpolate(x) {
+	      var xs = this.xs,
+	          ys = this.ys,
+	          c1s = this.c1s,
+	          c2s = this.c2s,
+	          c3s = this.c3s;
 
-	    // The rightmost point in the dataset should give an exact result
-	    var i = xs.length - 1;
-	    if (x === xs[i]) {
-	      return ys[i];
-	    }
+	      // The rightmost point in the dataset should give an exact result
 
-	    // Search for the interval x is in, returning the corresponding y if x is one of the original xs
-	    var low = 0;
-	    var high = c3s.length - 1;
-	    var mid = undefined;
-	    while (low <= high) {
-	      mid = Math.floor(0.5 * (low + high));
-	      var xHere = xs[mid];
-	      if (xHere < x) {
-	        low = mid + 1;
-	      } else if (xHere > x) {
-	        high = mid - 1;
-	      } else {
-	        return ys[mid];
+	      var i = xs.length - 1;
+	      if (x === xs[i]) {
+	        return ys[i];
 	      }
-	    }
-	    i = Math.max(0, high);
 
-	    // Interpolate
-	    var diff = x - xs[i];
-	    var diffSq = diff * diff;
-	    return ys[i] + c1s[i] * diff + c2s[i] * diffSq + c3s[i] * diff * diffSq;
-	  };
+	      // Search for the interval x is in, returning the corresponding y if x is one of the original xs
+	      var low = 0;
+	      var high = c3s.length - 1;
+	      var mid = void 0;
+	      while (low <= high) {
+	        mid = Math.floor(0.5 * (low + high));
+	        var xHere = xs[mid];
+	        if (xHere < x) {
+	          low = mid + 1;
+	        } else if (xHere > x) {
+	          high = mid - 1;
+	        } else {
+	          return ys[mid];
+	        }
+	      }
+	      i = Math.max(0, high);
+
+	      // Interpolate
+	      var diff = x - xs[i];
+	      var diffSq = diff * diff;
+	      return ys[i] + c1s[i] * diff + c2s[i] * diffSq + c3s[i] * diff * diffSq;
+	    }
+	  }]);
 
 	  return MonotonicInterpolant;
-	})();
+	}();
 
-	exports["default"] = MonotonicInterpolant;
-	module.exports = exports["default"];
+	exports.default = MonotonicInterpolant;
 
 /***/ },
-/* 168 */
+/* 170 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	exports.__esModule = true;
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 	var _nativeTypesConfig;
 
 	exports.createNativeDragSource = createNativeDragSource;
 	exports.matchNativeItemType = matchNativeItemType;
 
-	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj['default'] = obj; return newObj; } }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-
-	function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
-	var _NativeTypes = __webpack_require__(169);
+	var _NativeTypes = __webpack_require__(171);
 
 	var NativeTypes = _interopRequireWildcard(_NativeTypes);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+	function _defineEnumerableProperties(obj, descs) { for (var key in descs) { var desc = descs[key]; desc.configurable = desc.enumerable = true; if ("value" in desc) desc.writable = true; Object.defineProperty(obj, key, desc); } return obj; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 	function getDataFromDataTransfer(dataTransfer, typesToTry, defaultValue) {
 	  var result = typesToTry.reduce(function (resultSoFar, typeToTry) {
@@ -8941,47 +9304,53 @@ var WikiTableEditor =
 	}), _nativeTypesConfig);
 
 	function createNativeDragSource(type) {
-	  var _nativeTypesConfig$type = nativeTypesConfig[type];
-	  var exposeProperty = _nativeTypesConfig$type.exposeProperty;
-	  var matchesTypes = _nativeTypesConfig$type.matchesTypes;
-	  var getData = _nativeTypesConfig$type.getData;
+	  var _nativeTypesConfig$ty = nativeTypesConfig[type],
+	      exposeProperty = _nativeTypesConfig$ty.exposeProperty,
+	      matchesTypes = _nativeTypesConfig$ty.matchesTypes,
+	      getData = _nativeTypesConfig$ty.getData;
 
-	  return (function () {
+
+	  return function () {
 	    function NativeDragSource() {
+	      var _item, _mutatorMap;
+
 	      _classCallCheck(this, NativeDragSource);
 
-	      this.item = Object.defineProperties({}, _defineProperty({}, exposeProperty, {
-	        get: function get() {
-	          console.warn( // eslint-disable-line no-console
-	          'Browser doesn\'t allow reading "' + exposeProperty + '" until the drop event.');
-	          return null;
-	        },
-	        configurable: true,
-	        enumerable: true
-	      }));
+	      this.item = (_item = {}, _mutatorMap = {}, _mutatorMap[exposeProperty] = _mutatorMap[exposeProperty] || {}, _mutatorMap[exposeProperty].get = function () {
+	        console.warn( // eslint-disable-line no-console
+	        'Browser doesn\'t allow reading "' + exposeProperty + '" until the drop event.');
+	        return null;
+	      }, _defineEnumerableProperties(_item, _mutatorMap), _item);
 	    }
 
-	    NativeDragSource.prototype.mutateItemByReadingDataTransfer = function mutateItemByReadingDataTransfer(dataTransfer) {
-	      delete this.item[exposeProperty];
-	      this.item[exposeProperty] = getData(dataTransfer, matchesTypes);
-	    };
-
-	    NativeDragSource.prototype.canDrag = function canDrag() {
-	      return true;
-	    };
-
-	    NativeDragSource.prototype.beginDrag = function beginDrag() {
-	      return this.item;
-	    };
-
-	    NativeDragSource.prototype.isDragging = function isDragging(monitor, handle) {
-	      return handle === monitor.getSourceId();
-	    };
-
-	    NativeDragSource.prototype.endDrag = function endDrag() {};
+	    _createClass(NativeDragSource, [{
+	      key: 'mutateItemByReadingDataTransfer',
+	      value: function mutateItemByReadingDataTransfer(dataTransfer) {
+	        delete this.item[exposeProperty];
+	        this.item[exposeProperty] = getData(dataTransfer, matchesTypes);
+	      }
+	    }, {
+	      key: 'canDrag',
+	      value: function canDrag() {
+	        return true;
+	      }
+	    }, {
+	      key: 'beginDrag',
+	      value: function beginDrag() {
+	        return this.item;
+	      }
+	    }, {
+	      key: 'isDragging',
+	      value: function isDragging(monitor, handle) {
+	        return handle === monitor.getSourceId();
+	      }
+	    }, {
+	      key: 'endDrag',
+	      value: function endDrag() {}
+	    }]);
 
 	    return NativeDragSource;
-	  })();
+	  }();
 	}
 
 	function matchNativeItemType(dataTransfer) {
@@ -8997,29 +9366,29 @@ var WikiTableEditor =
 	}
 
 /***/ },
-/* 169 */
+/* 171 */
 /***/ function(module, exports) {
 
 	'use strict';
 
-	exports.__esModule = true;
-	var FILE = '__NATIVE_FILE__';
-	exports.FILE = FILE;
-	var URL = '__NATIVE_URL__';
-	exports.URL = URL;
-	var TEXT = '__NATIVE_TEXT__';
-	exports.TEXT = TEXT;
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	var FILE = exports.FILE = '__NATIVE_FILE__';
+	var URL = exports.URL = '__NATIVE_URL__';
+	var TEXT = exports.TEXT = '__NATIVE_TEXT__';
 
 /***/ },
-/* 170 */
+/* 172 */
 /***/ function(module, exports) {
 
 	'use strict';
 
-	exports.__esModule = true;
-	exports['default'] = getEmptyImage;
-	var emptyImage = undefined;
-
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = getEmptyImage;
+	var emptyImage = void 0;
 	function getEmptyImage() {
 	  if (!emptyImage) {
 	    emptyImage = new Image();
@@ -9029,10 +9398,8 @@ var WikiTableEditor =
 	  return emptyImage;
 	}
 
-	module.exports = exports['default'];
-
 /***/ },
-/* 171 */
+/* 173 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -9041,7 +9408,7 @@ var WikiTableEditor =
 	  value: true
 	});
 
-	var _provider = __webpack_require__(172);
+	var _provider = __webpack_require__(174);
 
 	Object.defineProperty(exports, 'Provider', {
 	  enumerable: true,
@@ -9050,7 +9417,7 @@ var WikiTableEditor =
 	  }
 	});
 
-	var _header = __webpack_require__(174);
+	var _header = __webpack_require__(176);
 
 	Object.defineProperty(exports, 'Header', {
 	  enumerable: true,
@@ -9059,7 +9426,7 @@ var WikiTableEditor =
 	  }
 	});
 
-	var _body = __webpack_require__(200);
+	var _body = __webpack_require__(202);
 
 	Object.defineProperty(exports, 'Body', {
 	  enumerable: true,
@@ -9068,7 +9435,7 @@ var WikiTableEditor =
 	  }
 	});
 
-	var _bodyRow = __webpack_require__(220);
+	var _bodyRow = __webpack_require__(222);
 
 	Object.defineProperty(exports, 'BodyRow', {
 	  enumerable: true,
@@ -9077,7 +9444,7 @@ var WikiTableEditor =
 	  }
 	});
 
-	var _evaluateFormatters = __webpack_require__(176);
+	var _evaluateFormatters = __webpack_require__(178);
 
 	Object.defineProperty(exports, 'evaluateFormatters', {
 	  enumerable: true,
@@ -9086,7 +9453,7 @@ var WikiTableEditor =
 	  }
 	});
 
-	var _evaluateTransforms = __webpack_require__(177);
+	var _evaluateTransforms = __webpack_require__(179);
 
 	Object.defineProperty(exports, 'evaluateTransforms', {
 	  enumerable: true,
@@ -9095,7 +9462,7 @@ var WikiTableEditor =
 	  }
 	});
 
-	var _mergeProps = __webpack_require__(178);
+	var _mergeProps = __webpack_require__(180);
 
 	Object.defineProperty(exports, 'mergeProps', {
 	  enumerable: true,
@@ -9104,7 +9471,7 @@ var WikiTableEditor =
 	  }
 	});
 
-	var _columnsAreEqual = __webpack_require__(221);
+	var _columnsAreEqual = __webpack_require__(223);
 
 	Object.defineProperty(exports, 'columnsAreEqual', {
 	  enumerable: true,
@@ -9113,7 +9480,7 @@ var WikiTableEditor =
 	  }
 	});
 
-	var _resolveRowKey = __webpack_require__(223);
+	var _resolveRowKey = __webpack_require__(225);
 
 	Object.defineProperty(exports, 'resolveRowKey', {
 	  enumerable: true,
@@ -9125,7 +9492,7 @@ var WikiTableEditor =
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ },
-/* 172 */
+/* 174 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
@@ -9142,7 +9509,7 @@ var WikiTableEditor =
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _types = __webpack_require__(173);
+	var _types = __webpack_require__(175);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -9210,7 +9577,7 @@ var WikiTableEditor =
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(25)))
 
 /***/ },
-/* 173 */
+/* 175 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -9326,7 +9693,7 @@ var WikiTableEditor =
 	exports.tableDefaults = tableDefaults;
 
 /***/ },
-/* 174 */
+/* 176 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
@@ -9341,9 +9708,9 @@ var WikiTableEditor =
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _types = __webpack_require__(173);
+	var _types = __webpack_require__(175);
 
-	var _headerRow = __webpack_require__(175);
+	var _headerRow = __webpack_require__(177);
 
 	var _headerRow2 = _interopRequireDefault(_headerRow);
 
@@ -9418,7 +9785,7 @@ var WikiTableEditor =
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(25)))
 
 /***/ },
-/* 175 */
+/* 177 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
@@ -9433,19 +9800,19 @@ var WikiTableEditor =
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _evaluateFormatters = __webpack_require__(176);
+	var _evaluateFormatters = __webpack_require__(178);
 
 	var _evaluateFormatters2 = _interopRequireDefault(_evaluateFormatters);
 
-	var _evaluateTransforms = __webpack_require__(177);
+	var _evaluateTransforms = __webpack_require__(179);
 
 	var _evaluateTransforms2 = _interopRequireDefault(_evaluateTransforms);
 
-	var _mergeProps = __webpack_require__(178);
+	var _mergeProps = __webpack_require__(180);
 
 	var _mergeProps2 = _interopRequireDefault(_mergeProps);
 
-	var _types = __webpack_require__(173);
+	var _types = __webpack_require__(175);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -9491,7 +9858,7 @@ var WikiTableEditor =
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(25)))
 
 /***/ },
-/* 176 */
+/* 178 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -9513,7 +9880,7 @@ var WikiTableEditor =
 	exports.default = evaluateFormatters;
 
 /***/ },
-/* 177 */
+/* 179 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
@@ -9526,7 +9893,7 @@ var WikiTableEditor =
 
 	var _isFunction3 = _interopRequireDefault(_isFunction2);
 
-	var _mergeProps = __webpack_require__(178);
+	var _mergeProps = __webpack_require__(180);
 
 	var _mergeProps2 = _interopRequireDefault(_mergeProps);
 
@@ -9554,7 +9921,7 @@ var WikiTableEditor =
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(25)))
 
 /***/ },
-/* 178 */
+/* 180 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -9563,13 +9930,13 @@ var WikiTableEditor =
 	  value: true
 	});
 
-	var _mergeWith2 = __webpack_require__(179);
+	var _mergeWith2 = __webpack_require__(181);
 
 	var _mergeWith3 = _interopRequireDefault(_mergeWith2);
 
 	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-	var _classnames = __webpack_require__(199);
+	var _classnames = __webpack_require__(201);
 
 	var _classnames2 = _interopRequireDefault(_classnames);
 
@@ -9601,11 +9968,11 @@ var WikiTableEditor =
 	exports.default = mergePropPair;
 
 /***/ },
-/* 179 */
+/* 181 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseMerge = __webpack_require__(180),
-	    createAssigner = __webpack_require__(146);
+	var baseMerge = __webpack_require__(182),
+	    createAssigner = __webpack_require__(148);
 
 	/**
 	 * This method is like `_.merge` except that it accepts `customizer` which
@@ -9646,15 +10013,15 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 180 */
+/* 182 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Stack = __webpack_require__(181),
-	    assignMergeValue = __webpack_require__(187),
-	    baseFor = __webpack_require__(188),
-	    baseMergeDeep = __webpack_require__(190),
+	var Stack = __webpack_require__(183),
+	    assignMergeValue = __webpack_require__(189),
+	    baseFor = __webpack_require__(190),
+	    baseMergeDeep = __webpack_require__(192),
 	    isObject = __webpack_require__(27),
-	    keysIn = __webpack_require__(149);
+	    keysIn = __webpack_require__(151);
 
 	/**
 	 * The base implementation of `_.merge` without support for multiple sources.
@@ -9693,15 +10060,15 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 181 */
+/* 183 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var ListCache = __webpack_require__(49),
-	    stackClear = __webpack_require__(182),
-	    stackDelete = __webpack_require__(183),
-	    stackGet = __webpack_require__(184),
-	    stackHas = __webpack_require__(185),
-	    stackSet = __webpack_require__(186);
+	    stackClear = __webpack_require__(184),
+	    stackDelete = __webpack_require__(185),
+	    stackGet = __webpack_require__(186),
+	    stackHas = __webpack_require__(187),
+	    stackSet = __webpack_require__(188);
 
 	/**
 	 * Creates a stack cache object to store key-value pairs.
@@ -9726,7 +10093,7 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 182 */
+/* 184 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var ListCache = __webpack_require__(49);
@@ -9747,7 +10114,7 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 183 */
+/* 185 */
 /***/ function(module, exports) {
 
 	/**
@@ -9771,7 +10138,7 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 184 */
+/* 186 */
 /***/ function(module, exports) {
 
 	/**
@@ -9791,7 +10158,7 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 185 */
+/* 187 */
 /***/ function(module, exports) {
 
 	/**
@@ -9811,7 +10178,7 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 186 */
+/* 188 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var ListCache = __webpack_require__(49),
@@ -9851,10 +10218,10 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 187 */
+/* 189 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseAssignValue = __webpack_require__(145),
+	var baseAssignValue = __webpack_require__(147),
 	    eq = __webpack_require__(53);
 
 	/**
@@ -9877,10 +10244,10 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 188 */
+/* 190 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var createBaseFor = __webpack_require__(189);
+	var createBaseFor = __webpack_require__(191);
 
 	/**
 	 * The base implementation of `baseForOwn` which iterates over `object`
@@ -9899,7 +10266,7 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 189 */
+/* 191 */
 /***/ function(module, exports) {
 
 	/**
@@ -9930,23 +10297,23 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 190 */
+/* 192 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var assignMergeValue = __webpack_require__(187),
-	    cloneBuffer = __webpack_require__(191),
-	    cloneTypedArray = __webpack_require__(192),
-	    copyArray = __webpack_require__(195),
-	    initCloneObject = __webpack_require__(196),
+	var assignMergeValue = __webpack_require__(189),
+	    cloneBuffer = __webpack_require__(193),
+	    cloneTypedArray = __webpack_require__(194),
+	    copyArray = __webpack_require__(197),
+	    initCloneObject = __webpack_require__(198),
 	    isArguments = __webpack_require__(96),
 	    isArray = __webpack_require__(26),
 	    isArrayLikeObject = __webpack_require__(84),
-	    isBuffer = __webpack_require__(152),
+	    isBuffer = __webpack_require__(154),
 	    isFunction = __webpack_require__(40),
 	    isObject = __webpack_require__(27),
 	    isPlainObject = __webpack_require__(7),
-	    isTypedArray = __webpack_require__(154),
-	    toPlainObject = __webpack_require__(198);
+	    isTypedArray = __webpack_require__(156),
+	    toPlainObject = __webpack_require__(200);
 
 	/**
 	 * A specialized version of `baseMerge` for arrays and objects which performs
@@ -10029,7 +10396,7 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 191 */
+/* 193 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {var root = __webpack_require__(10);
@@ -10071,10 +10438,10 @@ var WikiTableEditor =
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(19)(module)))
 
 /***/ },
-/* 192 */
+/* 194 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var cloneArrayBuffer = __webpack_require__(193);
+	var cloneArrayBuffer = __webpack_require__(195);
 
 	/**
 	 * Creates a clone of `typedArray`.
@@ -10093,10 +10460,10 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 193 */
+/* 195 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Uint8Array = __webpack_require__(194);
+	var Uint8Array = __webpack_require__(196);
 
 	/**
 	 * Creates a clone of `arrayBuffer`.
@@ -10115,7 +10482,7 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 194 */
+/* 196 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var root = __webpack_require__(10);
@@ -10127,7 +10494,7 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 195 */
+/* 197 */
 /***/ function(module, exports) {
 
 	/**
@@ -10153,12 +10520,12 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 196 */
+/* 198 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseCreate = __webpack_require__(197),
+	var baseCreate = __webpack_require__(199),
 	    getPrototype = __webpack_require__(14),
-	    isPrototype = __webpack_require__(158);
+	    isPrototype = __webpack_require__(160);
 
 	/**
 	 * Initializes an object clone.
@@ -10177,7 +10544,7 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 197 */
+/* 199 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var isObject = __webpack_require__(27);
@@ -10213,11 +10580,11 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 198 */
+/* 200 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var copyObject = __webpack_require__(143),
-	    keysIn = __webpack_require__(149);
+	var copyObject = __webpack_require__(145),
+	    keysIn = __webpack_require__(151);
 
 	/**
 	 * Converts `value` to a plain object flattening inherited enumerable string
@@ -10251,7 +10618,7 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 199 */
+/* 201 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -10305,7 +10672,7 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 200 */
+/* 202 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
@@ -10318,7 +10685,7 @@ var WikiTableEditor =
 
 	var _isFunction3 = _interopRequireDefault(_isFunction2);
 
-	var _isEqual2 = __webpack_require__(201);
+	var _isEqual2 = __webpack_require__(203);
 
 	var _isEqual3 = _interopRequireDefault(_isEqual2);
 
@@ -10328,13 +10695,13 @@ var WikiTableEditor =
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _types = __webpack_require__(173);
+	var _types = __webpack_require__(175);
 
-	var _bodyRow = __webpack_require__(220);
+	var _bodyRow = __webpack_require__(222);
 
 	var _bodyRow2 = _interopRequireDefault(_bodyRow);
 
-	var _resolveRowKey = __webpack_require__(223);
+	var _resolveRowKey = __webpack_require__(225);
 
 	var _resolveRowKey2 = _interopRequireDefault(_resolveRowKey);
 
@@ -10442,10 +10809,10 @@ var WikiTableEditor =
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(25)))
 
 /***/ },
-/* 201 */
+/* 203 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseIsEqual = __webpack_require__(202);
+	var baseIsEqual = __webpack_require__(204);
 
 	/**
 	 * Performs a deep comparison between two values to determine if they are
@@ -10483,10 +10850,10 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 202 */
+/* 204 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseIsEqualDeep = __webpack_require__(203),
+	var baseIsEqualDeep = __webpack_require__(205),
 	    isObjectLike = __webpack_require__(16);
 
 	/**
@@ -10517,17 +10884,17 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 203 */
+/* 205 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Stack = __webpack_require__(181),
-	    equalArrays = __webpack_require__(204),
-	    equalByTag = __webpack_require__(206),
-	    equalObjects = __webpack_require__(208),
-	    getTag = __webpack_require__(216),
+	var Stack = __webpack_require__(183),
+	    equalArrays = __webpack_require__(206),
+	    equalByTag = __webpack_require__(208),
+	    equalObjects = __webpack_require__(210),
+	    getTag = __webpack_require__(218),
 	    isArray = __webpack_require__(26),
-	    isBuffer = __webpack_require__(152),
-	    isTypedArray = __webpack_require__(154);
+	    isBuffer = __webpack_require__(154),
+	    isTypedArray = __webpack_require__(156);
 
 	/** Used to compose bitmasks for value comparisons. */
 	var COMPARE_PARTIAL_FLAG = 1;
@@ -10606,11 +10973,11 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 204 */
+/* 206 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var SetCache = __webpack_require__(32),
-	    arraySome = __webpack_require__(205),
+	    arraySome = __webpack_require__(207),
 	    cacheHas = __webpack_require__(74);
 
 	/** Used to compose bitmasks for value comparisons. */
@@ -10695,7 +11062,7 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 205 */
+/* 207 */
 /***/ function(module, exports) {
 
 	/**
@@ -10724,14 +11091,14 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 206 */
+/* 208 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Symbol = __webpack_require__(9),
-	    Uint8Array = __webpack_require__(194),
+	    Uint8Array = __webpack_require__(196),
 	    eq = __webpack_require__(53),
-	    equalArrays = __webpack_require__(204),
-	    mapToArray = __webpack_require__(207),
+	    equalArrays = __webpack_require__(206),
+	    mapToArray = __webpack_require__(209),
 	    setToArray = __webpack_require__(102);
 
 	/** Used to compose bitmasks for value comparisons. */
@@ -10842,7 +11209,7 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 207 */
+/* 209 */
 /***/ function(module, exports) {
 
 	/**
@@ -10866,10 +11233,10 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 208 */
+/* 210 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var getAllKeys = __webpack_require__(209);
+	var getAllKeys = __webpack_require__(211);
 
 	/** Used to compose bitmasks for value comparisons. */
 	var COMPARE_PARTIAL_FLAG = 1;
@@ -10961,12 +11328,12 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 209 */
+/* 211 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseGetAllKeys = __webpack_require__(210),
-	    getSymbols = __webpack_require__(211),
-	    keys = __webpack_require__(213);
+	var baseGetAllKeys = __webpack_require__(212),
+	    getSymbols = __webpack_require__(213),
+	    keys = __webpack_require__(215);
 
 	/**
 	 * Creates an array of own enumerable property names and symbols of `object`.
@@ -10983,7 +11350,7 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 210 */
+/* 212 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var arrayPush = __webpack_require__(94),
@@ -11009,11 +11376,11 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 211 */
+/* 213 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var arrayFilter = __webpack_require__(91),
-	    stubArray = __webpack_require__(212);
+	    stubArray = __webpack_require__(214);
 
 	/** Used for built-in method references. */
 	var objectProto = Object.prototype;
@@ -11045,7 +11412,7 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 212 */
+/* 214 */
 /***/ function(module, exports) {
 
 	/**
@@ -11074,11 +11441,11 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 213 */
+/* 215 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var arrayLikeKeys = __webpack_require__(150),
-	    baseKeys = __webpack_require__(214),
+	var arrayLikeKeys = __webpack_require__(152),
+	    baseKeys = __webpack_require__(216),
 	    isArrayLike = __webpack_require__(85);
 
 	/**
@@ -11117,11 +11484,11 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 214 */
+/* 216 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isPrototype = __webpack_require__(158),
-	    nativeKeys = __webpack_require__(215);
+	var isPrototype = __webpack_require__(160),
+	    nativeKeys = __webpack_require__(217);
 
 	/** Used for built-in method references. */
 	var objectProto = Object.prototype;
@@ -11153,7 +11520,7 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 215 */
+/* 217 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var overArg = __webpack_require__(15);
@@ -11165,14 +11532,14 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 216 */
+/* 218 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var DataView = __webpack_require__(217),
+	var DataView = __webpack_require__(219),
 	    Map = __webpack_require__(57),
-	    Promise = __webpack_require__(218),
+	    Promise = __webpack_require__(220),
 	    Set = __webpack_require__(100),
-	    WeakMap = __webpack_require__(219),
+	    WeakMap = __webpack_require__(221),
 	    baseGetTag = __webpack_require__(8),
 	    toSource = __webpack_require__(43);
 
@@ -11229,7 +11596,7 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 217 */
+/* 219 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var getNative = __webpack_require__(38),
@@ -11242,7 +11609,7 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 218 */
+/* 220 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var getNative = __webpack_require__(38),
@@ -11255,7 +11622,7 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 219 */
+/* 221 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var getNative = __webpack_require__(38),
@@ -11268,7 +11635,7 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 220 */
+/* 222 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
@@ -11281,7 +11648,7 @@ var WikiTableEditor =
 
 	var _isFunction3 = _interopRequireDefault(_isFunction2);
 
-	var _isEqual2 = __webpack_require__(201);
+	var _isEqual2 = __webpack_require__(203);
 
 	var _isEqual3 = _interopRequireDefault(_isEqual2);
 
@@ -11293,23 +11660,23 @@ var WikiTableEditor =
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _columnsAreEqual = __webpack_require__(221);
+	var _columnsAreEqual = __webpack_require__(223);
 
 	var _columnsAreEqual2 = _interopRequireDefault(_columnsAreEqual);
 
-	var _evaluateFormatters = __webpack_require__(176);
+	var _evaluateFormatters = __webpack_require__(178);
 
 	var _evaluateFormatters2 = _interopRequireDefault(_evaluateFormatters);
 
-	var _evaluateTransforms = __webpack_require__(177);
+	var _evaluateTransforms = __webpack_require__(179);
 
 	var _evaluateTransforms2 = _interopRequireDefault(_evaluateTransforms);
 
-	var _mergeProps = __webpack_require__(178);
+	var _mergeProps = __webpack_require__(180);
 
 	var _mergeProps2 = _interopRequireDefault(_mergeProps);
 
-	var _types = __webpack_require__(173);
+	var _types = __webpack_require__(175);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -11405,7 +11772,7 @@ var WikiTableEditor =
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(25)))
 
 /***/ },
-/* 221 */
+/* 223 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -11414,7 +11781,7 @@ var WikiTableEditor =
 	  value: true
 	});
 
-	var _isEqualWith2 = __webpack_require__(222);
+	var _isEqualWith2 = __webpack_require__(224);
 
 	var _isEqualWith3 = _interopRequireDefault(_isEqualWith2);
 
@@ -11437,10 +11804,10 @@ var WikiTableEditor =
 	exports.default = columnsAreEqual;
 
 /***/ },
-/* 222 */
+/* 224 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseIsEqual = __webpack_require__(202);
+	var baseIsEqual = __webpack_require__(204);
 
 	/**
 	 * This method is like `_.isEqual` except that it accepts `customizer` which
@@ -11484,7 +11851,7 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 223 */
+/* 225 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
@@ -11525,7 +11892,7 @@ var WikiTableEditor =
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(25)))
 
 /***/ },
-/* 224 */
+/* 226 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -11535,19 +11902,19 @@ var WikiTableEditor =
 	});
 	exports.Row = exports.Header = exports.move = exports.moveRows = exports.moveLabels = exports.moveChildrenLabels = exports.draggableRow = undefined;
 
-	var _draggableRow = __webpack_require__(225);
+	var _draggableRow = __webpack_require__(227);
 
 	var _draggableRow2 = _interopRequireDefault(_draggableRow);
 
-	var _header = __webpack_require__(227);
+	var _header = __webpack_require__(229);
 
 	var _header2 = _interopRequireDefault(_header);
 
-	var _row = __webpack_require__(228);
+	var _row = __webpack_require__(230);
 
 	var _row2 = _interopRequireDefault(_row);
 
-	var _move = __webpack_require__(229);
+	var _move = __webpack_require__(231);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -11560,7 +11927,7 @@ var WikiTableEditor =
 	exports.Row = _row2.default;
 
 /***/ },
-/* 225 */
+/* 227 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
@@ -11577,7 +11944,7 @@ var WikiTableEditor =
 
 	var _reactDnd = __webpack_require__(2);
 
-	var _reactDom = __webpack_require__(226);
+	var _reactDom = __webpack_require__(228);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -11696,13 +12063,13 @@ var WikiTableEditor =
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(25)))
 
 /***/ },
-/* 226 */
+/* 228 */
 /***/ function(module, exports) {
 
 	module.exports = ReactDOM;
 
 /***/ },
-/* 227 */
+/* 229 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -11779,7 +12146,7 @@ var WikiTableEditor =
 	exports.default = dragSource(dropTarget(header));
 
 /***/ },
-/* 228 */
+/* 230 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -11788,7 +12155,7 @@ var WikiTableEditor =
 	  value: true
 	});
 
-	var _draggableRow = __webpack_require__(225);
+	var _draggableRow = __webpack_require__(227);
 
 	var _draggableRow2 = _interopRequireDefault(_draggableRow);
 
@@ -11797,7 +12164,7 @@ var WikiTableEditor =
 	exports.default = (0, _draggableRow2.default)('tr');
 
 /***/ },
-/* 229 */
+/* 231 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -11807,7 +12174,7 @@ var WikiTableEditor =
 	});
 	exports.move = exports.moveRows = exports.moveLabels = exports.moveChildrenLabels = undefined;
 
-	var _findIndex4 = __webpack_require__(230);
+	var _findIndex4 = __webpack_require__(232);
 
 	var _findIndex5 = _interopRequireDefault(_findIndex4);
 
@@ -11927,12 +12294,12 @@ var WikiTableEditor =
 	exports.move = move;
 
 /***/ },
-/* 230 */
+/* 232 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var baseFindIndex = __webpack_require__(68),
-	    baseIteratee = __webpack_require__(231),
-	    toInteger = __webpack_require__(254);
+	    baseIteratee = __webpack_require__(233),
+	    toInteger = __webpack_require__(256);
 
 	/* Built-in method references for those with the same name as other `lodash` methods. */
 	var nativeMax = Math.max;
@@ -11988,14 +12355,14 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 231 */
+/* 233 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseMatches = __webpack_require__(232),
-	    baseMatchesProperty = __webpack_require__(237),
+	var baseMatches = __webpack_require__(234),
+	    baseMatchesProperty = __webpack_require__(239),
 	    identity = __webpack_require__(76),
 	    isArray = __webpack_require__(26),
-	    property = __webpack_require__(251);
+	    property = __webpack_require__(253);
 
 	/**
 	 * The base implementation of `_.iteratee`.
@@ -12025,12 +12392,12 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 232 */
+/* 234 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseIsMatch = __webpack_require__(233),
-	    getMatchData = __webpack_require__(234),
-	    matchesStrictComparable = __webpack_require__(236);
+	var baseIsMatch = __webpack_require__(235),
+	    getMatchData = __webpack_require__(236),
+	    matchesStrictComparable = __webpack_require__(238);
 
 	/**
 	 * The base implementation of `_.matches` which doesn't clone `source`.
@@ -12053,11 +12420,11 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 233 */
+/* 235 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Stack = __webpack_require__(181),
-	    baseIsEqual = __webpack_require__(202);
+	var Stack = __webpack_require__(183),
+	    baseIsEqual = __webpack_require__(204);
 
 	/** Used to compose bitmasks for value comparisons. */
 	var COMPARE_PARTIAL_FLAG = 1,
@@ -12121,11 +12488,11 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 234 */
+/* 236 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isStrictComparable = __webpack_require__(235),
-	    keys = __webpack_require__(213);
+	var isStrictComparable = __webpack_require__(237),
+	    keys = __webpack_require__(215);
 
 	/**
 	 * Gets the property names, values, and compare flags of `object`.
@@ -12151,7 +12518,7 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 235 */
+/* 237 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var isObject = __webpack_require__(27);
@@ -12172,7 +12539,7 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 236 */
+/* 238 */
 /***/ function(module, exports) {
 
 	/**
@@ -12198,16 +12565,16 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 237 */
+/* 239 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseIsEqual = __webpack_require__(202),
-	    get = __webpack_require__(238),
-	    hasIn = __webpack_require__(248),
-	    isKey = __webpack_require__(241),
-	    isStrictComparable = __webpack_require__(235),
-	    matchesStrictComparable = __webpack_require__(236),
-	    toKey = __webpack_require__(247);
+	var baseIsEqual = __webpack_require__(204),
+	    get = __webpack_require__(240),
+	    hasIn = __webpack_require__(250),
+	    isKey = __webpack_require__(243),
+	    isStrictComparable = __webpack_require__(237),
+	    matchesStrictComparable = __webpack_require__(238),
+	    toKey = __webpack_require__(249);
 
 	/** Used to compose bitmasks for value comparisons. */
 	var COMPARE_PARTIAL_FLAG = 1,
@@ -12237,10 +12604,10 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 238 */
+/* 240 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseGet = __webpack_require__(239);
+	var baseGet = __webpack_require__(241);
 
 	/**
 	 * Gets the value at `path` of `object`. If the resolved value is
@@ -12276,11 +12643,11 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 239 */
+/* 241 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var castPath = __webpack_require__(240),
-	    toKey = __webpack_require__(247);
+	var castPath = __webpack_require__(242),
+	    toKey = __webpack_require__(249);
 
 	/**
 	 * The base implementation of `_.get` without support for default values.
@@ -12306,13 +12673,13 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 240 */
+/* 242 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var isArray = __webpack_require__(26),
-	    isKey = __webpack_require__(241),
-	    stringToPath = __webpack_require__(243),
-	    toString = __webpack_require__(245);
+	    isKey = __webpack_require__(243),
+	    stringToPath = __webpack_require__(245),
+	    toString = __webpack_require__(247);
 
 	/**
 	 * Casts `value` to a path array if it's not one.
@@ -12333,11 +12700,11 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 241 */
+/* 243 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var isArray = __webpack_require__(26),
-	    isSymbol = __webpack_require__(242);
+	    isSymbol = __webpack_require__(244);
 
 	/** Used to match property names within property paths. */
 	var reIsDeepProp = /\.|\[(?:[^[\]]*|(["'])(?:(?!\1)[^\\]|\\.)*?\1)\]/,
@@ -12368,7 +12735,7 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 242 */
+/* 244 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var baseGetTag = __webpack_require__(8),
@@ -12403,10 +12770,10 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 243 */
+/* 245 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var memoizeCapped = __webpack_require__(244);
+	var memoizeCapped = __webpack_require__(246);
 
 	/** Used to match property names within property paths. */
 	var reLeadingDot = /^\./,
@@ -12437,10 +12804,10 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 244 */
+/* 246 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var memoize = __webpack_require__(165);
+	var memoize = __webpack_require__(167);
 
 	/** Used as the maximum memoize cache size. */
 	var MAX_MEMOIZE_SIZE = 500;
@@ -12469,10 +12836,10 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 245 */
+/* 247 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseToString = __webpack_require__(246);
+	var baseToString = __webpack_require__(248);
 
 	/**
 	 * Converts `value` to a string. An empty string is returned for `null`
@@ -12503,13 +12870,13 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 246 */
+/* 248 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Symbol = __webpack_require__(9),
 	    arrayMap = __webpack_require__(72),
 	    isArray = __webpack_require__(26),
-	    isSymbol = __webpack_require__(242);
+	    isSymbol = __webpack_require__(244);
 
 	/** Used as references for various `Number` constants. */
 	var INFINITY = 1 / 0;
@@ -12546,10 +12913,10 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 247 */
+/* 249 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isSymbol = __webpack_require__(242);
+	var isSymbol = __webpack_require__(244);
 
 	/** Used as references for various `Number` constants. */
 	var INFINITY = 1 / 0;
@@ -12573,11 +12940,11 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 248 */
+/* 250 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseHasIn = __webpack_require__(249),
-	    hasPath = __webpack_require__(250);
+	var baseHasIn = __webpack_require__(251),
+	    hasPath = __webpack_require__(252);
 
 	/**
 	 * Checks if `path` is a direct or inherited property of `object`.
@@ -12613,7 +12980,7 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 249 */
+/* 251 */
 /***/ function(module, exports) {
 
 	/**
@@ -12632,15 +12999,15 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 250 */
+/* 252 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var castPath = __webpack_require__(240),
+	var castPath = __webpack_require__(242),
 	    isArguments = __webpack_require__(96),
 	    isArray = __webpack_require__(26),
-	    isIndex = __webpack_require__(148),
+	    isIndex = __webpack_require__(150),
 	    isLength = __webpack_require__(86),
-	    toKey = __webpack_require__(247);
+	    toKey = __webpack_require__(249);
 
 	/**
 	 * Checks if `path` exists on `object`.
@@ -12677,13 +13044,13 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 251 */
+/* 253 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseProperty = __webpack_require__(252),
-	    basePropertyDeep = __webpack_require__(253),
-	    isKey = __webpack_require__(241),
-	    toKey = __webpack_require__(247);
+	var baseProperty = __webpack_require__(254),
+	    basePropertyDeep = __webpack_require__(255),
+	    isKey = __webpack_require__(243),
+	    toKey = __webpack_require__(249);
 
 	/**
 	 * Creates a function that returns the value at `path` of a given object.
@@ -12715,7 +13082,7 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 252 */
+/* 254 */
 /***/ function(module, exports) {
 
 	/**
@@ -12735,10 +13102,10 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 253 */
+/* 255 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseGet = __webpack_require__(239);
+	var baseGet = __webpack_require__(241);
 
 	/**
 	 * A specialized version of `baseProperty` which supports deep paths.
@@ -12757,10 +13124,10 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 254 */
+/* 256 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var toFinite = __webpack_require__(255);
+	var toFinite = __webpack_require__(257);
 
 	/**
 	 * Converts `value` to an integer.
@@ -12799,10 +13166,10 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 255 */
+/* 257 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var toNumber = __webpack_require__(256);
+	var toNumber = __webpack_require__(258);
 
 	/** Used as references for various `Number` constants. */
 	var INFINITY = 1 / 0,
@@ -12847,11 +13214,11 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 256 */
+/* 258 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var isObject = __webpack_require__(27),
-	    isSymbol = __webpack_require__(242);
+	    isSymbol = __webpack_require__(244);
 
 	/** Used as references for various `Number` constants. */
 	var NAN = 0 / 0;
@@ -12919,10 +13286,10 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 257 */
+/* 259 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseClone = __webpack_require__(258);
+	var baseClone = __webpack_require__(260);
 
 	/** Used to compose bitmasks for cloning. */
 	var CLONE_DEEP_FLAG = 1,
@@ -12954,28 +13321,28 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 258 */
+/* 260 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Stack = __webpack_require__(181),
-	    arrayEach = __webpack_require__(259),
-	    assignValue = __webpack_require__(144),
-	    baseAssign = __webpack_require__(260),
-	    baseAssignIn = __webpack_require__(261),
-	    cloneBuffer = __webpack_require__(191),
-	    copyArray = __webpack_require__(195),
-	    copySymbols = __webpack_require__(262),
-	    copySymbolsIn = __webpack_require__(263),
-	    getAllKeys = __webpack_require__(209),
-	    getAllKeysIn = __webpack_require__(265),
-	    getTag = __webpack_require__(216),
-	    initCloneArray = __webpack_require__(266),
-	    initCloneByTag = __webpack_require__(267),
-	    initCloneObject = __webpack_require__(196),
+	var Stack = __webpack_require__(183),
+	    arrayEach = __webpack_require__(261),
+	    assignValue = __webpack_require__(146),
+	    baseAssign = __webpack_require__(262),
+	    baseAssignIn = __webpack_require__(263),
+	    cloneBuffer = __webpack_require__(193),
+	    copyArray = __webpack_require__(197),
+	    copySymbols = __webpack_require__(264),
+	    copySymbolsIn = __webpack_require__(265),
+	    getAllKeys = __webpack_require__(211),
+	    getAllKeysIn = __webpack_require__(267),
+	    getTag = __webpack_require__(218),
+	    initCloneArray = __webpack_require__(268),
+	    initCloneByTag = __webpack_require__(269),
+	    initCloneObject = __webpack_require__(198),
 	    isArray = __webpack_require__(26),
-	    isBuffer = __webpack_require__(152),
+	    isBuffer = __webpack_require__(154),
 	    isObject = __webpack_require__(27),
-	    keys = __webpack_require__(213);
+	    keys = __webpack_require__(215);
 
 	/** Used to compose bitmasks for cloning. */
 	var CLONE_DEEP_FLAG = 1,
@@ -13113,7 +13480,7 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 259 */
+/* 261 */
 /***/ function(module, exports) {
 
 	/**
@@ -13141,11 +13508,11 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 260 */
+/* 262 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var copyObject = __webpack_require__(143),
-	    keys = __webpack_require__(213);
+	var copyObject = __webpack_require__(145),
+	    keys = __webpack_require__(215);
 
 	/**
 	 * The base implementation of `_.assign` without support for multiple sources
@@ -13164,11 +13531,11 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 261 */
+/* 263 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var copyObject = __webpack_require__(143),
-	    keysIn = __webpack_require__(149);
+	var copyObject = __webpack_require__(145),
+	    keysIn = __webpack_require__(151);
 
 	/**
 	 * The base implementation of `_.assignIn` without support for multiple sources
@@ -13187,11 +13554,11 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 262 */
+/* 264 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var copyObject = __webpack_require__(143),
-	    getSymbols = __webpack_require__(211);
+	var copyObject = __webpack_require__(145),
+	    getSymbols = __webpack_require__(213);
 
 	/**
 	 * Copies own symbols of `source` to `object`.
@@ -13209,11 +13576,11 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 263 */
+/* 265 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var copyObject = __webpack_require__(143),
-	    getSymbolsIn = __webpack_require__(264);
+	var copyObject = __webpack_require__(145),
+	    getSymbolsIn = __webpack_require__(266);
 
 	/**
 	 * Copies own and inherited symbols of `source` to `object`.
@@ -13231,13 +13598,13 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 264 */
+/* 266 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var arrayPush = __webpack_require__(94),
 	    getPrototype = __webpack_require__(14),
-	    getSymbols = __webpack_require__(211),
-	    stubArray = __webpack_require__(212);
+	    getSymbols = __webpack_require__(213),
+	    stubArray = __webpack_require__(214);
 
 	/* Built-in method references for those with the same name as other `lodash` methods. */
 	var nativeGetSymbols = Object.getOwnPropertySymbols;
@@ -13262,12 +13629,12 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 265 */
+/* 267 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseGetAllKeys = __webpack_require__(210),
-	    getSymbolsIn = __webpack_require__(264),
-	    keysIn = __webpack_require__(149);
+	var baseGetAllKeys = __webpack_require__(212),
+	    getSymbolsIn = __webpack_require__(266),
+	    keysIn = __webpack_require__(151);
 
 	/**
 	 * Creates an array of own and inherited enumerable property names and
@@ -13285,7 +13652,7 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 266 */
+/* 268 */
 /***/ function(module, exports) {
 
 	/** Used for built-in method references. */
@@ -13317,16 +13684,16 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 267 */
+/* 269 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var cloneArrayBuffer = __webpack_require__(193),
-	    cloneDataView = __webpack_require__(268),
-	    cloneMap = __webpack_require__(269),
-	    cloneRegExp = __webpack_require__(272),
-	    cloneSet = __webpack_require__(273),
-	    cloneSymbol = __webpack_require__(275),
-	    cloneTypedArray = __webpack_require__(192);
+	var cloneArrayBuffer = __webpack_require__(195),
+	    cloneDataView = __webpack_require__(270),
+	    cloneMap = __webpack_require__(271),
+	    cloneRegExp = __webpack_require__(274),
+	    cloneSet = __webpack_require__(275),
+	    cloneSymbol = __webpack_require__(277),
+	    cloneTypedArray = __webpack_require__(194);
 
 	/** `Object#toString` result references. */
 	var boolTag = '[object Boolean]',
@@ -13403,10 +13770,10 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 268 */
+/* 270 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var cloneArrayBuffer = __webpack_require__(193);
+	var cloneArrayBuffer = __webpack_require__(195);
 
 	/**
 	 * Creates a clone of `dataView`.
@@ -13425,12 +13792,12 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 269 */
+/* 271 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var addMapEntry = __webpack_require__(270),
-	    arrayReduce = __webpack_require__(271),
-	    mapToArray = __webpack_require__(207);
+	var addMapEntry = __webpack_require__(272),
+	    arrayReduce = __webpack_require__(273),
+	    mapToArray = __webpack_require__(209);
 
 	/** Used to compose bitmasks for cloning. */
 	var CLONE_DEEP_FLAG = 1;
@@ -13453,7 +13820,7 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 270 */
+/* 272 */
 /***/ function(module, exports) {
 
 	/**
@@ -13474,7 +13841,7 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 271 */
+/* 273 */
 /***/ function(module, exports) {
 
 	/**
@@ -13506,7 +13873,7 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 272 */
+/* 274 */
 /***/ function(module, exports) {
 
 	/** Used to match `RegExp` flags from their coerced string values. */
@@ -13529,11 +13896,11 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 273 */
+/* 275 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var addSetEntry = __webpack_require__(274),
-	    arrayReduce = __webpack_require__(271),
+	var addSetEntry = __webpack_require__(276),
+	    arrayReduce = __webpack_require__(273),
 	    setToArray = __webpack_require__(102);
 
 	/** Used to compose bitmasks for cloning. */
@@ -13557,7 +13924,7 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 274 */
+/* 276 */
 /***/ function(module, exports) {
 
 	/**
@@ -13578,7 +13945,7 @@ var WikiTableEditor =
 
 
 /***/ },
-/* 275 */
+/* 277 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Symbol = __webpack_require__(9);
