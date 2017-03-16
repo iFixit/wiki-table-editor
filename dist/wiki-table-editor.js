@@ -12045,9 +12045,11 @@ var WikiTableEditor =
 	  rowId: _react2.default.PropTypes.any.isRequired
 	} : void 0;
 
+	var SourceTargetDraggableRow = dragSource(dropTarget(DraggableRow));
+
 	var draggableRow = function draggableRow(_parent) {
 	  function draggable(children) {
-	    return _react2.default.createElement(dragSource(dropTarget(DraggableRow)), _extends({
+	    return _react2.default.createElement(SourceTargetDraggableRow, _extends({
 	      _parent: _parent
 	    }, children));
 	  }
