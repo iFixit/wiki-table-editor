@@ -2,7 +2,7 @@ import React from 'react';
 import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
 import * as Table from 'reactabular-table';
-import * as dnd from 'reactabular/packages/reactabular-dnd';
+import * as dnd from 'reactabular-dnd';
 import cloneDeep from 'lodash/cloneDeep';
 import findIndex from 'lodash/findIndex';
 
