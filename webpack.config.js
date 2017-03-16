@@ -1,3 +1,5 @@
+var UglifyJSPlugin = require('uglifyjs-webpack-plugin');
+
 function getConfig(env) {
   var entry = './src/wiki-table-editor.jsx';
   var outFile = 'wiki-table-editor.js';
@@ -40,7 +42,10 @@ function getConfig(env) {
           }
         }
       ]
-    }
+    },
+    plugins: [
+      new UglifyJSPlugin()
+    ]
   };
 };
 
