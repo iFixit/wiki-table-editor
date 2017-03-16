@@ -1,6 +1,6 @@
 import React from 'react';
 import { DragDropContext } from 'react-dnd';
-import HTML5Backend from 'react-dnd-html5-backend';
+import MultiBackend from 'react-dnd-multi-backend';
 import * as Table from 'reactabular-table';
 import * as dnd from 'reactabular-dnd';
 import cloneDeep from 'lodash/cloneDeep';
@@ -286,6 +286,6 @@ class TableEditor extends React.Component {
   }
 }
 
-const WikiTableEditor = DragDropContext(HTML5Backend)(TableEditor);
+const WikiTableEditor = DragDropContext(MultiBackend)(TableEditor);
 
 module.exports = WikiTableEditor;
