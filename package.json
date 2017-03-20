@@ -4,7 +4,7 @@
     "react": "15.4.1",
     "react-dnd": "2.2.4",
     "react-dnd-html5-backend": "2.2.4",
-    "react-dnd-multi-backend": "2.2.3",
+    "react-dnd-multi-backend": "git+https://github.com/iFixit/react-dnd-multi-backend.git",
     "react-dom": "15.4.1",
     "reactabular": "8.3.0",
     "reactabular-dnd": "8.7.1",
