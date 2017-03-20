@@ -124,7 +124,7 @@ class TableEditor extends React.Component {
             (value, { rowData }) => (
               <div className="cell-content">
                 <input type="text"
-                 value={rowData[property]}
+                 value={rowData[property] || ''}
                  placeholder={label}
                  onFocus={this.onFocus}
                  onBlur={this.onBlur}
