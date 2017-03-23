@@ -1,7 +1,6 @@
 import React from 'react';
 import { DragDropContext } from 'react-dnd';
-import HTML5Backend from 'react-dnd-html5-backend';
-import * as edit from 'react-edit';
+import MultiBackend from 'react-dnd-multi-backend';
 import * as Table from 'reactabular-table';
 import * as dnd from 'reactabular-dnd';
 import cloneDeep from 'lodash/cloneDeep';
@@ -38,34 +37,24 @@ class TableEditor extends React.Component {
     this.onRow = this.onRow.bind(this);
     this.onMoveRow = this.onMoveRow.bind(this);
     this.addRow = this.addRow.bind(this);
+    this.setCell = this.setCell.bind(this);
+    this.setNewCell = this.setNewCell.bind(this);
+    this.onFocus = this.onFocus.bind(this);
+    this.onBlur = this.onBlur.bind(this);
+    this.deleteButtonFormatter = this.deleteButtonFormatter.bind(this);
+    this.addNewButtonFormatter = this.addNewButtonFormatter.bind(this);
 
-    // Specify our custom editing behavior.
-    const editable = edit.edit({
-      isEditing: ({ columnIndex, rowData }) => {
-        return columnIndex === rowData.columnIndexEditing;
-      },
-
-      onActivate: ({ columnIndex, rowData }) => {
-        const index = findIndex(this.props.rows, { id: rowData.id });
-        const rows = cloneDeep(this.props.rows);
-
-        rows[index].columnIndexEditing = columnIndex;
-
-        this.props.setRows(rows);
-      },
-
-      onValue: ({ value, rowData, property }) => {
-        const index = findIndex(this.props.rows, { id: rowData.id });
-        const rows = cloneDeep(this.props.rows);
-
-        rows[index][property] = value;
-        delete rows[index].columnIndexEditing;
-
-        this.props.setRows(rows);
-      }
+    // The "newRow" is the row at the bottom of the table. It gets added to the
+    // table when the user clicks "Add Row."
+    this.state = {
+       newRow: {id: 1}
+    };
+    this.props.columns.forEach((column) => {
+       this.state.newRow[column.property] = '';
     });
 
-    this.editableTransform = editable(edit.input());
+    // Whether the user has an <input> in focus.
+    this.state.isEditing = false;
   }
 
   render() {
@@ -77,15 +66,24 @@ class TableEditor extends React.Component {
     };
 
     const rows = this.props.rows;
-    const columns = this.getColumns();
+    const columns = this.getColumns(this.setCell,
+     this.deleteButtonFormatter, this.props.getDragHandle);
+
+    const newRows = [this.state.newRow];
+    const newColumns = this.getColumns(this.setNewCell,
+     this.addNewButtonFormatter, () => null);
+
+    const isDragging = this.props.rows.some((row) => row.dragging);
 
     return (
-      <div className="wiki-table-editor">
+      <div className={'wiki-table-editor' + (isDragging ? ' dragging' : '')}>
         <Table.Provider components={components} columns={columns}>
           <Table.Header headerRows={[columns]} />
           <Table.Body rows={rows} rowKey="id" onRow={this.onRow} />
         </Table.Provider>
-        <button onClick={this.addRow} className="add-row-button">+</button>
+        <Table.Provider columns={newColumns}>
+          <Table.Body rows={newRows} rowKey="id" />
+        </Table.Provider>
       </div>
     );
   }
@@ -93,57 +91,103 @@ class TableEditor extends React.Component {
   /**
    * Transform our `columns` prop into column definitions for reactabular.
    */
-  getColumns() {
-    return [...this.props.columns.map(({ property, label }) => {
+  getColumns(onCellChange, actionButtonFormatter, dragHandleFormatter) {
+    return [
+    // The "drag this row" handle.
+    {
+      header: {
+        props: {
+          className: 'drag-handle-cell'
+        }
+      },
+      cell: {
+        formatters: [dragHandleFormatter],
+        props: {
+          className: 'drag-handle-cell'
+        }
+      }
+    },
+    // props-specified columns
+    ...this.props.columns.map(({ property, label }) => {
       return {
         property: property,
         header: {
-          label: label
+           label: label,
+           props: {
+             className: property + '-cell'
+           }
         },
         cell: {
-          transforms: [this.editableTransform],
           formatters: [
             // Wrap <td> contents in a <div>. This makes it easier to style
             // the table cells.
             (value, { rowData }) => (
-              <div className="cell-content">{ rowData[property] }</div>
+              <div className="cell-content">
+                <input type="text"
+                 value={rowData[property] || ''}
+                 placeholder={label}
+                 onFocus={this.onFocus}
+                 onBlur={this.onBlur}
+                 onChange={(event) => {
+                   onCellChange(rowData.id, property, event.target.value)
+                 }} />
+              </div>
             )
-          ]
+          ],
+          props: {
+            className: property + '-cell'
+          }
         }
       };
     }),
-    // Include one more column for the delete button.
+    // Include one more column for a button. This can be a delete button or
+    // anything that the caller wants.
     {
       header: {
         props: {
-          style: {
-            width: 60
-          }
+          className: 'action-button-cell'
         }
       },
       cell: {
-        formatters: [
-          (value, { rowData }) => (
-            <button onClick={this.deleteRow.bind(this, rowData.id)}
-             className="delete-button">
-              &times;
-            </button>
-          )
-        ]
+        formatters: [actionButtonFormatter],
+        props: {
+          className: 'action-button-cell'
+        }
       }
     }];
   }
 
   /**
-   * Called to get info and callbacks for each row.
+   * Given a row, returns a delete button for that row.
+   */
+  deleteButtonFormatter(value, { rowData }) {
+    return this.props.getDeleteButton(this.deleteRow.bind(this, rowData.id));
+  }
+
+  /**
+   * Returns an "Add new row" button.
+   */
+  addNewButtonFormatter(value, { rowData }) {
+    let newRowEmpty = !this.props.columns.some((column) => {
+      return rowData[column.property];
+    })
+
+    return this.props.getAddButton(this.addRow.bind(this, rowData),
+     newRowEmpty);
+  }
+
+  /**
+   * Called to set the props when rendering each row.
    */
   onRow(row) {
     return {
       rowId: row.id,
       onMove: this.onMoveRow,
       // Don't allow drag-and-drop if a cell is being edited.
-      onCanMove: () => !this.props.rows.some(
-       (rowData) => rowData.columnIndexEditing !== undefined)
+      onCanMove: () => !this.state.isEditing,
+      onMoveStart: () => this.setCell(row.id, 'dragging', true),
+      onMoveEnd: () => this.setCell(row.id, 'dragging', false),
+      className: row.dragging ? 'dragging' : ''
     };
   }
 
@@ -187,29 +231,61 @@ class TableEditor extends React.Component {
   /**
    * Creates a new row at the bottom of the table.
    */
-  addRow() {
+  addRow(rowData) {
     const rows = cloneDeep(this.props.rows);
 
-    let newRow = {
+    rows.push({
+      ...rowData,
       id: this.getNextId()
-    };
-
-    // Fill in each required property with an empty string.
-    this.props.columns.forEach((column) => {
-      if (!column.property) {
-        // Not all columns represent a per-row property. For example, the
-        // "delete button" column.
-        return;
-      };
-
-      newRow[column.property] = '';
     });
 
-    rows.push(newRow);
     this.props.setRows(rows);
+
+    // Clear the "add new row" row.
+    let newRow = {id: 1};
+    this.props.columns.forEach((column) => {
+       newRow[column.property] = '';
+    });
+    this.setState({ newRow });
+  }
+
+  /**
+   * Change the value of one property on one row.
+   */
+  setCell(rowId, property, value) {
+     const index = findIndex(this.props.rows, { id: rowId });
+     const rows = cloneDeep(this.props.rows);
+
+     rows[index][property] = value;
+
+     this.props.setRows(rows);
+  }
+
+  /**
+   * Change the value of a cell in the "add new row" bar.
+   */
+  setNewCell(rowId, property, value) {
+    this.setState({
+      newRow: {
+        ...this.state.newRow,
+        [property]: value
+      }
+    });
+  }
+
+  onFocus() {
+    this.setState({
+      isEditing: true
+    });
+  }
+
+  onBlur() {
+    this.setState({
+      isEditing: false
+    });
   }
 }
 
-const WikiTableEditor = DragDropContext(HTML5Backend)(TableEditor);
+const WikiTableEditor = DragDropContext(MultiBackend)(TableEditor);
 
-export default WikiTableEditor;
+module.exports = WikiTableEditor;
