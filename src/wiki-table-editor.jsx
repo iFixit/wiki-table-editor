@@ -5,7 +5,10 @@ import * as Table from 'reactabular-table';
 import * as dnd from 'reactabular-dnd';
 import cloneDeep from 'lodash/cloneDeep';
 import findIndex from 'lodash/findIndex';
+import DraggableRow from './draggable-row.jsx';
 
+
+const sRow = DraggableRow('tr');
 /**
  * A table editor that allows the user to edit cells and reorder rows.
  * This is a simple wrapper around Reactabular with its 'dnd' and 'edit'
@@ -61,7 +64,7 @@ class TableEditor extends React.Component {
     // Use Row components that can be dragged-and-dropped.
     const components = {
       body: {
-        row: dnd.Row
+        row: sRow 
       }
     };
 
