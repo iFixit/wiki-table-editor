@@ -33,7 +33,8 @@ const rowTarget = {
 
 const dragSource = DragSource( // eslint-disable-line new-cap
   DragTypes.ROW, rowSource, connect => ({
-    connectDragSource: connect.dragSource()
+    connectDragSource: connect.dragSource(),
+    connectDragPreview: connect.dragPreview()
   })
 );
 const dropTarget = DropTarget( // eslint-disable-line new-cap
@@ -43,7 +44,7 @@ const dropTarget = DropTarget( // eslint-disable-line new-cap
 );
 const DraggableRow = ({
   _parent,
-  connectDragSource, connectDropTarget,
+  connectDragSource, connectDropTarget, connectDragPreview, children,
   onCanMove, onMoveStart, onMoveEnd, // eslint-disable-line no-unused-vars
   onMove, rowId, ...props // eslint-disable-line no-unused-vars
 }) => (
@@ -66,10 +67,13 @@ const DraggableRow = ({
 
         // Chaining is not allowed
         // https://github.com/gaearon/react-dnd/issues/305#issuecomment-164490014
+        connectDragPreview(node);
         connectDropTarget(node);
-        connectDragSource(node);
       }
-    }
+    },
+    React.Children.map(children, (child) => React.cloneElement(child, {
+      connectDragSource: connectDragSource
+    }))
   )
 );
 DraggableRow.propTypes = {
