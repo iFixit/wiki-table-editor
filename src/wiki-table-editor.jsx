@@ -10,15 +10,17 @@ import draggableRow from './draggable-row.jsx';
 const DndRow = draggableRow('tr');
 class DndCell extends React.Component {
   render() {
-	 let props = cloneDeep(this.props);
-	 delete props.connectDragSource;
+    let props = cloneDeep(this.props);
+    let canDragCell = props.canDragCell;
+    delete props.connectDragSource;
+    delete props.canDragCell;
     const td = (<td {...props}>{this.props.children}</td>);
 
-	 if (props.className === 'drag-handle-cell') {
-	   return this.props.connectDragSource(td);
-	 } else {
-	   return td;
-	 }
+    if (canDragCell) {
+      return this.props.connectDragSource(td);
+    } else {
+      return td;
+    }
   }
 }
 /**
@@ -119,6 +121,7 @@ class TableEditor extends React.Component {
       cell: {
         formatters: [dragHandleFormatter],
         props: {
+          canDragCell: true,
           className: 'drag-handle-cell'
         }
       }

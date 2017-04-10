@@ -1,3 +1,4 @@
+// Copied from https://github.com/reactabular/reactabular/blob/master/packages/reactabular-dnd/src/draggable-row.js
 import React from 'react';
 import { DragSource, DropTarget } from 'react-dnd';
 import { findDOMNode } from 'react-dom';
