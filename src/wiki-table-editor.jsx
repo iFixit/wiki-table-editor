@@ -5,7 +5,24 @@ import * as Table from 'reactabular-table';
 import * as dnd from 'reactabular-dnd';
 import cloneDeep from 'lodash/cloneDeep';
 import findIndex from 'lodash/findIndex';
+import draggableRow from './draggable-row.jsx';
 
+const DndRow = draggableRow('tr');
+class DndCell extends React.Component {
+  render() {
+    let props = cloneDeep(this.props);
+    let canDragCell = props.canDragCell;
+    delete props.connectDragSource;
+    delete props.canDragCell;
+    const td = (<td {...props}>{this.props.children}</td>);
+
+    if (canDragCell) {
+      return this.props.connectDragSource(td);
+    } else {
+      return td;
+    }
+  }
+}
 /**
  * A table editor that allows the user to edit cells and reorder rows.
  * This is a simple wrapper around Reactabular with its 'dnd' and 'edit'
@@ -61,7 +78,8 @@ class TableEditor extends React.Component {
     // Use Row components that can be dragged-and-dropped.
     const components = {
       body: {
-        row: dnd.Row
+        row: DndRow,
+        cell: DndCell
       }
     };
 
@@ -103,6 +121,7 @@ class TableEditor extends React.Component {
       cell: {
         formatters: [dragHandleFormatter],
         props: {
+          canDragCell: true,
           className: 'drag-handle-cell'
         }
       }
