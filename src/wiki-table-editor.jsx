@@ -10,14 +10,12 @@ import draggableRow from './draggable-row.jsx';
 const DndRow = draggableRow('tr');
 class DndCell extends React.Component {
   render() {
-    let props = cloneDeep(this.props);
-    let canDragCell = props.canDragCell;
-    delete props.connectDragSource;
-    delete props.canDragCell;
-    const td = (<td {...props}>{this.props.children}</td>);
+    let {canDragCell, connectDragSource, children, ...tdProps} = this.props;
+
+    const td = (<td {...tdProps}>{children}</td>);
 
     if (canDragCell) {
-      return this.props.connectDragSource(td);
+      return connectDragSource(td);
     } else {
       return td;
     }
