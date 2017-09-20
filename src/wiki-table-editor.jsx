@@ -1,6 +1,6 @@
 import React from 'react';
 import { DragDropContext } from 'react-dnd';
-import MultiBackend from 'react-dnd-multi-backend';
+import MultiBackend from 'react-dnd-multi-backend/lib/index';
 import * as Table from 'reactabular-table';
 import * as dnd from 'reactabular-dnd';
 import cloneDeep from 'lodash/cloneDeep';
