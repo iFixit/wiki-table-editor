@@ -1,7 +1,7 @@
 {
   "name": "wiki-table-editor",
   "main": "dist/wiki-table-editor.js",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "dependencies": {
     "lodash": "4.17.4",
     "react": "^15.6.1",
