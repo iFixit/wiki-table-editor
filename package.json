@@ -1,10 +1,10 @@
 {
   "name": "wiki-table-editor",
-  "main": "src/wiki-table-editor.jsx",
-  "version": "1.0.0",
+  "main": "dist/wiki-table-editor.js",
+  "version": "1.0.1",
   "dependencies": {
     "lodash": "4.17.4",
-    "react": "15.4.1",
+    "react": "^15.6.1",
     "react-dnd": "2.2.4",
     "react-dnd-html5-backend": "2.2.4",
     "react-dnd-multi-backend": "git+https://github.com/iFixit/react-dnd-multi-backend.git",
@@ -28,6 +28,7 @@
   },
   "scripts": {
     "build": "webpack",
-    "build-dev": "webpack --env.dev"
+    "build-dev": "webpack --env.dev",
+    "prepare": "npm run build"
   }
 }
