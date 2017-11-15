@@ -1,14 +1,14 @@
 {
   "name": "wiki-table-editor",
-  "main": "dist/wiki-table-editor.js",
-  "version": "1.0.1",
+  "main": "src/wiki-table-editor.jsx",
+  "version": "1.0.2",
   "dependencies": {
     "lodash": "4.17.4",
     "react": "^15.6.1",
     "react-dnd": "2.2.4",
     "react-dnd-html5-backend": "2.2.4",
     "react-dnd-multi-backend": "git+https://github.com/iFixit/react-dnd-multi-backend.git",
-    "react-dom": "15.4.1",
+    "react-dom": "^15.6.1",
     "reactabular": "8.3.0",
     "reactabular-dnd": "8.7.1",
     "reactabular-table": "8.6.0",
@@ -28,7 +28,6 @@
   },
   "scripts": {
     "build": "webpack",
-    "build-dev": "webpack --env.dev",
-    "prepare": "npm run build"
+    "build-dev": "webpack --env.dev"
   }
 }
