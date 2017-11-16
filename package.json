@@ -1,7 +1,7 @@
 {
   "name": "wiki-table-editor",
   "main": "dist/wiki-table-editor.js",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "dependencies": {
     "lodash": "4.17.4",
     "react": "^15.6.1",
@@ -21,8 +21,7 @@
     "babel-preset-react": "^6.24.1"
   },
   "scripts": {
-    "build": "webpack",
-    "build-dev": "webpack --env.dev",
-    "prepublishOnly": "babel src -d dist"
+    "build": "babel src -d dist",
+    "prepublishOnly": "npm run build"
   }
 }
