@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import WikiTableEditor from './wiki-table-editor';
+import WikiTableEditor from './wiki-table-editor.js';
 import './wiki-table-editor.css';
 
 const rows = [
