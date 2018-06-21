@@ -1,5 +1,6 @@
 {
   "name": "wiki-table-editor-2",
+  "main": "src/wiki-table-editor.jsx",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
