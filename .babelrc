@@ -1,7 +1,4 @@
 {
-   presets: ['env', 'react'],
-   plugins: [
-      'transform-object-rest-spread',
-      'transform-import-extension-jsx-to-js'
-   ]
+   presets: ['env', 'react', 'stage-2'],
+   plugins: ['transform-object-rest-spread']
 }
