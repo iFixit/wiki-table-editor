@@ -1,5 +1,5 @@
 {
-  "name": "wiki-table-editor-2",
+  "name": "wiki-table-editor",
   "main": "dist/wiki-table-editor.js",
   "version": "0.1.0",
   "private": true,
