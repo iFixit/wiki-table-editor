@@ -1,6 +1,6 @@
 {
   "name": "wiki-table-editor-2",
-  "main": "src/wiki-table-editor.js",
+  "main": "dist/wiki-table-editor.js",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -19,6 +19,15 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "prepublishOnly": "babel src -d dist"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-eslint": "^8.2.3",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-react": "^6.24.1",
+    "babel-preset-stage-2": "^6.24.1"
   }
 }
