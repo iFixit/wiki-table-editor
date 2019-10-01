@@ -4,11 +4,9 @@
   "version": "1.1.5",
   "dependencies": {
     "prop-types": "^15.6.2",
-    "react": "^16.4.1",
     "react-dnd": "^2.6.0",
     "react-dnd-html5-backend": "^5.0.1",
     "react-dnd-multi-backend": "^2.3.8",
-    "react-dom": "^16.4.1",
     "reactabular-dnd": "^8.14.0",
     "reactabular-table": "^8.14.0"
   },
@@ -19,6 +17,9 @@
     "eject": "react-scripts eject",
     "prepublishOnly": "rm -rf dist && babel src/lib -d dist"
   },
+  "peerDependencies": {
+    "react": "^16.0.0"
+  },
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "babel-eslint": "^8.2.3",
@@ -26,6 +27,8 @@
     "babel-preset-env": "^1.7.0",
     "babel-preset-react": "^6.24.1",
     "babel-preset-stage-2": "^6.24.1",
+    "react": "^16.9.0",
+    "react-dom": "^16.9.0",
     "react-scripts": "^1.1.4"
   }
 }
