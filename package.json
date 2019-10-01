@@ -17,7 +17,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
-    "prepublishOnly": "babel src -d dist"
+    "prepublishOnly": "rm -rf dist && babel src/lib -d dist"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
