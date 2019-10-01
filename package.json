@@ -1,7 +1,7 @@
 {
   "name": "wiki-table-editor",
   "main": "dist/wiki-table-editor.js",
-  "version": "1.1.5",
+  "version": "1.1.6",
   "dependencies": {
     "prop-types": "^15.6.2",
     "react-dnd": "^2.6.0",
