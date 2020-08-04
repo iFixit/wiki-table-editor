@@ -1,5 +1,6 @@
 import React from 'react';
 import { DragDropContext } from 'react-dnd';
+import CreatableSelect from 'react-select/creatable';
 import MultiBackend from 'react-dnd-multi-backend/lib/index';
 import * as Table from 'reactabular-table';
 import * as dnd from 'reactabular-dnd';
@@ -136,7 +137,7 @@ class TableEditor extends React.Component {
             },
          },
          // props-specified columns
-         ...this.props.columns.map(({ property, label }) => {
+         ...this.props.columns.map(({ property, label, type }) => {
             return {
                property: property,
                header: {
@@ -149,8 +150,10 @@ class TableEditor extends React.Component {
                   formatters: [
                      // Wrap <td> contents in a <div>. This makes it easier to style
                      // the table cells.
-                     (value, { rowData }) => (
-                        <div className="cell-content">
+                     (value, { rowData }) => {
+                        const options = ['hello', 'world'];
+
+                        let InputField = type === "text" ?
                            <input
                               type="text"
                               value={rowData[property] || ''}
@@ -164,12 +167,20 @@ class TableEditor extends React.Component {
                                     event.target.value,
                                  );
                               }}
-                           />
-                        </div>
-                     ),
+                           /> :
+                           <CreatableSelect
+                              options={options}
+                           />;
+
+                        return (
+                           <div className="cell-content">
+                              {InputField}
+                              </div>
+                        )
+                     },
                   ],
                   props: {
-                     className: property + '-cell',
+                     className: property + '-cell-d',
                   },
                },
             };
@@ -179,13 +190,13 @@ class TableEditor extends React.Component {
          {
             header: {
                props: {
-                  className: 'action-button-cell',
+                  className: 'action-button-cell-e',
                },
             },
             cell: {
                formatters: [actionButtonFormatter],
                props: {
-                  className: 'action-button-cell',
+                  className: 'action-button-cell-d',
                },
             },
          },
